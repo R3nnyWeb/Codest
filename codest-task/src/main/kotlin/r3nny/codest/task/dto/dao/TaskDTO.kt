@@ -7,6 +7,7 @@ import java.util.UUID
 
 data class TaskDTO(
     val id: UUID,
+    val number: Int,
     val name: String,
     val drivers: Map<Language, String>,
     val description: String,

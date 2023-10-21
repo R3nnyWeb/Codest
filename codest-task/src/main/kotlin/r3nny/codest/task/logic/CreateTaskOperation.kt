@@ -1,11 +1,12 @@
 package r3nny.codest.task.logic
 
-import r3nny.codest.task.integration.mongo.TaskDao
+import r3nny.codest.task.dto.http.CreateTaskRequest
+import r3nny.codest.task.integration.mongo.TaskAdapter
 
 class CreateTaskOperation(
-    val taskDao: TaskDao
+    val taskAdapter: TaskAdapter
 ) {
-    suspend fun createTask() {
+    suspend fun activate(request: CreateTaskRequest) {
 
     }
 }
