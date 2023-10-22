@@ -45,7 +45,7 @@ class CreateTaskOperationTest{
     //error - tests less then two
     //error start code not for all
     @Test
-    fun `error - input params empty`() = runBlocking{
+    fun `error - input params empty`(): Unit = runBlocking{
         with(request.copy(
             parameters = TaskParameters(
                 inputTypes = listOf(),

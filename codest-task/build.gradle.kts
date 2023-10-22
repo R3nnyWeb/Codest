@@ -15,13 +15,36 @@ dependencies {
     implementation("com.sksamuel.hoplite:hoplite-json:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
-    testImplementation(kotlin("test"))
-    testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
+    testImplementation("io.kotest:kotest-assertions-json-jvm:5.5.3")
+    testImplementation("io.mockk:mockk:1.13.2")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+        }
+    }
+
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
 
 kotlin {
