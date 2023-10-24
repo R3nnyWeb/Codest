@@ -5,16 +5,16 @@ import java.io.*;
 
 ${solution}
 public class Driver {
-     private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        ${paramsInputSection}
+        {{paramsInputSection}}
         scanner.close();
 
 
         long startTime = System.nanoTime();
 
-        ${returnType} result = new Solution().${methodName}(${paramList});
+        {{returnType}} result = new Solution().{{methodName}}({{paramList}});
 
         long endTime = System.nanoTime();
         long executionTime = endTime - startTime;
@@ -24,20 +24,30 @@ public class Driver {
         System.out.println(executionTime);
         System.out.println(memory/(1024*1024));
     }
-    private static void printResult(int result) {
-        System.out.println(result);
-    }
-    private static void printResult(boolean result) {
-        System.out.println(result);
-    }
-    private static void printResult(String result) {
-        System.out.println(result);
-    }
-    private static void printResult(int[] result) {
-        System.out.println(Arrays.toString(result));
-    }
-    private static void printResult(String[] result) {
-        System.out.println(Arrays.toString(result));
+    public static void printResult(Object obj) {
+        if (obj == null) {
+            System.out.println("null");
+        } else if (obj.getClass().isArray()) {
+            if (obj instanceof int[]) {
+                System.out.println(Arrays.toString((int[]) obj));
+            } else if (obj instanceof short[]) {
+                System.out.println(Arrays.toString((short[]) obj));
+            } else if (obj instanceof long[]) {
+                System.out.println(Arrays.toString((long[]) obj));
+            } else if (obj instanceof double[]) {
+                System.out.println(Arrays.toString((double[]) obj));
+            } else if (obj instanceof float[]) {
+                System.out.println(Arrays.toString((float[]) obj));
+            } else if (obj instanceof boolean[]) {
+                System.out.println(Arrays.toString((boolean[]) obj));
+            } else if (obj instanceof char[]) {
+                System.out.println(Arrays.toString((char[]) obj));
+            } else {
+                System.out.println(Arrays.toString((Object[]) obj));
+            }
+        } else {
+            System.out.println(obj.toString());
+        }
     }
 
 

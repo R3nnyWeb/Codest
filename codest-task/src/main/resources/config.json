@@ -1,23 +1,29 @@
 {
   "typeLanguageMapping": {
     "INTEGER": {
-      "JAVA": {
-        "read": "private static int READ_INTEGER() {\n  int input = scanner.nextInt();\n  scanner.nextLine();\n  return input;\n}",
-        "typeName": "int"
-      },
-      "PYTHON": {
-        "read": "def read_integer():\n    return int(input())",
-        "typeName": "int"
+      "readMethod" : "READ_INTEGER",
+      "typeConfig": {
+        "JAVA": {
+          "read": "private static int READ_INTEGER() {\n  int input = scanner.nextInt();\n  scanner.nextLine();\n  return input;\n}",
+          "typeName": "int"
+        },
+        "PYTHON": {
+          "read": "def read_integer():\n    return int(input())",
+          "typeName": "int"
+        }
       }
     },
     "STRING": {
-      "JAVA": {
-        "read": "private static String READ_STRING() {\n  String input = scanner.nextLine();\n  input = input.replace(\" \", \"\");\n  return input;\n}",
-        "typeName": "String"
-      },
-      "PYTHON": {
-        "read": "def read_string():\n    return input().replace(' ', '')",
-        "typeName": "str"
+      "readMethod" : "READ_STRING",
+      "typeConfig": {
+        "JAVA": {
+          "read": "private static String READ_STRING() {\n  String input = scanner.nextLine();\n  input = input.replace(\" \", \"\");\n  return input;\n}",
+          "typeName": "String"
+        },
+        "PYTHON": {
+          "read": "def read_string():\n    return input().replace(' ', '')",
+          "typeName": "str"
+        }
       }
     }
   }

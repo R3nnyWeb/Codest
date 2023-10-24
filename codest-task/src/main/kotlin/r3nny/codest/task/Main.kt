@@ -1,4 +1,4 @@
-package r3nny.codest
+package r3nny.codest.task
 
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceSource
