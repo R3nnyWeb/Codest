@@ -1,4 +1,4 @@
-package r3nny.codest.task.service.driver.impl
+package r3nny.codest.task.service.driver.internal
 
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.Type
@@ -7,12 +7,10 @@ import r3nny.codest.task.dto.http.CreateTaskRequest
 import r3nny.codest.task.helper.getTypeConfig
 import r3nny.codest.task.helper.getTypeLanguageConfig
 import r3nny.codest.task.helper.readFile
-import r3nny.codest.task.service.driver.DriverGenerator
-import r3nny.codest.task.service.driver.Key
 
 class JavaDriverGenerator(
     private val config: AppConfig,
-) : DriverGenerator {
+) : LanguageDriverGenerator {
     override fun generate(request: CreateTaskRequest): String {
         val source = readFile("Driver.java")
 

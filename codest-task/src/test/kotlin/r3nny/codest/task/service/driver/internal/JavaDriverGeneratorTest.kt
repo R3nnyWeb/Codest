@@ -1,11 +1,10 @@
-package r3nny.codest.task.service.driver.impl
+package r3nny.codest.task.service.driver.internal
 
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import r3nny.codest.task.helper.readFile
-import r3nny.codest.task.service.driver.impl.JavaDriverGenerator
 
 class JavaDriverGeneratorTest: DriverTestContext() {
     val sut = JavaDriverGenerator(config)
