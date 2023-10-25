@@ -2,29 +2,29 @@ package r3nny.codest.task.service.driver
 
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.mockk.coVerify
 import io.mockk.mockkStatic
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.task.service.driver.internal.DriverTestContext
-import r3nny.codest.task.service.driver.internal.JavaDriverGenerator
-import r3nny.codest.task.service.driver.internal.LanguageDriverGenerator
+import r3nny.codest.task.builder.buildGenerator
 
 
-class DriverGeneratorServiceTest : DriverTestContext(){
+class DriverGeneratorServiceTest : DriverTestContext() {
     private val sut = DriverGeneratorService(config)
 
 
     @Test
-    fun `success - generate driver for each language`() = runBlocking{
-        mockkStatic(LanguageDriverGenerator::buildGenerator)
-        coEvery {LanguageDriverGenerator.buildGenerator(Language.JAVA, any())} returns  mockk<JavaDriverGenerator>()
-        val languages = Language.values()
+    fun `success - generate driver for each language`() = runBlocking {
+        mockkStatic(::buildGenerator)
 
         val drivers = sut.generate(request)
 
+        val languages = Language.values()
         drivers.keys shouldBe languages.toSet()
+        coVerify {
+            buildGenerator(Language.JAVA, config)
+            buildGenerator(Language.PYTHON, config)
+        }
+
     }
 }

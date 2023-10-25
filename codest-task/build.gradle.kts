@@ -14,7 +14,6 @@ dependencies {
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
     implementation("com.sksamuel.hoplite:hoplite-json:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.testng:testng:7.1.0")
 
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
     testImplementation("io.kotest:kotest-assertions-json-jvm:5.5.3")

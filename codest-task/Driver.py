@@ -35,8 +35,7 @@ def READ_INTEGER_ARR():
 
 if __name__ == '__main__':
 ${paramsInputSection}
-    print(param1)
-    print("just string")
+
     s = Solution()
     start_time = time.time()
     ret = Solution.${methodName}(s, ${paramList})

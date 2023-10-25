@@ -19,7 +19,7 @@ class JavaDriverGenerator(
             mapOf(
                 Key.METHOD_NAME to request.methodName,
                 Key.RETURN_TYPE to getReturnTypeStr(parameters.outputType),
-                Key.INPUT_PARAMS_READ to getParamsInputSectionStr(parameters.inputTypes),
+                Key.INPUT_PARAMS_READ_SECTION to getParamsInputSectionStr(parameters.inputTypes),
                 Key.INPUT_PARAMS_LIST to getParamsInputListStr(parameters.inputTypes.size),
                 Key.READ_METHODS to getReadMethodsStr(parameters.inputTypes)
             )

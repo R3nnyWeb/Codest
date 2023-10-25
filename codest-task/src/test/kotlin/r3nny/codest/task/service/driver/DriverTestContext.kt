@@ -1,4 +1,4 @@
-package r3nny.codest.task.service.driver.internal
+package r3nny.codest.task.service.driver
 
 import io.mockk.mockkStatic
 import r3nny.codest.shared.domain.Language

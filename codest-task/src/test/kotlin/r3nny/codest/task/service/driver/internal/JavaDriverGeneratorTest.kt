@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import r3nny.codest.task.helper.readFile
+import r3nny.codest.task.service.driver.DriverTestContext
 
 class JavaDriverGeneratorTest: DriverTestContext() {
     val sut = JavaDriverGenerator(config)
