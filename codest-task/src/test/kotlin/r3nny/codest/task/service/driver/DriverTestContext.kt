@@ -39,7 +39,7 @@ abstract class DriverTestContext {
                                 typeName = "int"
                             ),
                             Language.PYTHON to AppConfig.TypeLanguageConfig(
-                                read = "def READ_STRING():\n" +
+                                read = "def READ_INTEGER():\n" +
                                         "    return input()",
                                 typeName = "int"
                             )

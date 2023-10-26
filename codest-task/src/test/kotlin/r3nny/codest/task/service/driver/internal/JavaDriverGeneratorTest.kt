@@ -4,6 +4,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import r3nny.codest.shared.domain.TaskParameters
+import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.helper.readFile
 import r3nny.codest.task.service.driver.DriverTestContext
 
@@ -33,6 +35,43 @@ class JavaDriverGeneratorTest: DriverTestContext() {
     @BeforeEach
     fun setUp() {
         coEvery { readFile("Driver.java") } returns sourceDriver
+    }
+
+    @Test
+    fun `success - not unique types`(){
+        val driver = sut.generate(
+            request.copy(
+                parameters = TaskParameters(
+                    outputType = Type.BOOLEAN,
+                    inputTypes = listOf(Type.INTEGER,Type.INTEGER,Type.INTEGER)
+                )
+            )
+        )
+
+        driver shouldBe """
+        {{solution}}
+        
+        public class Driver{
+            private static final Scanner scanner = new Scanner(System.in);
+            
+            public static void main(String[] args) {
+                var param0 = READ_INTEGER();
+        var param1 = READ_INTEGER();
+        var param2 = READ_INTEGER();
+        
+            
+                boolean result = new Solution().method(param0,param1,param2);
+                
+                scanner.close();
+            }
+            
+            public static void printResult(Object obj){}
+            
+            private static int READ_INTEGER(){ return readInteger; }
+        
+        
+        }
+        """.trimIndent()
     }
 
     //success - not unique types
