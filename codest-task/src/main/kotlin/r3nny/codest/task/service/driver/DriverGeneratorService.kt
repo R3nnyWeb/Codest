@@ -1,9 +1,9 @@
 package r3nny.codest.task.service.driver
 
-import jdk.jshell.spi.ExecutionControl.NotImplementedException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import org.springframework.stereotype.Service
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.task.builder.buildGenerator
 import r3nny.codest.task.config.AppConfig
@@ -11,10 +11,12 @@ import r3nny.codest.task.dto.http.CreateTaskRequest
 import r3nny.codest.task.service.driver.internal.JavaDriverGenerator
 import r3nny.codest.task.service.driver.internal.LanguageDriverGenerator
 
+@Service
 class DriverGeneratorService(
     private val config: AppConfig
 ) {
     //TODO: Подумать как это потестить. Ну типо нахера опять код проверять, если все LanguageDriverGenerator проверены
+
     suspend fun generate(request: CreateTaskRequest): Map<Language, String> {
         val languages = Language.values()
 

@@ -1,5 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.3.40"
+
+    id("org.springframework.boot") version "3.1.5"
+    id("io.spring.dependency-management") version "1.1.3"
+    kotlin("plugin.spring") version "1.8.22"
+    kotlin("plugin.jpa") version "1.8.22"
 }
 
 group = "r3nny.codest.task.service"
@@ -9,16 +14,36 @@ repositories {
     mavenCentral()
 }
 
+fun springVersion() = "3.1.5"
+
+val agent: Configuration by configurations.creating
+
 dependencies {
     implementation(project(":codest-shared"))
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
     implementation("com.sksamuel.hoplite:hoplite-json:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.springframework.boot:spring-boot-starter-web:${springVersion()}")
+//    implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springVersion()}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+implementation(kotlin("stdlib-jdk8"))
+    compileOnly("org.aspectj:aspectjrt:1.9.4")
+    agent("org.aspectj:aspectjweaver:1.9.4")
+
+
+    runtimeOnly("org.springframework.boot:spring-boot-devtools:${springVersion()}")
+
+
 
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
     testImplementation("io.kotest:kotest-assertions-json-jvm:5.5.3")
     testImplementation("io.mockk:mockk:1.13.2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springVersion()}")
+
 }
+
+
 
 tasks {
     java {
@@ -30,22 +55,29 @@ tasks {
     compileKotlin {
         kotlinOptions {
             jvmTarget = "17"
-            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = "17"
-            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
 
-    test {
-        useJUnitPlatform()
-    }
 
 }
+
+
+val test by tasks.getting(Test::class) {
+    useJUnitPlatform()
+
+    doFirst {
+        jvmArgs("-javaagent:${agent.singleFile}")
+    }
+}
+
 
 kotlin {
     jvmToolchain(17)

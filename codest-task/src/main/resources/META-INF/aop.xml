@@ -1,0 +1,13 @@
+<aspectj>
+
+    <aspects>
+        <!-- Aspects -->
+        <aspect name="r3nny.codest.task.aspect.LoggingAspect"/>
+    </aspects>
+
+    <weaver options="-verbose -showWeaveInfo">
+        <include within="r3nny.codest.task.*"/>
+    </weaver>
+
+</aspectj>
+

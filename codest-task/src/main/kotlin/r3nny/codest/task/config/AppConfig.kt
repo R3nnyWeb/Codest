@@ -1,5 +1,8 @@
 package r3nny.codest.task.config
 
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.addResourceSource
+import org.springframework.context.annotation.Bean
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.Type
 

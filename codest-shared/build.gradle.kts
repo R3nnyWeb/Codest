@@ -9,7 +9,14 @@ repositories {
     mavenCentral()
 }
 
+val agent: Configuration by configurations.creating
+
 dependencies {
+    agent("org.aspectj:aspectjweaver:1.9.4")
+    compileOnly("org.aspectj:aspectjrt:1.9.4")
+
+
+
     testImplementation(kotlin("test"))
 }
 

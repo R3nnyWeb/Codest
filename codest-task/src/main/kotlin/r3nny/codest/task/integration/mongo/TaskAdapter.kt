@@ -7,4 +7,8 @@ class TaskAdapter {
     fun createTask(task : TaskDTO) : UUID {
         return UUID.randomUUID()
     }
+
+    fun updateTaskEnabled(taskId: UUID, enabled: Boolean){
+
+    }
 }
