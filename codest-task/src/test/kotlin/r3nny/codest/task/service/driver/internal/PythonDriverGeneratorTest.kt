@@ -4,11 +4,12 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import r3nny.codest.shared.domain.Language
 import r3nny.codest.task.helper.readFile
 import r3nny.codest.task.service.driver.DriverTestContext
 
 class PythonDriverGeneratorTest : DriverTestContext() {
-    val sut = PythonDriverGenerator(config)
+
 
     val sourceDriver = """
 {{solution}}
@@ -22,13 +23,14 @@ if __name__ == '__main__':
     ret = Solution.{{methodName}}(s, {{paramsList}})
     """.trimIndent()
 
-    @BeforeEach
-    fun setUp() {
-        coEvery { readFile("Driver.py") } returns sourceDriver
-    }
+    val sut = PythonDriverGenerator(config.copy(
+        drivers = mapOf(
+            Language.PYTHON to sourceDriver
+        )
+    ))
 
     @Test
-    fun `success - unique types`(){
+    fun `success - unique types`() {
         val driver = sut.generate(request)
 
         driver shouldBe """

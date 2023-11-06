@@ -12,3 +12,6 @@ fun AppConfig.getTypeLanguageConfig(type: Type, language: Language) : AppConfig.
 
 fun AppConfig.getTypeConfig(type: Type): AppConfig.TypeConfig =
     typeLanguageMapping[type] ?: throw ConfigException("Type $type not exist on config")
+
+fun AppConfig.getDriver(language: Language): String =
+    drivers[language] ?: throw ConfigException("Language $language not exist on config")
