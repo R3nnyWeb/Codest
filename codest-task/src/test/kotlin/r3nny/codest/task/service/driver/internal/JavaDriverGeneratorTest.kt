@@ -4,13 +4,14 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.helper.readFile
 import r3nny.codest.task.service.driver.DriverTestContext
 
-class JavaDriverGeneratorTest: DriverTestContext() {
-    val sut = JavaDriverGenerator(config)
+class JavaDriverGeneratorTest : DriverTestContext() {
+
     val sourceDriver = """
         {{solution}}
         
@@ -32,18 +33,22 @@ class JavaDriverGeneratorTest: DriverTestContext() {
         }
     """.trimIndent()
 
-    @BeforeEach
-    fun setUp() {
-        coEvery { readFile("Driver.java") } returns sourceDriver
-    }
+    val sut = JavaDriverGenerator(
+        config.copy(
+            drivers = mapOf(
+                Language.JAVA to sourceDriver
+            )
+        )
+    )
+
 
     @Test
-    fun `success - not unique types`(){
+    fun `success - not unique types`() {
         val driver = sut.generate(
             request.copy(
                 parameters = TaskParameters(
                     outputType = Type.BOOLEAN,
-                    inputTypes = listOf(Type.INTEGER,Type.INTEGER,Type.INTEGER)
+                    inputTypes = listOf(Type.INTEGER, Type.INTEGER, Type.INTEGER)
                 )
             )
         )
@@ -76,7 +81,7 @@ class JavaDriverGeneratorTest: DriverTestContext() {
 
     //success - not unique types
     @Test
-    fun `success - unique types`(){
+    fun `success - unique types`() {
         val driver = sut.generate(request)
 
         driver shouldBe """

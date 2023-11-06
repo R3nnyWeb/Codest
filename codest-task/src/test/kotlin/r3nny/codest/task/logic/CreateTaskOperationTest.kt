@@ -66,6 +66,7 @@ class CreateTaskOperationTest {
                     Language.JAVA to "driver java",
                     Language.PYTHON to "driver python"
                 )
+                enabled shouldBe false
                 description shouldBe request.description
                 parameters shouldBe request.parameters
                 tests shouldBe request.tests

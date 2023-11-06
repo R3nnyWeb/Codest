@@ -14,7 +14,7 @@ import r3nny.codest.task.service.driver.internal.LanguageDriverGenerator
 class DriverGeneratorService(
     private val config: AppConfig
 ) {
-    //TODO: Подумать как это потестить. Ну типо нахера опять код проверять, если все LanguageDriverGenerator проверены
+
     suspend fun generate(request: CreateTaskRequest): Map<Language, String> {
         val languages = Language.values()
 
@@ -30,6 +30,5 @@ class DriverGeneratorService(
         result += deferreds.awaitAll()
         return result
     }
-
 
 }

@@ -1,30 +1,59 @@
 package r3nny.codest.task.service.driver.internal
 
+import com.sksamuel.hoplite.ConfigException
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.domain.Type
+import r3nny.codest.task.config.AppConfig
 import r3nny.codest.task.dto.http.CreateTaskRequest
-import java.util.regex.Pattern
-//todo: подумоть
-interface LanguageDriverGenerator {
-    fun generate(request: CreateTaskRequest): String
+import r3nny.codest.task.helper.getDriver
+import r3nny.codest.task.helper.getTypeLanguageConfig
+import r3nny.codest.task.helper.readFile
+import r3nny.codest.task.helper.replaceKeysWithValues
 
-    fun String.replaceKeysWithValues(replacements: Map<Key, String>): String {
-        val pattern = Pattern.compile("\\{\\{([^}]+)}}")
-        val matcher = pattern.matcher(this)
-        val result = StringBuilder()
-        var previousEnd = 0
+abstract class LanguageDriverGenerator(
+    val language: Language,
+    val config: AppConfig,
+) {
+    fun generate(request: CreateTaskRequest): String {
 
-        while (matcher.find()) {
-            val currentKey = matcher.group(1)
-            val replacement = replacements[Key.fromDriverKey(currentKey)]
-            if (replacement != null) {
-                result.append(this.substring(previousEnd, matcher.start()))
-                result.append(replacement)
-                previousEnd = matcher.end()
+        val source = config.getDriver(language)
+
+        val parameters = request.parameters
+
+        return source.replaceKeysWithValues(
+            mapOf(
+                Key.METHOD_NAME to request.methodName,
+                Key.RETURN_TYPE to getReturnTypeStr(parameters.outputType),
+                Key.INPUT_PARAMS_READ_SECTION to getParamsInputSectionStr(parameters.inputTypes),
+                Key.INPUT_PARAMS_LIST to getParamsInputListStr(parameters.inputTypes.size),
+                Key.READ_METHODS to getReadMethodsStr(parameters.inputTypes)
+            )
+        )
+    }
+
+    protected abstract fun getParamsInputSectionStr(inputTypes: List<Type>): String
+
+    private fun getParamsInputListStr(size: Int): String =
+        with(StringBuilder()) {
+            var params = mutableListOf<String>();
+            for (i in 0 until size) {
+                params += "param$i"
             }
+            append(params.joinToString(separator = ","))
+            toString()
         }
 
-        result.append(this.substring(previousEnd))
-        return result.toString()
-    }
+    private fun getReadMethodsStr(inputTypes: List<Type>): String =
+        with(StringBuilder()) {
+            for (type in inputTypes.distinctBy { it }) {
+                append(config.getTypeLanguageConfig(type, language).read + "\n")
+            }
+            toString()
+        }
+
+    private fun getReturnTypeStr(param: Type): String =
+        config.getTypeLanguageConfig(param, language).typeName
+
 
 }
 

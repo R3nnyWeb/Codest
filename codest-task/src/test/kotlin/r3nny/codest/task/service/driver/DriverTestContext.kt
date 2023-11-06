@@ -29,7 +29,11 @@ abstract class DriverTestContext {
         tests = listOf()
     )
     internal val config = AppConfig(
-        mapOf(
+        drivers = mapOf(
+            Language.JAVA to "someDriver",
+            Language.PYTHON to "someDriver"
+        ),
+        typeLanguageMapping = mapOf(
             Type.INTEGER to
                     AppConfig.TypeConfig(
                         readMethod = "READ_INTEGER",
