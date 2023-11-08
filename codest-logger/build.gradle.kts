@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.20"
+    application
 }
 
 group = "org.r3nny"
@@ -12,8 +13,9 @@ repositories {
 val agent: Configuration by configurations.creating
 
 dependencies {
-    agent("org.aspectj:aspectjweaver:1.9.4")
-    compileOnly("org.aspectj:aspectjrt:1.9.4")
+    agent("org.aspectj:aspectjweaver:1.9.7")
+    compileOnly("org.aspectj:aspectjrt:1.9.7")
+    implementation(project(":codest-shared"))
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
@@ -42,6 +44,14 @@ tasks {
 
 
 }
+
+application{
+    mainClass.set("r3nny.codest.logging.aspect.MainKt")
+
+    applicationDefaultJvmArgs += listOf("-javaagent:${agent.singleFile}")
+}
+
+
 
 val test by tasks.getting(Test::class) {
     useJUnitPlatform()
