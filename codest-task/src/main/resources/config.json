@@ -1,4 +1,8 @@
 {
+  "drivers": {
+    "JAVA" : "someDriver",
+    "PYTHON" : "someDriver"
+  },
   "typeLanguageMapping": {
     "INTEGER": {
       "readMethod" : "READ_INTEGER",

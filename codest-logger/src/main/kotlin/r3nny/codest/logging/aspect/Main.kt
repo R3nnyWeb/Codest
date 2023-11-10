@@ -1,5 +1,15 @@
 package r3nny.codest.logging.aspect
 
-fun main(){
-    Service().someWork()
+class Main {
+
+    @LogMethod
+    fun someWork(work: String) : String{
+        return "Hello $work!"
+    }
+
+
 }
+
+fun main(args: Array<String>) {
+       Main().someWork("work")
+    }

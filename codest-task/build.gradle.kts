@@ -6,9 +6,10 @@ plugins {
     kotlin("plugin.spring") version "1.8.22"
     kotlin("plugin.jpa") version "1.8.22"
 
+    id("io.freefair.aspectj.post-compile-weaving") version "6.6.3"
 }
 
-group = "r3nny.codest.task.service"
+group = "r3nny.codest.task"
 version = "2023.0.1"
 
 repositories {
@@ -21,6 +22,8 @@ fun springVersion() = "3.1.5"
 dependencies {
     implementation(project(":codest-shared"))
 
+        aspect(project(":codest-logger"))
+    implementation(project(":codest-logger"))
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
     implementation("com.sksamuel.hoplite:hoplite-json:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")

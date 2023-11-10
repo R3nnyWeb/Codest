@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.task.config.AppConfig
 
 @SpringBootApplication
@@ -20,6 +21,7 @@ class TaskApplication {
             .loadConfigOrThrow<AppConfig>()
     }
 }
+
 
 fun main(args: Array<String>) {
 
