@@ -3,16 +3,19 @@ package r3nny.codest.task.controller.http
 import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.dto.http.CreateTaskRequest
+import r3nny.codest.task.logic.CreateTaskOperation
 import r3nny.codest.task.service.driver.DriverGeneratorService
+import java.util.UUID
 
 @RestController
 class TaskController(
-    private val service: DriverGeneratorService
+    private val createTaskOperation: CreateTaskOperation
 ) {
 
      private val request = CreateTaskRequest(
@@ -39,11 +42,11 @@ class TaskController(
         )
     )
 
+    @LogMethod
     @GetMapping("/")
     //todo: Reactive?
-    fun test(): String = runBlocking {
-        service.generate(request)
-        return@runBlocking "Test"
+    fun test(): UUID = runBlocking {
+        createTaskOperation.activate(request)
     }
 
 }

@@ -1,34 +1,34 @@
 {
-  "drivers": {
-    "JAVA" : "someDriver",
-    "PYTHON" : "someDriver"
-  },
-  "typeLanguageMapping": {
-    "INTEGER": {
-      "readMethod" : "READ_INTEGER",
-      "typeConfig": {
-        "JAVA": {
-          "read": "private static int READ_INTEGER() {\n  int input = scanner.nextInt();\n  scanner.nextLine();\n  return input;\n}",
-          "typeName": "int"
-        },
-        "PYTHON": {
-          "read": "def read_integer():\n    return int(input())",
-          "typeName": "int"
-        }
-      }
+    "drivers": {
+        "JAVA": "import java.util.*;\nimport java.time.*;\nimport java.math.*;\nimport java.io.*;\n\n${solution}\npublic class Driver {\n    private static final Scanner scanner = new Scanner(System.in);\n\n    public static void main(String[] args) {\n        {{paramsInputSection}}\n        scanner.close();\n\n\n        long startTime = System.nanoTime();\n\n        {{returnType}} result = new Solution().{{methodName}}({{paramsList}});\n\n        long endTime = System.nanoTime();\n        long executionTime = endTime - startTime;\n        Runtime runtime = Runtime.getRuntime();\n        double memory = (double) (runtime.totalMemory() - runtime.freeMemory());\n        printResult(result);\n        System.out.println(executionTime);\n        System.out.println(memory/(1024*1024));\n    }\n    public static void printResult(Object obj) {\n        if (obj == null) {\n            System.out.println(\"null\");\n        } else if (obj.getClass().isArray()) {\n            if (obj instanceof int[]) {\n                System.out.println(Arrays.toString((int[]) obj));\n            } else if (obj instanceof short[]) {\n                System.out.println(Arrays.toString((short[]) obj));\n            } else if (obj instanceof long[]) {\n                System.out.println(Arrays.toString((long[]) obj));\n            } else if (obj instanceof double[]) {\n                System.out.println(Arrays.toString((double[]) obj));\n            } else if (obj instanceof float[]) {\n                System.out.println(Arrays.toString((float[]) obj));\n            } else if (obj instanceof boolean[]) {\n                System.out.println(Arrays.toString((boolean[]) obj));\n            } else if (obj instanceof char[]) {\n                System.out.println(Arrays.toString((char[]) obj));\n            } else {\n                System.out.println(Arrays.toString((Object[]) obj));\n            }\n        } else {\n            System.out.println(obj.toString());\n        }\n    }\n\n\n    private static String READ_STRING(){\n        String input = scanner.nextLine();\n        input = input.replace(\" \", \"\");\n        return input;\n    }\n\n    private static String[] READ_STRING_ARR() {\n        String input = scanner.nextLine();\n        if (input.equals(\"[]\")) {\n            return new String[0];\n         }\n        // Удаляем квадратные скобки и пробелы\n        input = input.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\");\n\n        // Разделяем строку на элементы\n        String[] elements = input.split(\",\");\n\n        return elements;\n    }\n    private static int[] READ_INTEGER_ARR() {\n        String input = scanner.nextLine();\n        if (input.equals(\"[]\")) {\n         return new int[0];\n         }\n\n        // Удаляем квадратные скобки и пробелы\n        input = input.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\");\n\n        // Разделяем строку на элементы\n        String[] elements = input.split(\",\");\n\n        int[] arr = new int[elements.length];\n        for (int i = 0; i < elements.length; i++) {\n            arr[i] = Integer.parseInt(elements[i]);\n        }\n\n        return arr;\n    }\n    private static int READ_INTEGER() {\n        int number = scanner.nextInt();\n        scanner.nextLine();\n        return number;\n    }\n}\n",
+        "PYTHON": "import time\nimport psutil\nfrom typing import List\n\n${solution}\n\ndef READ_STRING():\n    return input()\n\ndef READ_INTEGER():\n    return int(input())\n\ndef READ_STRING_ARR():\n    input_str = input()\n    if input_str == \"[]\":\n        return []\n    input_str = input_str.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\")\n\n    elements = input_str.split(\",\")\n\n    arr = [str(element) for element in elements]\n    return arr\n\ndef READ_INTEGER_ARR():\n    input_str = input()\n    if input_str == \"[]\":\n        return []\n\n    input_str = input_str.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\")\n\n    elements = input_str.split(\",\")\n\n    arr = [int(element) for element in elements]\n    return arr\n\nif __name__ == '__main__':\n${paramsInputSection}\n\n    s = Solution()\n    start_time = time.time()\n    ret = Solution.${methodName}(s, ${paramsList})\n    end_time = time.time()\n    process = psutil.Process()\n    memory_info = memory_info = process.memory_info()\n    used_memory_kb = memory_info.rss / (1024*1024)\n    execution_time = (end_time - start_time) * 1e9\n    print(ret)\n    print(execution_time)\n    print(used_memory_kb)\n\n"
     },
-    "STRING": {
-      "readMethod" : "READ_STRING",
-      "typeConfig": {
-        "JAVA": {
-          "read": "private static String READ_STRING() {\n  String input = scanner.nextLine();\n  input = input.replace(\" \", \"\");\n  return input;\n}",
-          "typeName": "String"
+    "typeLanguageMapping": {
+        "INTEGER": {
+            "readMethod": "READ_INTEGER",
+            "typeConfig": {
+                "JAVA": {
+                    "read": "private static int READ_INTEGER() {\n  int input = scanner.nextInt();\n  scanner.nextLine();\n  return input;\n}",
+                    "typeName": "int"
+                },
+                "PYTHON": {
+                    "read": "def read_integer():\n    return int(input())",
+                    "typeName": "int"
+                }
+            }
         },
-        "PYTHON": {
-          "read": "def read_string():\n    return input().replace(' ', '')",
-          "typeName": "str"
+        "STRING": {
+            "readMethod": "READ_STRING",
+            "typeConfig": {
+                "JAVA": {
+                    "read": "private static String READ_STRING() {\n  String input = scanner.nextLine();\n  input = input.replace(\" \", \"\");\n  return input;\n}",
+                    "typeName": "String"
+                },
+                "PYTHON": {
+                    "read": "def read_string():\n    return input().replace(' ', '')",
+                    "typeName": "str"
+                }
+            }
         }
-      }
     }
-  }
 }

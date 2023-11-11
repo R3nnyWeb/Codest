@@ -17,6 +17,7 @@ class TaskApplication {
     fun getConfig(): AppConfig {
         return ConfigLoaderBuilder.default()
             .addResourceSource("/config.json")
+            .allowUnresolvedSubstitutions()
             .build()
             .loadConfigOrThrow<AppConfig>()
     }
