@@ -22,6 +22,7 @@ fun springVersion() = "3.1.5"
 dependencies {
     implementation(project(":codest-shared"))
 
+
         aspect(project(":codest-logger"))
     implementation(project(":codest-logger"))
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")

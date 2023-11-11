@@ -14,6 +14,9 @@ dependencies {
     implementation("org.aspectj:aspectjrt:1.9.8")
     implementation("org.aspectj:aspectjweaver:1.9.8")
 
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+
+
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     implementation("ch.qos.logback:logback-classic:1.4.8")
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-core

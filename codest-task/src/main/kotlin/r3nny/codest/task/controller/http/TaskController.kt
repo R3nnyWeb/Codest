@@ -21,7 +21,7 @@ class TaskController(
         methodName = "method",
         parameters = TaskParameters(
             inputTypes = listOf(Type.INTEGER, Type.INTEGER),
-            outputType = Type.INTEGER_ARR
+            outputType = Type.INTEGER
         ),
         startCode = mapOf(
             Language.JAVA to "some start java code",

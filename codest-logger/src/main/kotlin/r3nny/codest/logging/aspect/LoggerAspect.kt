@@ -4,9 +4,9 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
-import org.slf4j.Logger
+import org.aspectj.lang.reflect.CodeSignature
 import org.slf4j.LoggerFactory
-import kotlin.coroutines.CoroutineContext
+import org.slf4j.MDC
 
 @Aspect
 class LoggerAspect {
@@ -18,28 +18,71 @@ class LoggerAspect {
 
     @Around("logMethod()")
     fun logMethod(joinPoint: ProceedingJoinPoint): Any {
-        val clazz = joinPoint.signature.declaringType
-        val logger: Logger = LoggerFactory.getLogger(clazz)
-        val methodName = joinPoint.signature.name
 
-        var args = ""
-        for (arg in joinPoint.args.copyOf(joinPoint.args.size - 1)) {
-            args += " $arg"
-        }
-
-        if (!methodName.contains("suspendImpl"))
-            logger.info("method: $methodName > payload = $args")
+        beforeExecution(joinPoint)
 
         return runCatching {
             joinPoint.proceed()
         }.onSuccess {
-            if (it.toString() != "COROUTINE_SUSPENDED")
-                logger.info("method: ${methodName.replace("suspendImpl", "")} < result = $it}")
-
+            logSuccess(it, joinPoint)
         }.onFailure {
-            logger.error("method: $methodName! error = $it")
+            logError(it, joinPoint)
         }.getOrThrow()
 
     }
 
+    private fun logError(error: Throwable, joinPoint: ProceedingJoinPoint) {
+        val codeSignature = joinPoint.signature as CodeSignature
+        val className = getClassName(codeSignature)
+        val methodName = codeSignature.name
+        val log = LoggerFactory.getLogger(codeSignature.declaringType)
+
+        MDC.put("error", error.toString())
+        log.error("${className}.$methodName!")
+        MDC.remove("error")
+
+    }
+
+    private fun getClassName(
+        codeSignature: CodeSignature,
+    ) = codeSignature.declaringTypeName.replace("${codeSignature.declaringType.packageName}.", "")
+
+    private fun logSuccess(result: Any, joinPoint: ProceedingJoinPoint) {
+        val codeSignature = joinPoint.signature as CodeSignature
+        val className = getClassName(codeSignature)
+        val methodName = codeSignature.name
+        val log = LoggerFactory.getLogger(codeSignature.declaringType)
+
+        if (result.toString() != "COROUTINE_SUSPENDED") {
+            MDC.put("result", result.toString())
+            log.info("${className}.${methodName.replace("\$suspendImpl", "")} <")
+            MDC.remove("result")
+        }
+
+    }
+
+    private fun beforeExecution(joinPoint: ProceedingJoinPoint) {
+        val codeSignature = joinPoint.signature as CodeSignature
+        val className = getClassName(codeSignature)
+        val methodName = codeSignature.name
+        val parameterNames = codeSignature.parameterNames.filter { it != "\$completion" }
+        val parameterValues = joinPoint.args
+
+        val parameters = mutableMapOf<String, Any?>()
+        parameterNames.forEachIndexed { index, name ->
+            parameters[name] = parameterValues[index]
+        }
+
+        if (!methodName.contains("suspendImpl")) {
+            val log = LoggerFactory.getLogger(codeSignature.declaringType)
+
+            if (parameters.isNotEmpty())
+                MDC.put("payload", parameters.toString())
+
+            log.info("${className}.$methodName >")
+
+            MDC.remove("payload")
+        }
+
+    }
 }
