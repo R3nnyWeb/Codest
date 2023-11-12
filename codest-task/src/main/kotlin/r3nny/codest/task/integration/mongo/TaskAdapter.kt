@@ -6,13 +6,19 @@ import r3nny.codest.task.dto.dao.TaskDTO
 import java.util.UUID
 
 @Service
-class TaskAdapter {
+class TaskAdapter(
+    private val repo: TaskRepository
+) {
 
     @LogMethod
     fun createTask(task: TaskDTO): UUID {
-        return UUID.randomUUID()
+        return repo.save(task).id
     }
 
+    @LogMethod
+    fun getAll(): List<TaskDTO> = repo.findAll()
+
+    @LogMethod
     fun updateTaskEnabled(taskId: UUID, enabled: Boolean) {
 
     }

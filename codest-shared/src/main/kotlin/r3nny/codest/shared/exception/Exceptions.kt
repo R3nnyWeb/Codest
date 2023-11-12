@@ -1,4 +1,4 @@
 package r3nny.codest.shared.exception
 
-class ValidationException(message: String) : RuntimeException(message)
+class ValidationException(override val message: String) : RuntimeException(message)
 

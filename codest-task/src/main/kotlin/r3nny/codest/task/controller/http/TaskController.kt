@@ -1,52 +1,35 @@
 package r3nny.codest.task.controller.http
 
 import kotlinx.coroutines.runBlocking
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import r3nny.codest.logging.aspect.LogMethod
-import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.TaskParameters
-import r3nny.codest.shared.domain.TestCase
-import r3nny.codest.shared.domain.Type
+import r3nny.codest.task.dto.dao.TaskDTO
 import r3nny.codest.task.dto.http.CreateTaskRequest
+import r3nny.codest.task.integration.mongo.TaskRepository
 import r3nny.codest.task.logic.CreateTaskOperation
-import r3nny.codest.task.service.driver.DriverGeneratorService
 import java.util.UUID
 
 @RestController
+@RequestMapping("/api/v1/tasks")
 class TaskController(
-    private val createTaskOperation: CreateTaskOperation
+    private val createTaskOperation: CreateTaskOperation,
+    private val taskRepository: TaskRepository //Todo: just for test
 ) {
 
-     private val request = CreateTaskRequest(
-        name = "task",
-        description = "some md descr",
-        methodName = "method",
-        parameters = TaskParameters(
-            inputTypes = listOf(Type.INTEGER, Type.INTEGER),
-            outputType = Type.INTEGER
-        ),
-        startCode = mapOf(
-            Language.JAVA to "some start java code",
-            Language.PYTHON to "some start python code"
-        ),
-        tests = listOf(
-            TestCase(
-                inputValues = listOf("2", "2"),
-                outputValue = "[2,2]"
-            ),
-            TestCase(
-                inputValues = listOf("2", "2"),
-                outputValue = "[2,2]"
-            ),
-        )
-    )
+    @GetMapping()
+    fun getAll(): ResponseEntity<List<TaskDTO>> = runBlocking {
+        ResponseEntity(taskRepository.findAll(), HttpStatus.OK)
+    }
 
-    @LogMethod
-    @GetMapping("/")
-    //todo: Reactive?
-    fun test(): UUID = runBlocking {
-        createTaskOperation.activate(request)
+    @PostMapping()
+    fun createTask(@RequestBody request: CreateTaskRequest): ResponseEntity<UUID> = runBlocking {
+       ResponseEntity(createTaskOperation.activate(request), HttpStatus.CREATED)
     }
 
 }
