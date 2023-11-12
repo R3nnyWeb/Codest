@@ -2,6 +2,7 @@ package r3nny.codest.task.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.common.runBlocking
+import io.kotest.matchers.shouldBe
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.builder.ResponseSpecBuilder
 import io.restassured.config.LogConfig
@@ -17,6 +18,8 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.dto.ErrorDto
 import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
 import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
@@ -44,21 +47,42 @@ class TaskTest : TestBase() {
         taskRepository.deleteAll()
     }
 
-    @Autowired
-    private lateinit var mapper: ObjectMapper
+//    @Test
+//    fun `success flow - empty tests`(): Unit = runBlocking {
+//        Given {
+//            spec(requestSpec)
+//        }
+//        When {
+//            get(url())
+//        } Then {
+//            spec(responseSpec)
+//            statusCode(200)
+//            body("size()", equalTo(0))
+//        }
+//    }
 
     @Test
-    fun `success flow - empty tests`(): Unit = runBlocking {
-        Given {
+    fun `success flow`(): Unit = runBlocking {
+       Given {
             spec(requestSpec)
-        }
-        When {
-            get(url())
+        } When {
+            body(request)
+            post(url())
         } Then {
             spec(responseSpec)
-            statusCode(200)
-            body("size()", equalTo(0))
+            statusCode(201)
         }
+
+        val savedTask = taskRepository.findAll().last()
+        with(savedTask){
+            name shouldBe request.name
+            description shouldBe request.description
+            enabled shouldBe false
+            parameters shouldBe request.parameters
+            tests shouldBe request.tests
+            drivers.keys shouldBe Language.values().toSet()
+        }
+
     }
 
     @Test
@@ -72,8 +96,9 @@ class TaskTest : TestBase() {
             } Then {
                 statusCode(400)
                 spec(responseSpec)
-                body("errorMessage", equalTo("Количество тестов меньше минимального")) //todo: Exceptions codes
-                body("statusCode", equalTo(400))
+                val error = extractAs<ErrorDto>()
+                error.statusCode shouldBe 400
+                error.errorMessage shouldBe "Количество тестов меньше минимального"//todo: Exceptions codes
             }
 
     }

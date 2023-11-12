@@ -16,7 +16,9 @@ class TaskAdapter(
     }
 
     @LogMethod
-    fun getAll(): List<TaskDTO> = repo.findAll()
+    fun getById(taskId: UUID): TaskDTO? {
+        return repo.findById(taskId).orElse(null)
+    }
 
     @LogMethod
     fun updateTaskEnabled(taskId: UUID, enabled: Boolean) {
