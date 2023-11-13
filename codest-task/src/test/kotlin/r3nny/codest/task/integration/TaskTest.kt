@@ -61,9 +61,10 @@ class TaskTest : TestBase() {
 //        }
 //    }
 
+
     @Test
     fun `success flow`(): Unit = runBlocking {
-       Given {
+        Given {
             spec(requestSpec)
         } When {
             body(request)
@@ -74,7 +75,7 @@ class TaskTest : TestBase() {
         }
 
         val savedTask = taskRepository.findAll().last()
-        with(savedTask){
+        with(savedTask) {
             name shouldBe request.name
             description shouldBe request.description
             enabled shouldBe false
@@ -86,20 +87,34 @@ class TaskTest : TestBase() {
     }
 
     @Test
+    fun `error flow build in validation error`(): Unit = runBlocking {
+        Given {
+            spec(requestSpec)
+        } When {
+            body("{}")
+            post(url())
+        } Then {
+            statusCode(400)
+            val error = extractAs<ErrorDto>()
+            error.statusCode shouldBe 400
+        }
+    }
+
+    @Test
     fun `error flow - validation error`(): Unit = runBlocking {
         val emptyTests = request.copy(tests = emptyList())
-            Given {
-                spec(requestSpec)
-            } When {
-                body(emptyTests)
-                post(url())
-            } Then {
-                statusCode(400)
-                spec(responseSpec)
-                val error = extractAs<ErrorDto>()
-                error.statusCode shouldBe 400
-                error.errorMessage shouldBe "Количество тестов меньше минимального"//todo: Exceptions codes
-            }
+        Given {
+            spec(requestSpec)
+        } When {
+            body(emptyTests)
+            post(url())
+        } Then {
+            statusCode(400)
+            spec(responseSpec)
+            val error = extractAs<ErrorDto>()
+            error.statusCode shouldBe 400
+            error.errorMessage shouldBe "Количество тестов меньше минимального"//todo: Exceptions codes
+        }
 
     }
 
