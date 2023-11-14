@@ -17,6 +17,7 @@ import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.dto.dao.TaskDTO
 import r3nny.codest.task.dto.http.CreateTaskRequest
 import r3nny.codest.task.integration.mongo.TaskRepository
+import r3nny.codest.task.logic.CreateTaskOperation
 import java.util.*
 
 inline fun <reified T> ValidatableResponse.extractAs(): T {
@@ -35,6 +36,8 @@ abstract class TestBase {
 
     @Autowired
     internal lateinit var taskRepository: TaskRepository
+    @Autowired
+    internal lateinit var createTaskOperation: CreateTaskOperation
 
     internal fun url() = "http://localhost:$port/api/v1/tasks"
 

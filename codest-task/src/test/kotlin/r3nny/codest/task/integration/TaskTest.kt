@@ -1,6 +1,5 @@
 package r3nny.codest.task.integration
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe
 import io.restassured.builder.RequestSpecBuilder
@@ -14,12 +13,13 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.specification.RequestSpecification
 import io.restassured.specification.ResponseSpecification
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.dto.ErrorDto
+import r3nny.codest.shared.dto.TaskInternalDTO
+import r3nny.codest.task.config.AppConfig
 import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
 import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
@@ -42,6 +42,7 @@ class TaskTest : TestBase() {
 
     }
 
+
     @BeforeEach
     fun beforeEach() {
         taskRepository.deleteAll()
@@ -63,7 +64,7 @@ class TaskTest : TestBase() {
 
 
     @Test
-    fun `success flow`(): Unit = runBlocking {
+    fun `success flow create task`(): Unit = runBlocking {
         Given {
             spec(requestSpec)
         } When {
@@ -83,6 +84,29 @@ class TaskTest : TestBase() {
             tests shouldBe request.tests
             drivers.keys shouldBe Language.values().toSet()
         }
+
+    }
+
+    @Test
+    fun `success flow get task internal`(): Unit = runBlocking {
+        val id = createTaskOperation.activate(request)
+        Given {
+            spec(requestSpec)
+        } When {
+            queryParam("language", Language.JAVA)
+            get("${url()}/$id")
+        } Then {
+            spec(responseSpec)
+            statusCode(200)
+            val result = extractAs<TaskInternalDTO>()
+            val savedTask = taskRepository.findAll().last()
+            with(result) {
+                taskId shouldBe id
+                tests shouldBe savedTask.tests
+                driver shouldBe savedTask.drivers[Language.JAVA]
+            }
+        }
+
 
     }
 

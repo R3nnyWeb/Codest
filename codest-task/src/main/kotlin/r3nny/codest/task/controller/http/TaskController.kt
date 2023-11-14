@@ -22,7 +22,7 @@ class TaskController(
 ) {
 
     @GetMapping
-    fun getAll(): List<TaskDTO> {
+     fun getAll(): List<TaskDTO> {
         return repository.findAll()
     }
 

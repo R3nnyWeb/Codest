@@ -3,6 +3,7 @@ package r3nny.codest.task.exceptions
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import r3nny.codest.logging.aspect.LogMethod
@@ -23,7 +24,7 @@ class RestExceptionHandler {
     }
 
     @LogMethod
-    @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ExceptionHandler(HttpMessageNotReadableException::class, MissingServletRequestParameterException::class)
     fun handleInternalValid(e: HttpMessageNotReadableException): ResponseEntity<ErrorDto> =
         ResponseEntity(ErrorDto(e.localizedMessage, HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST)
 
