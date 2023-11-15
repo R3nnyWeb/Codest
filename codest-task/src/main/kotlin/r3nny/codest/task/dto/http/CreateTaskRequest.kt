@@ -9,6 +9,7 @@ data class CreateTaskRequest(
     val description: String,
     val methodName: String,
     val parameters: TaskParameters,
+    val languages: Set<Language> = Language.values().toSet(),
     val startCode: Map<Language, String>,
     val tests: List<TestCase>,
 )

@@ -34,6 +34,7 @@ class CreateTaskOperationTest: OperationTestBase() {
                 enabled shouldBe false
                 description shouldBe request.description
                 parameters shouldBe request.parameters
+                startCode shouldBe request.startCode
                 tests shouldBe request.tests
             }
         }

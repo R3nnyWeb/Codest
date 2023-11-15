@@ -14,13 +14,12 @@ class DriverGeneratorServiceTest : DriverTestContext() {
 
 
     @Test
-    fun `success - generate driver for each language`() = runBlocking {
+    fun `success - generate driver for all languages from request`() = runBlocking {
         mockkStatic(::buildGenerator)
 
         val drivers = sut.generate(request)
 
-        val languages = Language.values()
-        drivers.keys shouldBe languages.toSet()
+        drivers.keys shouldBe request.languages.toSet()
         coVerify {
             buildGenerator(Language.JAVA, config)
             buildGenerator(Language.PYTHON, config)

@@ -1,7 +1,9 @@
 package r3nny.codest.task.service.driver.internal
 
 import com.sksamuel.hoplite.ConfigException
+import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.config.AppConfig
 import r3nny.codest.task.dto.http.CreateTaskRequest
@@ -14,15 +16,15 @@ abstract class LanguageDriverGenerator(
     val language: Language,
     val config: AppConfig,
 ) {
-    fun generate(request: CreateTaskRequest): String {
+
+    @LogMethod
+    fun generate(methodName: String, parameters: TaskParameters): String {
 
         val source = config.getDriver(language)
 
-        val parameters = request.parameters
-
         return source.replaceKeysWithValues(
             mapOf(
-                Key.METHOD_NAME to request.methodName,
+                Key.METHOD_NAME to methodName,
                 Key.RETURN_TYPE to getReturnTypeStr(parameters.outputType),
                 Key.INPUT_PARAMS_READ_SECTION to getParamsInputSectionStr(parameters.inputTypes),
                 Key.INPUT_PARAMS_LIST to getParamsInputListStr(parameters.inputTypes.size),

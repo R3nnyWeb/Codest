@@ -74,6 +74,7 @@ abstract class TestBase {
         ),
         description = request.description,
         parameters = request.parameters,
+        startCode = request.startCode,
         tests = request.tests
     )
 

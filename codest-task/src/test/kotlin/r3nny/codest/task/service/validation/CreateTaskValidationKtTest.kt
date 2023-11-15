@@ -1,11 +1,7 @@
 package r3nny.codest.task.service.validation
 
-import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.throwables.shouldThrowAny
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
@@ -23,6 +19,7 @@ class CreateTaskValidationKtTest() {
             inputTypes = listOf(Type.INTEGER, Type.INTEGER),
             outputType = Type.INTEGER_ARR
         ),
+        languages = Language.values().toSet(),
         startCode = mapOf(
             Language.JAVA to "some start java code",
             Language.PYTHON to "some start python code"

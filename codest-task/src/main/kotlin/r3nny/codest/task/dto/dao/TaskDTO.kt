@@ -14,6 +14,7 @@ data class TaskDTO(
     val name: String,
     val enabled: Boolean = false,
     val drivers: Map<Language, String>,
+    val startCode: Map<Language, String>,
     val description: String,
     val parameters: TaskParameters,
     val tests: List<TestCase>,

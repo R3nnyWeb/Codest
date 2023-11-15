@@ -21,6 +21,11 @@ class TaskAdapter(
     }
 
     @LogMethod
+    fun update(task: TaskDTO) {
+        repo
+    }
+
+    @LogMethod
     fun updateTaskEnabled(taskId: UUID, enabled: Boolean) {
 
     }

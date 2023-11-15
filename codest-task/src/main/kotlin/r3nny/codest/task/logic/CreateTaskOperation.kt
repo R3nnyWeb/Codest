@@ -25,6 +25,7 @@ class CreateTaskOperation(
             drivers = driverGenerator.generate(this),
             description = description,
             parameters = parameters,
+            startCode = startCode,
             tests = tests
         )
 
