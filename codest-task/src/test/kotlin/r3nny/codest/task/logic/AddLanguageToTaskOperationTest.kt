@@ -3,7 +3,10 @@ package r3nny.codest.task.logic
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.common.runBlocking
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.slot
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.task.dto.dao.TaskDTO
@@ -19,7 +22,9 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
     @Test
     fun `success flow - add new language and generate drivers`() {
         runBlocking {
-            coEvery { taskAdapter.getById(id) } returns saved
+            val savedWithOneLanguage = getTaskWithOnlyLanguage(saved, Language.PYTHON)
+            val slot = slot<TaskDTO>()
+            coEvery { taskAdapter.getById(id) } returns savedWithOneLanguage
             coEvery {
                 driverGenerator.generate(
                     methodName = request.methodName,
@@ -29,6 +34,13 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
             } returns mapOf(addLanguageRequest.language to "driver")
 
             operation.activate(id, addLanguageRequest)
+
+
+            coVerify { taskAdapter.update(capture(slot)) }
+            val updated = slot.captured
+            with(updated){
+                drivers.keys shouldBe
+            }
 
 
         }
