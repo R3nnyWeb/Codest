@@ -8,6 +8,7 @@ import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.shared.exception.ValidationException
+import r3nny.codest.task.dto.dao.Level
 import r3nny.codest.task.dto.http.CreateTaskRequest
 
 class CreateTaskValidationKtTest() {
@@ -24,6 +25,7 @@ class CreateTaskValidationKtTest() {
             Language.JAVA to "some start java code",
             Language.PYTHON to "some start python code"
         ),
+        level = Level.EASY,
         tests = listOf(
             TestCase(
                 inputValues = listOf("2", "2"),

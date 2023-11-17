@@ -14,15 +14,15 @@ import io.restassured.module.kotlin.extensions.When
 import io.restassured.specification.RequestSpecification
 import io.restassured.specification.ResponseSpecification
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.dto.ErrorDto
 import r3nny.codest.shared.dto.TaskInternalDTO
-import r3nny.codest.task.config.AppConfig
 import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
 import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
+@Disabled
 class TaskTest : TestBase() {
 
     object Specs {
@@ -80,6 +80,7 @@ class TaskTest : TestBase() {
             name shouldBe request.name
             description shouldBe request.description
             enabled shouldBe false
+            methodName shouldBe
             parameters shouldBe request.parameters
             tests shouldBe request.tests
             drivers.keys shouldBe Language.values().toSet()

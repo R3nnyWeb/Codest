@@ -1,6 +1,5 @@
 package r3nny.codest.task.logic
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe
@@ -15,7 +14,7 @@ import java.util.UUID
 
 class AddLanguageToTaskOperationTest : OperationTestBase() {
 
-    private val operation = AddLanguageToTaskOperation(driverGenerator)
+    private val operation = AddLanguageToTaskOperation(driverGenerator, taskAdapter)
     private val id = UUID.randomUUID()
     private val addLanguageRequest = AddLanguageToTaskRequest(Language.JAVA, "some java")
 
@@ -39,7 +38,8 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
             coVerify { taskAdapter.update(capture(slot)) }
             val updated = slot.captured
             with(updated){
-                drivers.keys shouldBe
+                enabled shouldBe false
+                drivers shouldBe savedWithOneLanguage.drivers + mapOf(addLanguageRequest.language to "driver")
             }
 
 
@@ -62,7 +62,8 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
     private fun getTaskWithOnlyLanguage(task: TaskDTO, language: Language) =
         task.copy(
             drivers = mapOf(language to "driver"),
-            startCode = mapOf(language to "start code")
+            startCode = mapOf(language to "start code"),
+            enabled = true
         )
 
 }
