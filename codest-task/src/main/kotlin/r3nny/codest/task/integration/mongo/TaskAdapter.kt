@@ -36,7 +36,7 @@ class TaskAdapter(
             query.level,
             query.enabled,
             query.name,
-            PageRequest.of(offset, limit) as Pageable
+            PageRequest.of(offset, limit)
         ).map(TaskDTO::toFrontend)
     }
 

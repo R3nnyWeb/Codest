@@ -22,7 +22,7 @@ import r3nny.codest.shared.dto.TaskInternalDTO
 import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
 import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
-@Disabled
+
 class TaskTest : TestBase() {
 
     object Specs {
@@ -80,7 +80,7 @@ class TaskTest : TestBase() {
             name shouldBe request.name
             description shouldBe request.description
             enabled shouldBe false
-            methodName shouldBe
+            methodName shouldBe request.methodName
             parameters shouldBe request.parameters
             tests shouldBe request.tests
             drivers.keys shouldBe Language.values().toSet()

@@ -2,6 +2,7 @@ package r3nny.codest.task.logic
 
 import org.springframework.stereotype.Service
 import r3nny.codest.logging.aspect.LogMethod
+import r3nny.codest.task.dto.dao.TaskDTO
 import r3nny.codest.task.dto.http.AddLanguageToTaskRequest
 import r3nny.codest.task.integration.mongo.TaskAdapter
 import r3nny.codest.task.service.driver.DriverGeneratorService
@@ -13,9 +14,11 @@ class AddLanguageToTaskOperation(
     private val taskAdapter: TaskAdapter
 ) {
 
+
     @LogMethod
     suspend fun activate(taskId: UUID, request: AddLanguageToTaskRequest) {
-        val task = taskAdapter.getById(taskId) ?: throw RuntimeException("Не найдено")
+        val task : TaskDTO = taskAdapter.getById(taskId) ?: throw RuntimeException("Не найдено")
+
         if (task.drivers.containsKey(request.language))
             throw RuntimeException("Язык есть, епта")
 

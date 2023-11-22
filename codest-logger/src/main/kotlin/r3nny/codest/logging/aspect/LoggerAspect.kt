@@ -82,7 +82,7 @@ class LoggerAspect {
             log.info("${className}.$methodName >")
 
             MDC.remove("payload")
-        }
+       }
 
     }
 }
