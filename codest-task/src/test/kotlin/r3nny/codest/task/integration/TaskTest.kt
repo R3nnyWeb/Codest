@@ -16,9 +16,11 @@ import io.restassured.specification.ResponseSpecification
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.Page
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.dto.ErrorDto
 import r3nny.codest.shared.dto.TaskInternalDTO
+import r3nny.codest.task.dto.http.TaskListFrontend
 import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
 import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
@@ -48,7 +50,7 @@ class TaskTest : TestBase() {
         taskRepository.deleteAll()
     }
 
-//    @Test
+    //    @Test
 //    fun `success flow - empty tests`(): Unit = runBlocking {
 //        Given {
 //            spec(requestSpec)
@@ -61,7 +63,21 @@ class TaskTest : TestBase() {
 //            body("size()", equalTo(0))
 //        }
 //    }
+    @Test
+    fun `success flow get taskList disabled`(): Unit = runBlocking {
+        val id = createTaskOperation.activate(request);
 
+        Given {
+            spec(requestSpec)
+        } When {
+            get(url())
+        } Then {
+            spec(responseSpec)
+            statusCode(200)
+            val result = extractAs<Page<TaskListFrontend>>()
+            result.size shouldBe  0
+        }
+    }
 
     @Test
     fun `success flow create task`(): Unit = runBlocking {
@@ -107,8 +123,6 @@ class TaskTest : TestBase() {
                 driver shouldBe savedTask.drivers[Language.JAVA]
             }
         }
-
-
     }
 
     @Test

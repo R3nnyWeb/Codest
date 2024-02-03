@@ -30,6 +30,7 @@ class TaskAdapter(
         repo.save(task)
     }
 
+    //todo: criteria api
     @LogMethod
     fun getListWithQuery(query: TaskSearchQuery, offset: Int, limit: Int): Page<TaskListFrontend> {
         return repo.findByLevelAndEnabledAndNameContaining(

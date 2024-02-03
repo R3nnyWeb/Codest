@@ -8,7 +8,7 @@ import r3nny.codest.task.integration.mongo.TaskAdapter
 import r3nny.codest.task.integration.mongo.criteria.TaskSearchQuery
 
 @Service
-class GetEnabledTasksListOperation(
+class GetTasksListFrontendOperation(
     private val adapter: TaskAdapter
 ) {
 
