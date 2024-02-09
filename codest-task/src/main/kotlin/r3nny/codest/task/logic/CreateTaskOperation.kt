@@ -2,6 +2,7 @@ package r3nny.codest.task.logic
 
 import org.springframework.stereotype.Service
 import r3nny.codest.logging.aspect.LogMethod
+import r3nny.codest.task.dto.dao.Level
 import r3nny.codest.task.dto.dao.TaskDTO
 import r3nny.codest.task.dto.http.CreateTaskRequest
 import r3nny.codest.task.integration.mongo.TaskAdapter
@@ -24,7 +25,10 @@ class CreateTaskOperation(
             name = name,
             drivers = driverGenerator.generate(this),
             description = description,
+            methodName = methodName,
             parameters = parameters,
+            startCode = startCode,
+            level = Level.EASY,
             tests = tests
         )
 

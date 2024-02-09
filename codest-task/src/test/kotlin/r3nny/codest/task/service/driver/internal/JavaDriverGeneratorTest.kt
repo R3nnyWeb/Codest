@@ -45,11 +45,10 @@ class JavaDriverGeneratorTest : DriverTestContext() {
     @Test
     fun `success - not unique types`() {
         val driver = sut.generate(
-            request.copy(
-                parameters = TaskParameters(
-                    outputType = Type.BOOLEAN,
-                    inputTypes = listOf(Type.INTEGER, Type.INTEGER, Type.INTEGER)
-                )
+            methodName = request.methodName,
+            parameters = TaskParameters(
+                outputType = Type.BOOLEAN,
+                inputTypes = listOf(Type.INTEGER, Type.INTEGER, Type.INTEGER)
             )
         )
 
@@ -82,7 +81,7 @@ class JavaDriverGeneratorTest : DriverTestContext() {
     //success - not unique types
     @Test
     fun `success - unique types`() {
-        val driver = sut.generate(request)
+        val driver = sut.generate(request.methodName, request.parameters)
 
         driver shouldBe """
         {{solution}}

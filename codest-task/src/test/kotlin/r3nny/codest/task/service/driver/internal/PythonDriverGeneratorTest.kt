@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     @Test
     fun `success - unique types`() {
-        val driver = sut.generate(request)
+        val driver = sut.generate(request.methodName, request.parameters)
 
         driver shouldBe """
 {{solution}}

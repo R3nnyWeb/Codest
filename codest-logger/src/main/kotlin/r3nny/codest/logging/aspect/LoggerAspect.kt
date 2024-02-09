@@ -38,7 +38,7 @@ class LoggerAspect {
         val log = LoggerFactory.getLogger(codeSignature.declaringType)
 
         MDC.put("error", error.toString())
-        log.error("${className}.$methodName!")
+        log.error("${className}.${methodName.replace("\$suspendImpl", "")}!")
         MDC.remove("error")
 
     }
@@ -82,7 +82,7 @@ class LoggerAspect {
             log.info("${className}.$methodName >")
 
             MDC.remove("payload")
-        }
+       }
 
     }
 }

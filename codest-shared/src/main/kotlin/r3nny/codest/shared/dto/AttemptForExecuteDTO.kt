@@ -12,6 +12,4 @@ data class AttemptForExecuteDTO(
     val methodName: String,
     val parameters: TaskParameters,
     val testCases: Set<TestCase>,
-    val timeLimitMs: Long,
-    val memoryLimitMb: Long,
 )

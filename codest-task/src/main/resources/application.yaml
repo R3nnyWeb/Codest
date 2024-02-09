@@ -10,4 +10,4 @@ spring:
         host: ${MONGO_HOST:m.r3nny.ru}
         authentication-database: ${MONGO_AUTHENTICATION_DATABASE:admin}
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8082}
