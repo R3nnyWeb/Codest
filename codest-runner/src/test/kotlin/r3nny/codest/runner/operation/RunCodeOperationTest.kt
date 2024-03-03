@@ -43,7 +43,7 @@ class RunCodeOperationTest {
 
     @Test
     fun error_while_creating_file(): Unit = runBlocking {
-        coEvery { fileService.save(event.code, "${id}.${languageSettings[event.language]!!.extension}") }throws
+        coEvery { fileService.save(event.code, "${id}.${languageSettings[event.language]!!.codeExtension}") }throws
                 InvocationException(InvocationExceptionCode.FILE_WRITE_ERROR)
 
         shouldThrow<InvocationException> {

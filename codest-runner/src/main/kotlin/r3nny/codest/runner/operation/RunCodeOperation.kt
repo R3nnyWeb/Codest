@@ -18,14 +18,32 @@ class RunCodeOperation(
 
     @LogMethod
     suspend fun activate(event: RunCodeRequestEvent, id: UUID) {
-        val fileName = "$id.${languageSettings.getValue(event.language).extension}"
+        val fileName = "$id.${languageSettings.getValue(event.language).codeExtension}"
+        saveCode(event.code, fileName, id)
+
+        val settings = languageSettings[event.language] ?: throw Exception("Language not found")
+
+        settings.commandToCompile?.let {
+            val command = "$it ${settings.argsToCompile} $fileName"
+
+        }
+
+    }
+
+    private suspend fun saveCode(
+        code: String,
+        fileName: String,
+        id: UUID,
+    ) {
         runCatching {
-            codeFileService.save(event.code, fileName)
+            codeFileService.save(code, fileName)
         }.onFailure {
-            kafkaAdapter.sendCodeRunResponse(id, RunCodeResponseEvent(
-                errorType = CoreRunnerErrorType.INTERNAL_ERROR,
-                output = listOf(it.message ?: "internal error")
-            ))
+            kafkaAdapter.sendCodeRunResponse(
+                id, RunCodeResponseEvent(
+                    errorType = CoreRunnerErrorType.INTERNAL_ERROR,
+                    output = listOf(it.message ?: "internal error")
+                )
+            )
         }.getOrThrow()
     }
 

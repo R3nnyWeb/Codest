@@ -15,5 +15,6 @@ data class LanguageSettings(
     val argsToCompile: String?,
     val commandToRun: String,
     val argsToRun: String?,
-    val extension: String
+    val codeExtension: String,
+    val executeExtension: String,
 )

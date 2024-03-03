@@ -2,7 +2,6 @@ package r3nny.codest.runner.service
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -11,8 +10,8 @@ import org.junit.jupiter.api.Test
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.shared.exception.InvocationException
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
-
 
 class ProcessRunnerTest {
 
@@ -22,10 +21,10 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 0
 
-        val (output, errorOutput) = ProcessRunner(3).execute("command")
+        val (output, errorOutput) = ProcessRunner.execute("command", 3)
 
         errorOutput.isEmpty() shouldBe true
-        output shouldBe "success"
+        output shouldBe listOf("success")
     }
 
     @Test
@@ -33,11 +32,14 @@ class ProcessRunnerTest {
         every { process.inputStream } returns ByteArrayInputStream("success".toByteArray())
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 0
+        val outputStream = ByteArrayOutputStream()
+        every { process.outputStream } returns outputStream
 
-        val (output, errorOutput) = ProcessRunner(3).execute("command")
+        val (output, errorOutput) = ProcessRunner.execute("command", 3, listOf("input", "some"))
 
+        outputStream.toString() shouldBe "input\r\nsome\r\n"
         errorOutput.isEmpty() shouldBe true
-        output shouldBe "success"
+        output shouldBe listOf("success")
     }
 
     @Test
@@ -46,10 +48,10 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 1
 
-        val (output, errorOutput) = ProcessRunner(3).execute("command")
+        val (output, errorOutput) = ProcessRunner.execute("command", 3)
 
         output.isEmpty() shouldBe true
-        errorOutput shouldBe "error"
+        errorOutput shouldBe listOf("error")
     }
 
     @Test
@@ -57,7 +59,7 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns false
 
         val code = shouldThrow<InvocationException> {
-            ProcessRunner(3L).execute("command")
+            ProcessRunner.execute("command", 3)
         }.exceptionCode
 
         code shouldBe InvocationExceptionCode.TIMEOUT_EXCEPTION
@@ -71,8 +73,8 @@ class ProcessRunnerTest {
         @JvmStatic
         fun beforeAll() {
             mockkObject(ProcessRunner.Companion)
-            coEvery { ProcessRunner.Companion.processBuilder(listOf("command")) } returns pb
-            coEvery { pb.start() } returns process
+            every { ProcessRunner.Companion.processBuilder(listOf("command")) } returns pb
+            every { pb.start() } returns process
         }
     }
 
