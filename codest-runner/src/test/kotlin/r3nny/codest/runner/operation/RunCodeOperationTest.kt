@@ -1,11 +1,11 @@
 package r3nny.codest.runner.operation
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import org.junit.Test
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
 import r3nny.codest.runner.config.LanguageSettings
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.runner.integration.KafkaClientAdapter
@@ -34,7 +34,7 @@ class RunCodeOperationTest {
             "java"
         )
     )
-    private val kafkaAdapter = mockk<KafkaClientAdapter>()
+    private val kafkaAdapter = mockk<KafkaClientAdapter>(relaxUnitFun = true)
     private val operation = RunCodeOperation(
         codeFileService = fileService,
         languageSettings = languageSettings,
@@ -43,11 +43,11 @@ class RunCodeOperationTest {
 
     @Test
     fun error_while_creating_file(): Unit = runBlocking {
-        coEvery { fileService.save(event.code, "${event.code}.${languageSettings[event.language]!!.extension}") }throws
+        coEvery { fileService.save(event.code, "${id}.${languageSettings[event.language]!!.extension}") }throws
                 InvocationException(InvocationExceptionCode.FILE_WRITE_ERROR)
 
         shouldThrow<InvocationException> {
-            operation.activate(event, UUID.randomUUID())
+            operation.activate(event, id)
         }
 
         coVerify {

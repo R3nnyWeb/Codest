@@ -26,7 +26,7 @@ class RunCodeOperation(
                 errorType = CoreRunnerErrorType.INTERNAL_ERROR,
                 output = listOf(it.message ?: "internal error")
             ))
-        }
+        }.getOrThrow()
     }
 
 }

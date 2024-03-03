@@ -9,6 +9,6 @@ enum class InvocationExceptionCode(
 ) : ExceptionCode<InvocationException> {
 
     FILE_WRITE_ERROR("FileWriteError", "Ошибка при сохранении файла"),
-    FILE_READ_ERROR("FileReadError", "Ошибка при чтении файла")
-
+    FILE_READ_ERROR("FileReadError", "Ошибка при чтении файла"),
+    TIMEOUT_EXCEPTION("TimeoutException", "Превышено время выполнения"),
 }
