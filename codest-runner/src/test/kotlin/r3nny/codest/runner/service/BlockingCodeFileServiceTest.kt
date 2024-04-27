@@ -12,34 +12,21 @@ import r3nny.codest.shared.exception.InvocationException
 class BlockingCodeFileServiceTest {
     private val sut = BlockingCodeFileService()
     private val code = "SomeCode"
-    private val fileName = "someRandom"
-
-    @AfterEach
-    fun clean() = runBlocking {
-        sut.delete(fileName)
-    }
+    private val extention = "java"
 
     @Test
     fun save_file_then_read(): Unit = runBlocking {
-        sut.save(code, fileName)
+        val path = sut.save(code, extention)
 
-        sut.read(fileName) shouldContain code
-    }
+        sut.read(path) shouldContain code
 
-    @Test
-    fun save_exists_file(): Unit = runBlocking {
-        sut.save(code, fileName)
-        val code = shouldThrow<InvocationException> {
-            sut.save(code, fileName)
-        }.exceptionCode
-
-        code shouldBe InvocationExceptionCode.FILE_WRITE_ERROR
+        sut.delete(path)
     }
 
     @Test
     fun read_file_not_exists() = runBlocking {
         val code = shouldThrow<InvocationException> {
-            sut.read(fileName)
+            sut.read(extention)
         }.exceptionCode
 
         code shouldBe InvocationExceptionCode.FILE_READ_ERROR
@@ -47,16 +34,20 @@ class BlockingCodeFileServiceTest {
 
     @Test
     fun delete_file_not_exists() = runBlocking {
-        sut.delete(fileName)
+        val code = shouldThrow<InvocationException> {
+            sut.delete("some")
+        }.exceptionCode
+
+        code shouldBe InvocationExceptionCode.FILE_DELETE_ERROR
     }
 
     @Test
     fun delete_file_exists(): Unit = runBlocking {
-        sut.save(code, fileName)
+        val path = sut.save(code, extention)
 
-        sut.delete(fileName)
+        sut.delete(path)
 
-        shouldThrow<InvocationException> { sut.read(fileName) }
+        shouldThrow<InvocationException> { sut.read(path) }
     }
 
 }

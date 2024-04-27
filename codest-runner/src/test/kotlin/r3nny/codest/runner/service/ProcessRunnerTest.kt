@@ -14,16 +14,19 @@ import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
 class ProcessRunnerTest {
+    private val processRunner: ProcessRunner = ProcessRunner()
 
     @Test
     fun `success flow`() {
         every { process.inputStream } returns ByteArrayInputStream("success".toByteArray())
+        every { process.errorStream } returns ByteArrayInputStream(ByteArray(0))
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 0
 
-        val (output, errorOutput) = ProcessRunner.execute("command", 3)
+        val (output, errorOutput, code) = processRunner.execute("command", 3)
 
         errorOutput.isEmpty() shouldBe true
+        code shouldBe 0
         output shouldBe listOf("success")
     }
 
@@ -35,10 +38,11 @@ class ProcessRunnerTest {
         val outputStream = ByteArrayOutputStream()
         every { process.outputStream } returns outputStream
 
-        val (output, errorOutput) = ProcessRunner.execute("command", 3, listOf("input", "some"))
+        val (output, errorOutput, code) = processRunner.execute("command", 3, listOf("input", "some"))
 
         outputStream.toString() shouldBe "input\r\nsome\r\n"
         errorOutput.isEmpty() shouldBe true
+        code shouldBe 0
         output shouldBe listOf("success")
     }
 
@@ -48,9 +52,24 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 1
 
-        val (output, errorOutput) = ProcessRunner.execute("command", 3)
+        val (output, errorOutput, code) = processRunner.execute("command", 3)
 
         output.isEmpty() shouldBe true
+        code shouldBe 1
+        errorOutput shouldBe listOf("error")
+    }
+
+    @Test
+    fun `error flow - with output`() {
+        every { process.errorStream } returns ByteArrayInputStream("error".toByteArray())
+        every { process.inputStream } returns ByteArrayInputStream("some".toByteArray())
+        every { process.waitFor(3, TimeUnit.SECONDS) } returns true
+        every { process.exitValue() } returns 1
+
+        val (output, errorOutput, code) = processRunner.execute("command", 3)
+
+        output shouldBe listOf("some")
+        code shouldBe 1
         errorOutput shouldBe listOf("error")
     }
 
@@ -59,7 +78,7 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns false
 
         val code = shouldThrow<InvocationException> {
-            ProcessRunner.execute("command", 3)
+            processRunner.execute("command", 3)
         }.exceptionCode
 
         code shouldBe InvocationExceptionCode.TIMEOUT_EXCEPTION

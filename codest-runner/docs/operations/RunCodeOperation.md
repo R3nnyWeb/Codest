@@ -24,10 +24,10 @@
     1. Положить в топик **codest.runner.response** сообщение
        по [контракту](../../../codest-shared/docs/Runner/RunCodeResponseEvent.md) и **key = event.key**:
 
-       | Поле      | Значение      |
-       |-----------|---------------|
-       | errorType | RUNTIME_ERROR |
-       | output    | errors        |
+       | Поле      | Значение       |
+       |-----------|----------------|
+       | errorType | RUNTIME_ERROR  |
+       | output    | input + errors |
 6. **Иначе**
     1. Положить в топик **codest.runner.response** сообщение
        по [контракту](../../../codest-shared/docs/Runner/RunCodeResponseEvent.md) и **key = event.key**:
@@ -39,10 +39,10 @@
 7. Если 3 или 4 занимают более **maxTime** из [настроек](../settings.md), то прервать выполнение и положить в топик **codest.runner.response** сообщение
    по [контракту](../../../codest-shared/docs/Runner/RunCodeResponseEvent.md) и **key = event.key**:
     
-    | Поле      | Значение                  |
-    |-----------|---------------------------|
-    | errorType | TIME_EXCEED_ERROR         |
-    | output    | "Время решения превышено" |
+    | Поле      | Значение                   |
+    |-----------|----------------------------|
+    | errorType | TIME_EXCEED_ERROR          |
+    | output    | "Время ожидания превышено" |
 
 В случае любой непредвиденной ошибки при выполнении одной задачи отменить ее выполнение и:
 1. Залогировать ошибку **ParseRunnerRequestError**
