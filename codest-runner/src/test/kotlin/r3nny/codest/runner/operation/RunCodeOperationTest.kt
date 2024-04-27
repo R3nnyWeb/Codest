@@ -114,7 +114,7 @@ class RunCodeOperationTest {
     }
 
     private fun run() = processRunner.execute(
-        "java17 $pathToExecute", logic.maxTime, event.input
+        listOf("java17 $pathToExecute"), logic.maxTime, event.input
     )
 
     private fun successCompile() = ProcessRunner.Result(
@@ -156,7 +156,7 @@ class RunCodeOperationTest {
     }
 
     private fun compile() = processRunner.execute(
-        "javac17 $pathToCode",
+        listOf("javac17 $pathToCode"),
         logic.maxTime,
     )
 

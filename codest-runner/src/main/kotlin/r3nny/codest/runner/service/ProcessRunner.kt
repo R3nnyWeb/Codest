@@ -1,5 +1,7 @@
 package r3nny.codest.runner.service
 
+import r3nny.codest.runner.config.Logic
+import r3nny.codest.runner.config.LogicConfigMapping
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.shared.exception.InvocationException
 import ru.tinkoff.kora.common.Component
@@ -7,23 +9,24 @@ import ru.tinkoff.kora.logging.common.annotation.Log
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
+data class ExecutionResult(
+    val output: List<String>,
+    val errorOutput: List<String>,
+    val exitCode: Int,
+)
+
 @Component
-open class ProcessRunner {
-
-    data class Result(
-        val output: List<String>,
-        val errorOutput: List<String>,
-        val exitCode: Int,
-    )
-
+open class ProcessRunner(
+    private val logic: LogicConfigMapping
+) {
 
     @Log
     open fun execute(
-        command: String,
-        maxTimeSeconds: Long,
+        commands: List<String>,
+        maxTimeSeconds: Long = logic.maxTime(),
         input: List<String>? = null,
-    ): Result {
-        val processBuilder = processBuilder(command.split(" "))
+    ): ExecutionResult {
+        val processBuilder = processBuilder(commands)
         val process = processBuilder.start()
 
         input?.let {
@@ -37,7 +40,7 @@ open class ProcessRunner {
             throw InvocationException(InvocationExceptionCode.TIMEOUT_EXCEPTION)
         }
 
-        return Result(
+        return ExecutionResult(
             output = readStream(process.inputStream),
             errorOutput = readStream(process.errorStream),
             exitCode = process.exitValue(),

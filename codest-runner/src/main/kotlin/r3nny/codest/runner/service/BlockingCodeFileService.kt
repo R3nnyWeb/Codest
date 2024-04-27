@@ -11,16 +11,16 @@ import java.nio.file.Files
 open class BlockingCodeFileService : CodeFileService {
 
     @Log
-    override suspend fun save(code: String, extention: String): String {
+    override suspend fun save(code: String, fileName: String): File {
         return wrap(
             code = InvocationExceptionCode.FILE_WRITE_ERROR
         ) {
-            val tempFile = Files.createTempFile("code", ".$extention")
+            val tempFile = Files.createTempFile("code", ".$fileName")
                 .toFile()
             tempFile.printWriter().use {
                 it.println(code)
             }
-            tempFile.absolutePath
+            tempFile
         }
     }
 

@@ -1,8 +1,10 @@
 package r3nny.codest.runner.service
 
+import java.io.File
+
 interface CodeFileService {
 
-    suspend fun save(code: String, extention: String): String
+    suspend fun save(code: String, fileName: String): File
 
     suspend fun delete(pathToFile: String)
 

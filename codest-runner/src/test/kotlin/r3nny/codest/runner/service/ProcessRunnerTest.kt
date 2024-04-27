@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
 class ProcessRunnerTest {
     private val processRunner: ProcessRunner = ProcessRunner()
 
+
     @Test
     fun `success flow`() {
         every { process.inputStream } returns ByteArrayInputStream("success".toByteArray())
@@ -23,7 +24,7 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 0
 
-        val (output, errorOutput, code) = processRunner.execute("command", 3)
+        val (output, errorOutput, code) = processRunner.execute(command, 3)
 
         errorOutput.isEmpty() shouldBe true
         code shouldBe 0
@@ -38,7 +39,7 @@ class ProcessRunnerTest {
         val outputStream = ByteArrayOutputStream()
         every { process.outputStream } returns outputStream
 
-        val (output, errorOutput, code) = processRunner.execute("command", 3, listOf("input", "some"))
+        val (output, errorOutput, code) = processRunner.execute(command, 3, listOf("input", "some"))
 
         outputStream.toString() shouldBe "input\r\nsome\r\n"
         errorOutput.isEmpty() shouldBe true
@@ -52,7 +53,7 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 1
 
-        val (output, errorOutput, code) = processRunner.execute("command", 3)
+        val (output, errorOutput, code) = processRunner.execute(command, 3)
 
         output.isEmpty() shouldBe true
         code shouldBe 1
@@ -66,7 +67,7 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns true
         every { process.exitValue() } returns 1
 
-        val (output, errorOutput, code) = processRunner.execute("command", 3)
+        val (output, errorOutput, code) = processRunner.execute(command, 3)
 
         output shouldBe listOf("some")
         code shouldBe 1
@@ -78,13 +79,14 @@ class ProcessRunnerTest {
         every { process.waitFor(3, TimeUnit.SECONDS) } returns false
 
         val code = shouldThrow<InvocationException> {
-            processRunner.execute("command", 3)
+            processRunner.execute(command, 3)
         }.exceptionCode
 
         code shouldBe InvocationExceptionCode.TIMEOUT_EXCEPTION
     }
 
     companion object {
+        val command = listOf("command", "args")
         val pb: ProcessBuilder = mockk<ProcessBuilder>(relaxUnitFun = true)
         val process = mockk<Process>(relaxUnitFun = true)
 
@@ -92,7 +94,7 @@ class ProcessRunnerTest {
         @JvmStatic
         fun beforeAll() {
             mockkObject(ProcessRunner.Companion)
-            every { ProcessRunner.Companion.processBuilder(listOf("command")) } returns pb
+            every { ProcessRunner.Companion.processBuilder(command) } returns pb
             every { pb.start() } returns process
         }
     }
