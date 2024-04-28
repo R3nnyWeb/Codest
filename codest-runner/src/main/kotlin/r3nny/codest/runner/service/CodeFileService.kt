@@ -6,7 +6,7 @@ interface CodeFileService {
 
     suspend fun save(code: String, fileName: String): File
 
-    suspend fun delete(pathToFile: String)
+    suspend fun deleteFolder(folder: File)
 
    suspend fun read(pathToFile: String): String
 

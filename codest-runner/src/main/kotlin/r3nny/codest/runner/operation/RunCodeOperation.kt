@@ -26,10 +26,13 @@ open class RunCodeOperation(
         runCatching {
             val executor = executorsMap[event.language]!!
 
-            val (compileResult, runResult) = executor.execute(event.code, event.language, event.input)
+            val (compileResult, runResult) = executor.execute(event)
             with(compileResult) {
-                if (exitCode != 0)
+                if (exitCode != 0) {
                     sendError(id, CodeRunnerErrorType.COMPILE_ERROR, output = errorOutput)
+                    return@runCatching
+                }
+
             }
             with(runResult) {
                 if (errorOutput.isNotEmpty())

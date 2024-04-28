@@ -16,9 +16,5 @@ data class Logic(
 
 data class LanguageSettings(
     val commandToCompile: String?,
-    val argsToCompile: String?,
     val commandToRun: String,
-    val argsToRun: String?,
-    val codeExtension: String,
-    val executeExtension: String?,
 )

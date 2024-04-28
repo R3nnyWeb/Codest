@@ -17,7 +17,7 @@ import ru.tinkoff.kora.test.extension.junit5.TestComponent
 import java.time.Duration
 import java.util.concurrent.Executors
 
-@TestcontainersKafka(mode = ContainerMode.PER_RUN, topics = Topics("codest.runner.request"))
+@TestcontainersKafka(mode = ContainerMode.PER_RUN, topics = Topics("codest.runner.request", "codest.runner.response"))
 @KoraAppTest(App::class)
 class RunCodeIntegrationalTest : KoraAppTestConfigModifier {
 
@@ -38,7 +38,7 @@ class RunCodeIntegrationalTest : KoraAppTestConfigModifier {
     fun success() {
         val topic = "codest.runner.request"
         val event = RunCodeRequestEvent(
-            code = "class Solution { public static void main(String[] args) { System.out.println(\"Hello World!\"); } }",
+            code = "public class Main { public static void main(String[] args) { System.out.println(\"Hello World!\"); } }",
             input = null,
             language = ExecutableLanguage.JAVA_17,
         )

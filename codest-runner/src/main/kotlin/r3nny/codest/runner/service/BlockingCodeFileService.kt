@@ -15,8 +15,8 @@ open class BlockingCodeFileService : CodeFileService {
         return wrap(
             code = InvocationExceptionCode.FILE_WRITE_ERROR
         ) {
-            val tempFile = Files.createTempFile("code", ".$fileName")
-                .toFile()
+            val tempFolder = Files.createTempDirectory("code")
+            val tempFile = File(tempFolder.toFile(), fileName)
             tempFile.printWriter().use {
                 it.println(code)
             }
@@ -25,15 +25,17 @@ open class BlockingCodeFileService : CodeFileService {
     }
 
     @Log
-    override suspend fun delete(pathToFile: String) {
+    override suspend fun deleteFolder(folder: File) {
         wrap(
             code = InvocationExceptionCode.FILE_DELETE_ERROR
         ) {
-            val file = File(pathToFile)
-            if (!file.exists()) {
-                throw Exception("File does not exist")
-            }
-            file.delete()
+            if (folder.exists() && folder.isDirectory()) {
+                folder.listFiles()?.forEach {
+                    if (it.isFile)
+                        it.delete()
+                }
+            } else throw Exception("Directory not exists or not directory")
+            folder.delete();
         }
     }
 

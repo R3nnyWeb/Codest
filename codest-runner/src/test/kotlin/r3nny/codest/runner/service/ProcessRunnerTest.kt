@@ -7,6 +7,8 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import r3nny.codest.runner.config.`$LogicConfigMapping_ConfigValueExtractor`
+import r3nny.codest.runner.config.LogicConfigMapping
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.shared.exception.InvocationException
 import java.io.ByteArrayInputStream
@@ -14,7 +16,12 @@ import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
 class ProcessRunnerTest {
-    private val processRunner: ProcessRunner = ProcessRunner()
+    private val processRunner: ProcessRunner = ProcessRunner(
+        logic = `$LogicConfigMapping_ConfigValueExtractor`.LogicConfigMapping_Impl(
+            emptyMap(),
+            maxTime = 1L
+        )
+    )
 
 
     @Test
