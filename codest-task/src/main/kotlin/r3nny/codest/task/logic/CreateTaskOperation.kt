@@ -1,23 +1,23 @@
 package r3nny.codest.task.logic
 
-import org.springframework.stereotype.Service
-import r3nny.codest.logging.aspect.LogMethod
+import java.util.UUID
 import r3nny.codest.task.dto.dao.Level
 import r3nny.codest.task.dto.dao.TaskDTO
-import r3nny.codest.task.dto.http.CreateTaskRequest
-import r3nny.codest.task.integration.mongo.TaskAdapter
+import r3nny.codest.task.dto.http.CreateTaskRequestDto
+import r3nny.codest.task.integration.db.TaskAdapter
 import r3nny.codest.task.service.driver.DriverGeneratorService
 import r3nny.codest.task.service.validation.validateCreateTask
-import java.util.*
+import ru.tinkoff.kora.common.Component
+import ru.tinkoff.kora.logging.common.annotation.Log
 
-@Service
-class CreateTaskOperation(
-    val taskAdapter: TaskAdapter,
-    val driverGenerator: DriverGeneratorService,
+@Component
+open class CreateTaskOperation(
+    private val taskAdapter: TaskAdapter,
+    private val driverGenerator: DriverGeneratorService,
 ) {
 
-    @LogMethod
-    suspend fun activate(request: CreateTaskRequest): UUID = with(request) {
+    @Log
+    open suspend fun activate(request: CreateTaskRequestDto): TaskDTO = with(request) {
         validateCreateTask(this)
 
         val task = TaskDTO(
@@ -33,5 +33,6 @@ class CreateTaskOperation(
         )
 
         taskAdapter.createTask(task)
+        task
     }
 }

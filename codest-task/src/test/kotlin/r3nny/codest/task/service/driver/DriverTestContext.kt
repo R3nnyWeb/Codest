@@ -1,21 +1,15 @@
 package r3nny.codest.task.service.driver
 
-import io.mockk.mockkStatic
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.config.AppConfig
 import r3nny.codest.task.dto.dao.Level
-import r3nny.codest.task.dto.http.CreateTaskRequest
-import r3nny.codest.task.helper.readFile
+import r3nny.codest.task.dto.http.CreateTaskRequestDto
 
 abstract class DriverTestContext {
 
-    init {
-        mockkStatic(::readFile)
-    }
-
-    internal val request = CreateTaskRequest(
+    internal val request = CreateTaskRequestDto(
         name = "task",
         description = "some md descr",
         methodName = "method",

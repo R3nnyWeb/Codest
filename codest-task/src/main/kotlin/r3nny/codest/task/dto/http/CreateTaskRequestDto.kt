@@ -5,7 +5,7 @@ import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.task.dto.dao.Level
 
-data class CreateTaskRequest(
+data class CreateTaskRequestDto(
     val name: String,
     val description: String,
     val methodName: String,

@@ -35,7 +35,7 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
             operation.activate(id, addLanguageRequest)
 
 
-            coVerify { taskAdapter.update(capture(slot)) }
+            coVerify { taskAdapter.updateLanguage(capture(slot)) }
             val updated = slot.captured
             with(updated){
                 enabled shouldBe false

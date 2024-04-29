@@ -9,10 +9,10 @@ import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.shared.exception.ValidationException
 import r3nny.codest.task.dto.dao.Level
-import r3nny.codest.task.dto.http.CreateTaskRequest
+import r3nny.codest.task.dto.http.CreateTaskRequestDto
 
-class CreateTaskValidationKtTest() {
-    private val request = CreateTaskRequest(
+class CreateTaskValidationKtTest {
+    private val request = CreateTaskRequestDto(
         name = "task",
         description = "some md descr",
         methodName = "method",

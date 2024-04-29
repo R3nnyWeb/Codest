@@ -2,24 +2,15 @@ package r3nny.codest.task.integration
 
 import io.restassured.response.Response
 import io.restassured.response.ValidatableResponse
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection
-import org.testcontainers.containers.MongoDBContainer
-import org.testcontainers.junit.jupiter.Container
+import java.util.UUID
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.dto.dao.Level
 import r3nny.codest.task.dto.dao.TaskDTO
-import r3nny.codest.task.dto.http.CreateTaskRequest
-import r3nny.codest.task.integration.mongo.TaskRepository
-import r3nny.codest.task.logic.CreateTaskOperation
-import java.util.*
+import r3nny.codest.task.dto.http.CreateTaskRequestDto
 
 inline fun <reified T> ValidatableResponse.extractAs(): T {
     return this.extract().body().`as`(T::class.java)
@@ -30,19 +21,18 @@ inline fun <reified T> Response.extractAs(): T {
 }
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class TestBase {
-    @LocalServerPort
-    internal var port: Int = 0
-
-    @Autowired
-    internal lateinit var taskRepository: TaskRepository
-    @Autowired
-    internal lateinit var createTaskOperation: CreateTaskOperation
+//    @LocalServerPort
+         internal var port: Int = 0
+//
+//    @Autowired
+//    internal lateinit var taskRepository: TaskRepository
+//    @Autowired
+//    internal lateinit var createTaskOperation: CreateTaskOperation
 
     internal fun url() = "http://localhost:$port/api/v1/tasks"
 
-    internal val request = CreateTaskRequest(
+    internal val request = CreateTaskRequestDto(
         name = "task",
         description = "some md descr",
         methodName = "method",
@@ -81,12 +71,4 @@ abstract class TestBase {
         level = request.level,
         tests = request.tests
     )
-
-    companion object {
-        @Container
-        @ServiceConnection
-        var mongoDBContainer = MongoDBContainer(DockerImageName.parse("mongo:7.0"))
-    }
-
-
 }

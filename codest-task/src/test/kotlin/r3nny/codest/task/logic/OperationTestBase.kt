@@ -1,24 +1,22 @@
 package r3nny.codest.task.logic
 
 import io.mockk.mockk
+import java.util.UUID
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.dto.dao.Level
 import r3nny.codest.task.dto.dao.TaskDTO
-import r3nny.codest.task.dto.http.CreateTaskRequest
-import r3nny.codest.task.integration.mongo.TaskAdapter
-import r3nny.codest.task.integration.postgres.AttemptAdapter
+import r3nny.codest.task.dto.http.CreateTaskRequestDto
+import r3nny.codest.task.integration.db.TaskAdapter
 import r3nny.codest.task.service.driver.DriverGeneratorService
-import java.util.*
 
 abstract class OperationTestBase {
     internal val taskAdapter = mockk<TaskAdapter>(relaxUnitFun = true)
-        internal val attemptAdapter = mockk<AttemptAdapter>(relaxUnitFun = true)
     internal val driverGenerator = mockk<DriverGeneratorService>(relaxUnitFun = true)
 
-    internal val request = CreateTaskRequest(
+    internal val request = CreateTaskRequestDto(
         name = "task",
         description = "some md descr",
         methodName = "method",

@@ -17,7 +17,7 @@ class CreateTaskOperationTest: OperationTestBase() {
     fun success() = runBlocking {
         with(request) {
             val saved = slot<TaskDTO>()
-            coEvery { taskAdapter.createTask(capture(saved)) } returns UUID.randomUUID()
+            coEvery { taskAdapter.createTask(capture(saved)) } returnsArgument 0
             coEvery { driverGenerator.generate(request) } returns mapOf(
                 Language.JAVA to "driver java",
                 Language.PYTHON to "driver python"

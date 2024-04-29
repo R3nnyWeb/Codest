@@ -1,16 +1,12 @@
 package r3nny.codest.task.dto.dao
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import java.util.UUID
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.task.dto.http.TaskListFrontend
-import java.util.UUID
 
-@Document(collection = "tasks")
 data class TaskDTO(
-    @Id
     val id: UUID,
     val name: String,
     val enabled: Boolean = false,

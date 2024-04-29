@@ -1,0 +1,522 @@
+openapi: 3.0.3
+
+info:
+  title: codest-task
+  description: |-
+    Сервис для предоставляения ифнормации о задачах и их создания
+  version: 1.0.0
+externalDocs:
+  description: GitHUb
+  url: https://github.com/R3nnyWeb/Codest
+
+servers:
+  - url: /tasks/v1
+
+tags:
+  - name: tasks
+    description: Задачи
+
+
+paths:
+
+  /list:
+    get:
+      tags:
+        - tasks
+      summary: Список задач с пагинацией
+      operationId: getTasksList
+      parameters:
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Level'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TasksListResponse'        
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+  
+  /{taskId}:
+    get:
+      tags:
+        - tasks
+      summary: Полное описание задачи
+      operationId: getFullTask
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullTaskResponse'        
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+          
+  /{taskId}/lite:
+    get:
+      tags:
+        - tasks
+      summary: Короткое описание задачи
+      operationId: getTaskLite
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLiteResponse'        
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+          
+  /{taskId}/internal:
+    get:
+      tags:
+        - tasks
+      summary: Короткое описание задачи
+      operationId: getTaskInternal
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalTaskResponse'        
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+          
+  /:
+    post:
+      tags:
+        - tasks
+      summary: Создание задачи
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullTaskResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    CreateTaskRequest:
+      type: object
+      required:
+        - name
+        - description
+        - methodName
+        - inputTypes
+        - outputType
+        - level
+        - startCodes
+        - tests
+      properties:
+        name:
+          $ref: '#/components/schemas/TaskName'
+        level: 
+          $ref: '#/components/schemas/Level'
+        description:
+          description: Описание
+          type: string
+          example: lorem ipsum
+        inputTypes:
+          $ref: '#/components/schemas/TaskInputTypes'
+        outputType:
+          $ref: '#/components/schemas/TaskOutputType'
+        languages:
+          $ref: '#/components/schemas/TaskLanguages'
+        isEnabled:
+          $ref: '#/components/schemas/IsEnabled'
+        isPrivate:
+          $ref: '#/components/schemas/IsPrivate'
+        methodName:
+          $ref: '#/components/schemas/MethodName'
+        tests:
+          $ref: '#/components/schemas/CreateTaskTestsRequest'
+        startCodes:
+          $ref: '#/components/schemas/TaskStartCodes'
+  
+    CreateTaskTestsRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/CreateTest'
+  
+    InternalTaskResponse:
+      description: Техническое описание задачи
+      type: object
+      required:
+        - id
+        - languages
+        - isEnabled
+        - isPrivate
+        - tests
+        - drivers
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+        languages:
+          $ref: '#/components/schemas/TaskLanguages'
+        isEnabled:
+          $ref: '#/components/schemas/IsEnabled'
+        isPrivate:
+          $ref: '#/components/schemas/IsPrivate'
+        tests:
+          $ref: '#/components/schemas/TaskTests'
+        drivers:
+          $ref: '#/components/schemas/TaskDrivers'
+  
+    TaskLiteResponse:
+      description: Описание задачи для решения
+      type: object
+      required:
+        - id
+        - name
+        - languages
+        - isEnabled
+        - isPrivate
+        - startCodes
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+        name:
+          $ref: '#/components/schemas/TaskName'
+        level: 
+          $ref: '#/components/schemas/Level'
+        description:
+          description: Описание
+          type: string
+          example: lorem ipsum
+        languages:
+          $ref: '#/components/schemas/TaskLanguages'
+        isEnabled:
+          $ref: '#/components/schemas/IsEnabled'
+        isPrivate:
+          $ref: '#/components/schemas/IsPrivate'
+        startCodes:
+          $ref: '#/components/schemas/TaskStartCodes'
+          
+    FullTaskResponse:
+      description: Полное описание задачи
+      type: object
+      required:
+        - id
+        - name
+        - level
+        - inputTypes
+        - outputType
+        - languages
+        - isEnabled
+        - isPrivate
+        - methodName
+        - tests
+        - drivers
+        - startCodes
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+        name:
+          $ref: '#/components/schemas/TaskName'
+        level: 
+          $ref: '#/components/schemas/Level'
+        description:
+          description: Описание
+          type: string
+          example: lorem ipsum
+        inputTypes:
+          $ref: '#/components/schemas/TaskInputTypes'
+        outputType:
+          $ref: '#/components/schemas/TaskOutputType'
+        languages:
+          $ref: '#/components/schemas/TaskLanguages'
+        isEnabled:
+          $ref: '#/components/schemas/IsEnabled'
+        isPrivate:
+          $ref: '#/components/schemas/IsPrivate'
+        methodName:
+          $ref: '#/components/schemas/MethodName'
+        tests:
+          $ref: '#/components/schemas/TaskTests'
+        drivers:
+          $ref: '#/components/schemas/TaskDrivers'
+        startCodes:
+          $ref: '#/components/schemas/TaskStartCodes'
+          
+    TaskStartCodes:
+      description: Заготовки кода для пользователя. язык -> драйвер
+      type: string
+      additionalProperties:
+        type: string
+      example: [{'java' : 'someCode'}]
+      
+    TaskDrivers:
+      description: Заготовки кода для выполнения. язык -> драйвер
+      type: string
+      additionalProperties:
+        type: string
+      example: [{'java' : 'someCode'}]
+      
+    TaskInputTypes:
+      description: Типы входных параметров
+      type: array
+      items: 
+        type: string
+      example: ['integer', 'boolean', 'int_array']
+    
+    TaskOutputType:
+      description: Тип выходного параметра
+      type: string
+      example: 'integer'
+      
+    TaskLanguages:
+      description: Допустимые языки
+      type: array
+      items:
+        $ref: '#/components/schemas/TaskLanguage'
+      
+    TaskLanguage:
+      description: Допустимый язык
+      type: string
+      example: 'java17'
+      
+    MethodName:
+      description: Название реализуемого метода(функции)
+      type: string
+      example: 'sum'
+      
+    IsEnabled:
+      description: Отображается ли задача в списке (есть доступ по id)
+      type: boolean
+      
+    IsPrivate:
+      description: Отображается ли задача только в соревновании (есть доступ по id)
+      type: boolean
+      
+    TaskTests:
+      type: array
+      items:
+        $ref: '#/components/schemas/Test'
+        
+          
+    CreateTest:
+      description: Тест
+      type: object
+      required:
+        - inputData
+        - outputData
+      properties:
+        inputData:
+          $ref: '#/components/schemas/TestInputData'
+        outputData:
+          $ref: '#/components/schemas/TestOutputData'
+      
+    Test:
+      description: Тест
+      type: object
+      required:
+        - id
+        - inputData
+        - outputData
+      properties:
+        id:
+          $ref: '#/components/schemas/TestId'
+        inputData:
+          $ref: '#/components/schemas/TestInputData'
+        outputData:
+          $ref: '#/components/schemas/TestOutputData'
+  
+    TestId:
+      description: Уникальный идентификатор теста
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+      
+    TestInputData:
+      description: Входные данные теста
+      type: array
+      items: 
+        type: string
+      example: ['2', '0', '1']
+      
+    TestOutputData:
+      description: Выходные данные теста
+      type: string
+      example: '3'
+  
+    TasksListResponse:
+      description: Список задач с пагинацией
+      type: object
+      required:
+        - items
+        - currentPage
+        - totalPages
+      properties:
+        currentPage:
+          description: Текущая страница
+          type: integer
+          format: int64
+          example: 123
+        totalPages:
+          description: Всего страниц
+          type: integer
+          format: int64
+          example: 123 
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskLite'        
+    
+    TaskLite:
+      description: Короткое описание задачи
+      type: object
+      required:
+        - id
+        - name
+        - level
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+        name:
+          $ref: '#/components/schemas/TaskName'
+        level:
+          $ref: '#/components/schemas/Level'
+          
+    TaskId:
+      description: Уникальный идентификатор задачи
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+      
+    TaskName:
+      description: Имя задачи
+      type: string
+      example: '1. Сложение'  
+    
+    Level:
+      description: Уровень сложности
+      type: string
+      enum: ['easy', 'medium', 'hard']
+ 
+    ErrorResponse:
+      description: Данные об ошибке
+      type: object
+      required:
+        - errorId
+        - errorCode
+        - errorMessage
+      properties:
+        errorId:
+          description: Уникальный идентификатор ошибки
+          type: string
+          minLength: 1
+          example: 5b23a9529c0f48bc
+        errorMessage:
+          description: Пользовательское сообщение об ошибке
+          type: string
+          minLength: 1
+          example: Сервис временно недоступен
+        errorCode:
+          description: Код ошибки
+          type: string
+          minLength: 1
+          maxLength: 8
+          example: 01-Z99
+        errorDetails:
+          description: Дополнительная информация об ошибке
+          type: object
+          example: { "key": "value" }
+  
+  parameters:
+    TaskIdPath:
+      description: Id задачи
+      required: true
+      name: taskId
+      in: path
+      schema:
+        $ref: '#/components/schemas/TaskId'
+  
+    Level:
+      description: Уровень сложности
+      required: false
+      name: level
+      in: query
+      schema:
+        $ref: '#/components/schemas/Level'
+    
+    Offset:
+      description: Смещение страниц
+      required: true
+      name: offset
+      in: query
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+        default: 0
+      example: 0
+
+    Limit:
+      description: Ограничение "сверху" на количество возвращаемых элементов данных
+      name: limit
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+      example: 20   
+  
+  headers:
+    XTraceId:
+      description: Идентификатор ответа
+      schema:
+        type: string
+        minLength: 1
+      required: true
+  

@@ -32,34 +32,33 @@ application {
 
 fun testcontainersVerison() = "1.19.1"
 
-
+fun kora(module: String) = "ru.tinkoff.kora:$module"
 val koraVersion: String by project
+
 dependencies {
     implementation(project(":codest-shared"))
-    testImplementation("org.testcontainers:junit-jupiter:${testcontainersVerison()}")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
-    testImplementation("io.kotest:kotest-assertions-json-jvm:5.5.3")
-    testImplementation("io.mockk:mockk:1.13.2")
-    koraBom(platform("ru.tinkoff.kora:kora-parent:1.0.8"))
+    koraBom(platform("ru.tinkoff.kora:kora-parent:$koraVersion"))
 
     ksp("ru.tinkoff.kora:symbol-processors")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
 
-    implementation("ru.tinkoff.kora:http-server-undertow")
-    implementation("ru.tinkoff.kora:json-module")
-    implementation("ru.tinkoff.kora:config-hocon")
-    implementation("ru.tinkoff.kora:logging-common")
-    implementation("ru.tinkoff.kora:logging-logback")
+    implementation(kora("http-server-undertow"))
+    implementation(kora("json-module"))
+    implementation(kora("config-hocon"))
+    implementation(kora("logging-common"))
+    implementation(kora("logging-logback"))
+    implementation(kora("micrometer-module"))
+    implementation(kora("kafka"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
-    implementation("ru.tinkoff.kora:micrometer-module")
-    implementation("ru.tinkoff.kora:kafka")
 
-    testImplementation("ru.tinkoff.kora:test-junit5")
+    testImplementation(kora("test-junit5"))
     testImplementation("io.goodforgod:testcontainers-extensions-kafka:0.9.6")
-
-
+    testImplementation("org.testcontainers:junit-jupiter:${testcontainersVerison()}")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
+    testImplementation("io.kotest:kotest-assertions-json-jvm:5.5.3")
+    testImplementation("io.mockk:mockk:1.13.2")
 }
 
 tasks {

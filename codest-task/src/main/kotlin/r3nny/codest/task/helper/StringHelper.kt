@@ -3,7 +3,6 @@ package r3nny.codest.task.helper
 import r3nny.codest.task.service.driver.internal.Key
 import java.util.regex.Pattern
 
-//todo: test
 fun String.replaceKeysWithValues(replacements: Map<Key, String>): String {
         val pattern = Pattern.compile("\\{\\{([^}]+)}}")
         val matcher = pattern.matcher(this)

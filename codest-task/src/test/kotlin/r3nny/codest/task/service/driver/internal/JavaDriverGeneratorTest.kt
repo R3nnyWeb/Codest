@@ -1,13 +1,10 @@
 package r3nny.codest.task.service.driver.internal
 
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
-import r3nny.codest.task.helper.readFile
 import r3nny.codest.task.service.driver.DriverTestContext
 
 class JavaDriverGeneratorTest : DriverTestContext() {
