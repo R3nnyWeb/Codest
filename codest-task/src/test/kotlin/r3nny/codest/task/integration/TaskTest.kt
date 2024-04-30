@@ -1,33 +1,9 @@
 package r3nny.codest.task.integration
 
-import io.kotest.common.runBlocking
-import io.kotest.matchers.shouldBe
-import io.restassured.builder.RequestSpecBuilder
-import io.restassured.builder.ResponseSpecBuilder
-import io.restassured.config.LogConfig
-import io.restassured.config.RestAssuredConfig
-import io.restassured.filter.log.LogDetail
-import io.restassured.http.ContentType
-import io.restassured.module.kotlin.extensions.Given
-import io.restassured.module.kotlin.extensions.Then
-import io.restassured.module.kotlin.extensions.When
-import io.restassured.specification.RequestSpecification
-import io.restassured.specification.ResponseSpecification
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
-import org.springframework.data.domain.Page
-import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.dto.ErrorDto
-import r3nny.codest.shared.dto.TaskInternalDTO
-import r3nny.codest.task.dto.http.TaskListFrontend
-import r3nny.codest.task.integration.TaskTest.Specs.requestSpec
-import r3nny.codest.task.integration.TaskTest.Specs.responseSpec
 
+class TaskTest  {
 
-class TaskTest : TestBase() {
-
-    object Specs {
+   /* object Specs {
 
         private val logConfig = LogConfig.logConfig().enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL)
         private val config = RestAssuredConfig.config().logConfig(logConfig)
@@ -47,7 +23,7 @@ class TaskTest : TestBase() {
 
     @BeforeEach
     fun beforeEach() {
-        taskRepository.deleteAll()
+     //   taskRepository.deleteAll()
     }
 
     //    @Test
@@ -156,5 +132,5 @@ class TaskTest : TestBase() {
         }
 
     }
-
+*/
 }

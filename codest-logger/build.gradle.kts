@@ -11,8 +11,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.aspectj:aspectjrt:1.9.8")
-    implementation("org.aspectj:aspectjweaver:1.9.8")
+    implementation(project(":codest-shared"))
+    implementation("org.aspectj:aspectjrt:1.9.19")
+    implementation("org.aspectj:aspectjweaver:1.9.19")
 
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
@@ -22,4 +23,32 @@ dependencies {
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-core
     implementation("ch.qos.logback:logback-core:1.4.8")
 
+}
+
+tasks {
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(19))
+        }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "19"
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
+        }
+    }
+
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "19"
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
+        }
+    }
+
+}
+
+
+kotlin {
+    jvmToolchain(19)
 }

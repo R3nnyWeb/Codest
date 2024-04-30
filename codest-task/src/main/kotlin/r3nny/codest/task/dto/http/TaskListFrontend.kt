@@ -1,6 +1,6 @@
 package r3nny.codest.task.dto.http
 
-import r3nny.codest.task.dto.dao.Level
+import r3nny.codest.task.dto.common.Level
 import java.util.UUID
 
 data class TaskListFrontend(

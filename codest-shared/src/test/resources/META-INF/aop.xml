@@ -1,7 +1,0 @@
-<aspectj>
-    <aspects>
-        <!-- Aspects -->
-        <aspect name="r3nny.codest.shared.logging.LogAspect"/>
-    </aspects>
-</aspectj>
-

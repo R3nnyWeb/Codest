@@ -1,6 +1,14 @@
 package r3nny.codest.shared.domain
 
-enum class Language(val extension: String) {
-    JAVA("java"),
-    PYTHON("py");
+enum class Language() {
+    JAVA(),
+    PYTHON();
+
+    companion object {
+
+        val stringMap = Language.entries.associateBy { it.name }
+
+        fun fromString(string: String): Language = stringMap[string.uppercase()]
+            ?: error("Неправильный язык: $string. Доступные ${stringMap.keys.map { it.lowercase() }}")
+    }
 }

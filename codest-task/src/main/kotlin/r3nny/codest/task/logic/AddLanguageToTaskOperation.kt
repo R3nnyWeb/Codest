@@ -1,39 +1,42 @@
 package r3nny.codest.task.logic
 
-import org.springframework.stereotype.Service
-import r3nny.codest.logging.aspect.LogMethod
-import r3nny.codest.task.dto.dao.TaskDTO
+import r3nny.codest.task.dto.common.TaskParameters
+import r3nny.codest.task.dto.dao.TaskDto
 import r3nny.codest.task.dto.http.AddLanguageToTaskRequest
-import r3nny.codest.task.integration.mongo.TaskAdapter
+import r3nny.codest.task.integration.db.TaskAdapter
 import r3nny.codest.task.service.driver.DriverGeneratorService
+import ru.tinkoff.kora.common.Component
+import ru.tinkoff.kora.logging.common.annotation.Log
 import java.util.*
 
-@Service
-class AddLanguageToTaskOperation(
+@Component
+open class AddLanguageToTaskOperation(
     private val driverGenerator: DriverGeneratorService,
     private val taskAdapter: TaskAdapter
 ) {
 
 
-    @LogMethod
-    suspend fun activate(taskId: UUID, request: AddLanguageToTaskRequest) {
-        val task : TaskDTO = taskAdapter.getById(taskId) ?: throw RuntimeException("Не найдено")
+    @Log
+    open suspend fun activate(taskId: UUID, request: AddLanguageToTaskRequest) {
+        val task : TaskDto = taskAdapter.getFullById(taskId) ?: throw RuntimeException("Не найдено")
 
         if (task.drivers.containsKey(request.language))
             throw RuntimeException("Язык есть, епта")
 
         val newDriver = driverGenerator.generate(
             methodName = task.methodName,
-            parameters = task.parameters,
+            parameters = TaskParameters(
+                task.inputTypes, task.outputType
+            ),
             languages = setOf(request.language)
         )
 
         val updatedTask = task.copy(
-            enabled = false,
+            isEnabled = false,
             drivers = task.drivers + newDriver
         )
 
-        taskAdapter.update(updatedTask)
+//        taskAdapter.updateLanguage(updatedTask)
     }
 
 }

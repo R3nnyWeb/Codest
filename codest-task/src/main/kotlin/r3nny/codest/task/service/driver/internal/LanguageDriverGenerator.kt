@@ -1,24 +1,22 @@
 package r3nny.codest.task.service.driver.internal
 
-import com.sksamuel.hoplite.ConfigException
 import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.config.AppConfig
-import r3nny.codest.task.dto.http.CreateTaskRequest
+import r3nny.codest.task.dto.common.TaskParameters
 import r3nny.codest.task.helper.getDriver
 import r3nny.codest.task.helper.getTypeLanguageConfig
-import r3nny.codest.task.helper.readFile
 import r3nny.codest.task.helper.replaceKeysWithValues
+import ru.tinkoff.kora.logging.common.annotation.Log
 
-abstract class LanguageDriverGenerator(
+open class LanguageDriverGenerator(
     val language: Language,
     val config: AppConfig,
 ) {
 
     @LogMethod
-    fun generate(methodName: String, parameters: TaskParameters): String {
+    open fun generate(methodName: String, parameters: TaskParameters): String {
 
         val source = config.getDriver(language)
 
@@ -33,7 +31,9 @@ abstract class LanguageDriverGenerator(
         )
     }
 
-    protected abstract fun getParamsInputSectionStr(inputTypes: List<Type>): String
+    protected open fun getParamsInputSectionStr(inputTypes: List<Type>): String {
+        throw NotImplementedError("Not implemented")
+    }
 
     private fun getParamsInputListStr(size: Int): String =
         with(StringBuilder()) {

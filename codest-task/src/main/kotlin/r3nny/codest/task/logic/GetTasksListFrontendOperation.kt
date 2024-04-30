@@ -1,19 +1,17 @@
 package r3nny.codest.task.logic
 
-import org.springframework.data.domain.Page
-import org.springframework.stereotype.Service
-import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.task.dto.http.TaskListFrontend
-import r3nny.codest.task.integration.mongo.TaskAdapter
-import r3nny.codest.task.integration.mongo.criteria.TaskSearchQuery
+import r3nny.codest.task.integration.db.TaskAndTestAdapter
+import ru.tinkoff.kora.common.Component
+import ru.tinkoff.kora.logging.common.annotation.Log
 
-@Service
-class GetTasksListFrontendOperation(
-    private val adapter: TaskAdapter
+@Component
+open class GetTasksListFrontendOperation(
+    private val adapter: TaskAndTestAdapter
 ) {
 
-    @LogMethod
-    suspend fun activate(query: TaskSearchQuery, offset: Int, limit: Int): Page<TaskListFrontend> {
-        return adapter.getListWithQuery(query, offset, limit)
+    @Log
+   open suspend fun activate(): List<TaskListFrontend> {
+        return emptyList()
     }
 }

@@ -2,42 +2,61 @@ package r3nny.codest.task.logic
 
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.task.dto.dao.TaskDTO
-import java.util.*
+import r3nny.codest.shared.domain.TestCase
+import r3nny.codest.task.dto.common.Level
+import r3nny.codest.task.dto.dao.TaskDto
+import r3nny.codest.task.dto.extentions.languages
+import r3nny.codest.task.dto.extentions.parameters
+import r3nny.codest.task.dto.extentions.tests
 
 
-class CreateTaskOperationTest: OperationTestBase() {
-    private val operation = CreateTaskOperation(taskAdapter, driverGenerator)
+class CreateTaskOperationTest : OperationTestBase() {
+    private val operation = CreateTaskOperation(taskAndTestAdapter, driverGenerator)
 
     @Test
     fun success() = runBlocking {
-        with(request) {
-            val saved = slot<TaskDTO>()
-            coEvery { taskAdapter.createTask(capture(saved)) } returns UUID.randomUUID()
-            coEvery { driverGenerator.generate(request) } returns mapOf(
+        with(createTaskRequest) {
+            val savedTask = slot<TaskDto>()
+            val savedTests = slot<List<TestCase>>()
+            coEvery {
+                driverGenerator.generate(
+                    createTaskRequest.methodName,
+                    createTaskRequest.parameters(),
+                    createTaskRequest.languages()
+                )
+            } returns mapOf(
                 Language.JAVA to "driver java",
                 Language.PYTHON to "driver python"
             )
 
             operation.activate(this)
 
-            with(saved.captured) {
-                name shouldBe request.name
+            coVerify {
+                taskAndTestAdapter.createTask(capture(savedTask), capture(savedTests))
+            }
+
+            with(savedTask.captured) {
+                name shouldBe createTaskRequest.name
                 drivers shouldBe mapOf(
                     Language.JAVA to "driver java",
                     Language.PYTHON to "driver python"
                 )
-                enabled shouldBe false
-                description shouldBe request.description
-                parameters shouldBe request.parameters
-                methodName shouldBe request.methodName
-                level shouldBe request.level
-                startCode shouldBe request.startCode
-                tests shouldBe request.tests
+                isEnabled shouldBe false
+                description shouldBe createTaskRequest.description
+                inputTypes shouldBe createTaskRequest.parameters().inputTypes
+                outputType shouldBe createTaskRequest.parameters().outputType
+                methodName shouldBe createTaskRequest.methodName
+                level shouldBe Level.fromString(createTaskRequest.level.name)
+                startCode shouldBe createTaskRequest.startCodes.mapKeys { (k, v) -> Language.fromString(k) }
+            }
+            savedTests.captured.zip(createTaskRequest.tests()).forEach { (actual, expected) ->
+                actual.inputValues shouldBe expected.inputValues
+                actual.outputValue shouldBe expected.outputValue
             }
         }
     }

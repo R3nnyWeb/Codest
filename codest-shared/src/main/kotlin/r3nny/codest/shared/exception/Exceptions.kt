@@ -1,28 +1,68 @@
 package r3nny.codest.shared.exception
 
-import kotlin.Exception
-
 abstract class CustomException(
-    open val exceptionCode: ExceptionCode<out CustomException>,
-    override val cause: Throwable? = null
-): Exception(exceptionCode.message)
+    val exceptionCode: ExceptionCode<out CustomException>,
+    override val cause: Throwable? = null,
+    customMessage: String?,
+) : Exception() {
+    final override val message: String = buildString {
+        append(exceptionCode.message)
+        if (customMessage != null) {
+            append(" $customMessage")
+        }
+    }
+}
 
 interface ExceptionCode<T : CustomException> {
     val errorCode: String
     val message: String
 }
 
-data class InvocationException(
-    override val exceptionCode: ExceptionCode<InvocationException>,
-    override val cause: Throwable? = null
-) : CustomException(exceptionCode, cause)
+class InvocationException(
+    exceptionCode: ExceptionCode<InvocationException>,
+    cause: Throwable? = null,
+    customMessage: String? = null,
+) : CustomException(exceptionCode, cause, customMessage)
 
-data class LogicException(
-    override val exceptionCode: ExceptionCode<LogicException>,
-    override val cause: Throwable? = null
-) : CustomException(exceptionCode, cause)
+class LogicException(
+    exceptionCode: ExceptionCode<LogicException>,
+    cause: Throwable? = null,
+    customMessage: String? = null,
+) : CustomException(exceptionCode, cause, customMessage)
+
+class ValidationException(
+    exceptionCode: ExceptionCode<ValidationException>,
+    cause: Throwable? = null,
+    customMessage: String? = null,
+) : CustomException(exceptionCode, cause, customMessage)
 
 fun throwInvocationException(
     code: ExceptionCode<InvocationException>,
-    cause: Throwable? = null
-) { throw InvocationException(code, cause) }
+    cause: Throwable? = null,
+    message: String? = null,
+): Nothing {
+    throw InvocationException(code, cause, message)
+}
+
+fun throwValidationException(
+    code: ExceptionCode<ValidationException>,
+    cause: Throwable? = null,
+    message: String? = null,
+): Nothing {
+    throw ValidationException(code, cause, message)
+}
+
+fun throwLogicException(
+    code: ExceptionCode<LogicException>,
+    cause: Throwable? = null,
+    message: String? = null,
+): Nothing {
+    throw LogicException(code, cause, message)
+}
+
+suspend fun <R> wrap(errorCode: ExceptionCode<InvocationException>, block: suspend () -> R) = runCatching {
+    block.invoke()
+}.onFailure {
+    if (it !is CustomException)
+        throwInvocationException(errorCode, it)
+}.getOrThrow()

@@ -1,31 +1,22 @@
 package r3nny.codest.task.service.driver
 
-import io.mockk.mockkStatic
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.TaskParameters
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.task.config.AppConfig
-import r3nny.codest.task.dto.dao.Level
-import r3nny.codest.task.dto.http.CreateTaskRequest
-import r3nny.codest.task.helper.readFile
+import r3nny.codest.task.model.CreateTaskRequest
+import r3nny.codest.task.model.Level
 
 abstract class DriverTestContext {
-
-    init {
-        mockkStatic(::readFile)
-    }
 
     internal val request = CreateTaskRequest(
         name = "task",
         description = "some md descr",
         methodName = "method",
-        parameters = TaskParameters(
-            inputTypes = listOf(Type.INTEGER, Type.STRING, Type.BOOLEAN, Type.INTEGER_ARR, Type.STRING_ARR),
-            outputType = Type.INTEGER_ARR
-        ),
-        startCode = mapOf(
-            Language.JAVA to "some start java code",
-            Language.PYTHON to "some start python code"
+        inputTypes = listOf(Type.INTEGER, Type.STRING, Type.BOOLEAN, Type.INTEGER_ARR, Type.STRING_ARR).map { it.name },
+        outputType = Type.INTEGER_ARR.name,
+        startCodes = mapOf(
+            Language.JAVA.name to "some start java code",
+            Language.PYTHON.name to "some start python code"
         ),
         level = Level.EASY,
         tests = listOf()

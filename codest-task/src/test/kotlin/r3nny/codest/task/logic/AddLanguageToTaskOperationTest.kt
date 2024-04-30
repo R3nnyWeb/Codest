@@ -8,9 +8,10 @@ import io.mockk.coVerify
 import io.mockk.slot
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.task.dto.dao.TaskDTO
+import r3nny.codest.task.dto.common.TaskParameters
+import r3nny.codest.task.dto.dao.TaskDto
 import r3nny.codest.task.dto.http.AddLanguageToTaskRequest
-import java.util.UUID
+import java.util.*
 
 class AddLanguageToTaskOperationTest : OperationTestBase() {
 
@@ -22,12 +23,15 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
     fun `success flow - add new language and generate drivers`() {
         runBlocking {
             val savedWithOneLanguage = getTaskWithOnlyLanguage(saved, Language.PYTHON)
-            val slot = slot<TaskDTO>()
-            coEvery { taskAdapter.getById(id) } returns savedWithOneLanguage
+            val slot = slot<TaskDto>()
+            coEvery { taskAdapter.getFullById(id) } returns savedWithOneLanguage
             coEvery {
                 driverGenerator.generate(
-                    methodName = request.methodName,
-                    parameters = saved.parameters,
+                    methodName = createTaskRequest.methodName,
+                    parameters = TaskParameters(
+                        inputTypes = saved.inputTypes,
+                        outputType = saved.outputType
+                    ),
                     languages = setOf(addLanguageRequest.language)
                 )
             } returns mapOf(addLanguageRequest.language to "driver")
@@ -35,10 +39,10 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
             operation.activate(id, addLanguageRequest)
 
 
-            coVerify { taskAdapter.update(capture(slot)) }
+            coVerify { taskAndTestAdapter.updateLanguage(capture(slot)) }
             val updated = slot.captured
             with(updated){
-                enabled shouldBe false
+                isEnabled shouldBe false
                 drivers shouldBe savedWithOneLanguage.drivers + mapOf(addLanguageRequest.language to "driver")
             }
 
@@ -50,7 +54,7 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
     @Test
     fun `error flow - language exists`() {
         runBlocking {
-            coEvery { taskAdapter.getById(id) } returns saved
+            coEvery { taskAdapter.getFullById(id) } returns saved
 
             //business exception - 422
             shouldThrowAny {
@@ -59,11 +63,11 @@ class AddLanguageToTaskOperationTest : OperationTestBase() {
         }
     }
 
-    private fun getTaskWithOnlyLanguage(task: TaskDTO, language: Language) =
+    private fun getTaskWithOnlyLanguage(task: TaskDto, language: Language) =
         task.copy(
             drivers = mapOf(language to "driver"),
             startCode = mapOf(language to "start code"),
-            enabled = true
+            isEnabled = true
         )
 
 }

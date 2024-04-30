@@ -46,3 +46,20 @@ services:
         always
       networks:
         - app
+  pg_database:
+    image: postgres
+    container_name: pg_database
+    restart:
+      always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - app
+volumes:
+  postgres:
