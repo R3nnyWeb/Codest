@@ -1,6 +1,5 @@
 package r3nny.codest.runner.service
 
-import r3nny.codest.runner.config.Logic
 import r3nny.codest.runner.config.LogicConfigMapping
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.shared.exception.InvocationException

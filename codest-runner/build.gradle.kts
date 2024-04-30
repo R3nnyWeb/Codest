@@ -13,7 +13,7 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain { languageVersion.set(JavaLanguageVersion.of("17")) }
+    jvmToolchain { languageVersion.set(JavaLanguageVersion.of("19")) }
     sourceSets.main { kotlin.srcDir("build/generated/ksp/main/kotlin") }
     sourceSets.test { kotlin.srcDir("build/generated/ksp/test/kotlin") }
 }
@@ -64,20 +64,20 @@ dependencies {
 tasks {
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(19))
         }
     }
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "19"
             freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "19"
             freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
