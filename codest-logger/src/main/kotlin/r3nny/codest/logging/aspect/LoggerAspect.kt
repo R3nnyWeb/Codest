@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Pointcut
 import org.aspectj.lang.reflect.CodeSignature
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
+import r3nny.codest.shared.exception.CustomException
 
 @Aspect
 class LoggerAspect {
@@ -37,9 +38,17 @@ class LoggerAspect {
         val methodName = codeSignature.name
         val log = LoggerFactory.getLogger(codeSignature.declaringType)
 
-        MDC.put("error", error.toString())
-        log.error("${className}.${methodName.replace("\$suspendImpl", "")}!")
-        MDC.remove("error")
+        MDC.put("errorMessage", error.message)
+        MDC.put("stackTrace", error.cause?.stackTraceToString())
+        if (error is CustomException) {
+            MDC.put("errorCode", error.exceptionCode.errorCode)
+        } else {
+            MDC.put("errorCode", "InternalError")
+        }
+        log.error("${methodName.replace("\$suspendImpl", "")}!")
+        MDC.remove("errorMessage")
+        MDC.remove("stackTrace")
+        MDC.remove("errorCode")
 
     }
 
@@ -55,7 +64,7 @@ class LoggerAspect {
 
         if (result.toString() != "COROUTINE_SUSPENDED") {
             MDC.put("result", result.toString())
-            log.info("${className}.${methodName.replace("\$suspendImpl", "")} <")
+            log.info("${methodName.replace("\$suspendImpl", "")} <")
             MDC.remove("result")
         }
 
@@ -73,16 +82,14 @@ class LoggerAspect {
             parameters[name] = parameterValues[index]
         }
 
-        if (!methodName.contains("suspendImpl")) {
-            val log = LoggerFactory.getLogger(codeSignature.declaringType)
+        val log = LoggerFactory.getLogger(codeSignature.declaringType)
 
-            if (parameters.isNotEmpty())
-                MDC.put("payload", parameters.toString())
+        if (parameters.isNotEmpty())
+            MDC.put("payload", parameters.toString())
 
-            log.info("${className}.$methodName >")
+        log.info("$methodName >")
 
-            MDC.remove("payload")
-       }
+        MDC.remove("payload")
 
     }
 }

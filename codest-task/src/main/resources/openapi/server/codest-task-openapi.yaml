@@ -10,7 +10,7 @@ externalDocs:
   url: https://github.com/R3nnyWeb/Codest
 
 servers:
-  - url: /tasks/v1
+  - url: /
 
 tags:
   - name: tasks
@@ -19,7 +19,7 @@ tags:
 
 paths:
 
-  /list:
+  /v1/tasks/list:
     get:
       tags:
         - tasks
@@ -43,7 +43,7 @@ paths:
         500:
           $ref: '#/components/responses/Error'
   
-  /{taskId}:
+  /v1/tasks/{taskId}:
     get:
       tags:
         - tasks
@@ -65,7 +65,7 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           
-  /{taskId}/lite:
+  /v1/tasks/{taskId}/lite:
     get:
       tags:
         - tasks
@@ -87,7 +87,7 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           
-  /{taskId}/internal:
+  /v1/tasks/{taskId}/internal:
     get:
       tags:
         - tasks
@@ -95,6 +95,7 @@ paths:
       operationId: getTaskInternal
       parameters:
         - $ref: '#/components/parameters/TaskIdPath'
+        - $ref: '#/components/parameters/LanguageQuery'
       responses:
         200:
           description: Ok
@@ -109,7 +110,7 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           
-  /:
+  /v1/tasks/:
     post:
       tags:
         - tasks
@@ -127,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FullTaskResponse'
+                $ref: '#/components/schemas/CreateTaskResponse'
         400:
           $ref: '#/components/responses/Error'
         422:
@@ -145,6 +146,14 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
 
   schemas:
+    CreateTaskResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+
     CreateTaskRequest:
       type: object
       required:
@@ -192,7 +201,6 @@ components:
       type: object
       required:
         - id
-        - languages
         - isEnabled
         - isPrivate
         - tests
@@ -200,16 +208,15 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/TaskId'
-        languages:
-          $ref: '#/components/schemas/TaskLanguages'
         isEnabled:
           $ref: '#/components/schemas/IsEnabled'
         isPrivate:
           $ref: '#/components/schemas/IsPrivate'
         tests:
           $ref: '#/components/schemas/TaskTests'
-        drivers:
-          $ref: '#/components/schemas/TaskDrivers'
+        driver:
+          description: Заготовка кода для выполнения
+          type: string
   
     TaskLiteResponse:
       description: Описание задачи для решения
@@ -218,6 +225,7 @@ components:
         - id
         - name
         - languages
+        - description
         - isEnabled
         - isPrivate
         - startCodes
@@ -292,14 +300,14 @@ components:
       type: string
       additionalProperties:
         type: string
-      example: [{'java' : 'someCode'}]
+      example: {{'java' : 'someCode'}}
       
     TaskDrivers:
       description: Заготовки кода для выполнения. язык -> драйвер
       type: string
       additionalProperties:
         type: string
-      example: [{'java' : 'someCode'}]
+      example: {{'java' : 'someCode'}}
       
     TaskInputTypes:
       description: Типы входных параметров
@@ -322,7 +330,7 @@ components:
     TaskLanguage:
       description: Допустимый язык
       type: string
-      example: 'java17'
+      example: 'java'
       
     MethodName:
       description: Название реализуемого метода(функции)
@@ -446,15 +454,9 @@ components:
       description: Данные об ошибке
       type: object
       required:
-        - errorId
         - errorCode
         - errorMessage
       properties:
-        errorId:
-          description: Уникальный идентификатор ошибки
-          type: string
-          minLength: 1
-          example: 5b23a9529c0f48bc
         errorMessage:
           description: Пользовательское сообщение об ошибке
           type: string
@@ -466,10 +468,6 @@ components:
           minLength: 1
           maxLength: 8
           example: 01-Z99
-        errorDetails:
-          description: Дополнительная информация об ошибке
-          type: object
-          example: { "key": "value" }
   
   parameters:
     TaskIdPath:
@@ -479,6 +477,14 @@ components:
       in: path
       schema:
         $ref: '#/components/schemas/TaskId'
+
+    LanguageQuery:
+      description: Язык
+      required: true
+      name: language
+      in: query
+      schema:
+        $ref: '#/components/schemas/TaskLanguage'
   
     Level:
       description: Уровень сложности

@@ -7,6 +7,8 @@ plugins {
     id("com.google.devtools.ksp") version ("1.9.10-1.0.13")
     id("org.openapi.generator") version "7.1.0"
     id("application")
+
+    id("io.freefair.aspectj.post-compile-weaving") version "6.6.3"
 }
 
 group = "r3nny.codest.task"
@@ -76,8 +78,10 @@ fun kora(module: String) = "ru.tinkoff.kora:$module"
 val koraVersion: String by project
 
 dependencies {
+    aspect(project(":codest-logger"))
+    implementation(project(":codest-logger"))
+
     ksp("ru.tinkoff.kora:symbol-processors")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.15.3"))
     implementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
@@ -94,11 +98,13 @@ dependencies {
     implementation(kora("kafka"))
     implementation(kora("config-hocon"))
     implementation(kora("database-jdbc"))
-    implementation(kora("logging-logback"))
     implementation(kora("micrometer-module"))
+    implementation(kora("logging-logback"))
     implementation(kora("validation-module"))
     implementation(kora("openapi-management"))
     implementation(kora("cache-caffeine"))
+
+    implementation("org.postgresql:postgresql:42.7.3")
 
     testImplementation("org.testcontainers:junit-jupiter:${testcontainersVerison()}")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.3")
@@ -112,7 +118,7 @@ dependencies {
 tasks {
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(19))
         }
     }
 
@@ -122,14 +128,14 @@ tasks {
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "19"
             freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "19"
             freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xjsr305=strict")
         }
     }
@@ -140,5 +146,5 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(19)
 }

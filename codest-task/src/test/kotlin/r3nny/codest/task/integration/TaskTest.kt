@@ -1,7 +1,7 @@
 package r3nny.codest.task.integration
 
 
-class TaskTest : TestBase() {
+class TaskTest  {
 
    /* object Specs {
 

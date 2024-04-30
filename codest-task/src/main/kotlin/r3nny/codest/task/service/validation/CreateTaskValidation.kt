@@ -1,21 +1,23 @@
 package r3nny.codest.task.service.validation
 
+import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.throwValidationException
-import r3nny.codest.task.dto.http.CreateTaskRequestDto
 import r3nny.codest.task.exception.ValidationExceptionCode
+import r3nny.codest.task.model.CreateTaskRequest
 
-fun validateCreateTask(request: CreateTaskRequestDto) {
+
+fun validateCreateTask(request: CreateTaskRequest) {
     runCatching {
         with(request) {
-            if (parameters.inputTypes.isEmpty())
+            if (inputTypes.isEmpty())
                 throw Exception("Не переданы входные параметры")
             if (tests.any {
-                    it.inputValues.size != parameters.inputTypes.size
+                    it.inputData.size != inputTypes.size
                 })
-                throw Exception("Количество входных данных в тесте меньше, чем количество входных параметров")
+                throw Exception("Количество входных данных в тесте неравно количеству входных параметров")
             if (tests.size < 2)
                 throw Exception("Количество тестов меньше минимального")
-            if (startCode.keys != languages)
+            if (startCodes.keys.toSet() != (languages ?: Language.entries.map { it.name }).toSet())
                 throw Exception("Не для всех языков указан начальный код")
         }
     }.recoverCatching {

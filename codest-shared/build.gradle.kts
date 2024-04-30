@@ -4,11 +4,11 @@ plugins {
     id("application")
 }
 
-group = "r3nny.codest.executor"
+group = "r3nny.codest.shared"
 version = "2023.0.1"
 
 kotlin {
-    jvmToolchain { languageVersion.set(JavaLanguageVersion.of("17")) }
+    jvmToolchain { languageVersion.set(JavaLanguageVersion.of("19")) }
     sourceSets.main { kotlin.srcDir("build/generated/ksp/main/kotlin") }
     sourceSets.test { kotlin.srcDir("build/generated/ksp/test/kotlin") }
 }
@@ -25,12 +25,12 @@ configurations {
     api.get().extendsFrom(koraBom)
     implementation.get().extendsFrom(koraBom)
 }
-
+fun kora(module: String) = "ru.tinkoff.kora:$module"
+val koraVersion: String by project
 dependencies {
     ksp("ru.tinkoff.kora:symbol-processors")
-    koraBom(platform("ru.tinkoff.kora:kora-parent:1.0.8"))
-    implementation("ru.tinkoff.kora:json-module")
-    testImplementation(kotlin("test"))
+    koraBom(platform("ru.tinkoff.kora:kora-parent:$koraVersion"))
+    implementation(kora("json-module"))
 }
 
 tasks.test {
@@ -39,5 +39,5 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(19)
 }

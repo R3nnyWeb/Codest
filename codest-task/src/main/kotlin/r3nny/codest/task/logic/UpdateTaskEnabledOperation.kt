@@ -1,5 +1,6 @@
 package r3nny.codest.task.logic
 
+import r3nny.codest.logging.aspect.LogMethod
 import java.util.UUID
 import ru.tinkoff.kora.logging.common.annotation.Log
 
@@ -8,7 +9,7 @@ open class UpdateTaskEnabledOperation(
 //    private val taskAdapter: TaskAdapter,
 ) {
 
-    @Log
+    @LogMethod
     open suspend fun activate(taskId: UUID) : Boolean {
 //        val solvedLanguages = attemptAdapter.getSolvedLanguagesForTask(taskId)
 //        val task = taskAdapter.getById(taskId) ?: throw RuntimeException("задача не найдена");

@@ -1,38 +1,56 @@
 package r3nny.codest.task.logic
 
+import r3nny.codest.logging.aspect.LogMethod
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.task.dto.common.Level
 import java.util.UUID
-import r3nny.codest.task.dto.dao.Level
-import r3nny.codest.task.dto.dao.TaskDTO
-import r3nny.codest.task.dto.http.CreateTaskRequestDto
-import r3nny.codest.task.integration.db.TaskAdapter
+import r3nny.codest.task.dto.dao.TaskDto
+import r3nny.codest.task.dto.extentions.languages
+import r3nny.codest.task.dto.extentions.parameters
+import r3nny.codest.task.dto.extentions.tests
+import r3nny.codest.task.integration.db.TaskAndTestAdapter
+import r3nny.codest.task.model.CreateTaskRequest
 import r3nny.codest.task.service.driver.DriverGeneratorService
 import r3nny.codest.task.service.validation.validateCreateTask
 import ru.tinkoff.kora.common.Component
-import ru.tinkoff.kora.logging.common.annotation.Log
 
 @Component
 open class CreateTaskOperation(
-    private val taskAdapter: TaskAdapter,
+    private val taskAndTestAdapter: TaskAndTestAdapter,
     private val driverGenerator: DriverGeneratorService,
 ) {
 
-    @Log
-    open suspend fun activate(request: CreateTaskRequestDto): TaskDTO = with(request) {
+    @LogMethod
+    open suspend fun activate(request: CreateTaskRequest): UUID = with(request) {
         validateCreateTask(this)
 
-        val task = TaskDTO(
-            id = UUID.randomUUID(),
-            name = name,
-            drivers = driverGenerator.generate(this),
-            description = description,
-            methodName = methodName,
+        val parameters = parameters()
+        val mappedLanguages = languages()
+
+        val drivers = driverGenerator.generate(
+            methodName = request.methodName,
             parameters = parameters,
-            startCode = startCode,
-            level = Level.EASY,
-            tests = tests
+            languages = mappedLanguages
         )
 
-        taskAdapter.createTask(task)
-        task
+        val task = TaskDto(
+            id = UUID.randomUUID(),
+            name = name,
+            drivers = drivers,
+            description = description,
+            methodName = methodName,
+            inputTypes = parameters.inputTypes,
+            outputType = parameters.outputType,
+            startCode = startCodes.mapKeys { (k, _) -> Language.fromString(k) },
+            level = Level.fromString(level.name.lowercase()),
+            languages = mappedLanguages,
+            isEnabled = false,
+            isPrivate = isPrivate ?: false,
+        )
+
+        taskAndTestAdapter.createTask(task, tests())
+
+        task.id
     }
+
 }

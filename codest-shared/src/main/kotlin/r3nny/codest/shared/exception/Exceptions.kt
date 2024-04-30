@@ -1,12 +1,10 @@
 package r3nny.codest.shared.exception
 
-import kotlin.Exception
-
 abstract class CustomException(
     val exceptionCode: ExceptionCode<out CustomException>,
     override val cause: Throwable? = null,
-    customMessage: String?
-): Exception() {
+    customMessage: String?,
+) : Exception() {
     final override val message: String = buildString {
         append(exceptionCode.message)
         if (customMessage != null) {
@@ -41,17 +39,30 @@ class ValidationException(
 fun throwInvocationException(
     code: ExceptionCode<InvocationException>,
     cause: Throwable? = null,
-    message: String? = null
-) { throw InvocationException(code, cause, message) }
+    message: String? = null,
+): Nothing {
+    throw InvocationException(code, cause, message)
+}
 
 fun throwValidationException(
     code: ExceptionCode<ValidationException>,
     cause: Throwable? = null,
-    message: String? = null
-) { throw ValidationException(code, cause, message) }
+    message: String? = null,
+): Nothing {
+    throw ValidationException(code, cause, message)
+}
 
 fun throwLogicException(
     code: ExceptionCode<LogicException>,
     cause: Throwable? = null,
-    message: String? = null
-) { throw LogicException(code, cause, message) }
+    message: String? = null,
+): Nothing {
+    throw LogicException(code, cause, message)
+}
+
+suspend fun <R> wrap(errorCode: ExceptionCode<InvocationException>, block: suspend () -> R) = runCatching {
+    block.invoke()
+}.onFailure {
+    if (it !is CustomException)
+        throwInvocationException(errorCode, it)
+}.getOrThrow()

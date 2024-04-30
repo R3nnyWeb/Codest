@@ -4,36 +4,32 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.TaskParameters
-import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import r3nny.codest.shared.exception.ValidationException
-import r3nny.codest.task.dto.dao.Level
-import r3nny.codest.task.dto.http.CreateTaskRequestDto
+import r3nny.codest.task.model.CreateTaskRequest
+import r3nny.codest.task.model.CreateTest
 
 class CreateTaskValidationKtTest {
-    private val request = CreateTaskRequestDto(
+    private val request = CreateTaskRequest(
         name = "task",
         description = "some md descr",
         methodName = "method",
-        parameters = TaskParameters(
-            inputTypes = listOf(Type.INTEGER, Type.INTEGER),
-            outputType = Type.INTEGER_ARR
+        inputTypes = listOf(Type.INTEGER.name, Type.INTEGER.name),
+        outputType = Type.INTEGER_ARR.name,
+        languages = Language.values().map { it.name },
+        startCodes = mapOf(
+            Language.JAVA.name to "some start java code",
+            Language.PYTHON.name to "some start python code"
         ),
-        languages = Language.values().toSet(),
-        startCode = mapOf(
-            Language.JAVA to "some start java code",
-            Language.PYTHON to "some start python code"
-        ),
-        level = Level.EASY,
+        level = r3nny.codest.task.model.Level.EASY,
         tests = listOf(
-            TestCase(
-                inputValues = listOf("2", "2"),
-                outputValue = "[2,2]"
+            CreateTest(
+                inputData = listOf("2", "2"),
+                outputData = "[2,2]"
             ),
-            TestCase(
-                inputValues = listOf("2", "2"),
-                outputValue = "[2,2]"
+            CreateTest(
+                inputData = listOf("2", "2"),
+                outputData = "[2,2]"
             ),
         )
     )
@@ -51,8 +47,8 @@ class CreateTaskValidationKtTest {
     fun `error - start code not for all`() {
         with(
             request.copy(
-                startCode = mapOf(
-                    Language.JAVA to "some start java code",
+                startCodes = mapOf(
+                    Language.JAVA.name to "some start java code",
                 ),
             )
         ) {
@@ -69,9 +65,9 @@ class CreateTaskValidationKtTest {
         with(
             request.copy(
                 tests = listOf(
-                    TestCase(
-                        inputValues = listOf("2", "2"),
-                        outputValue = "[2,2]"
+                    CreateTest(
+                        inputData = listOf("2", "2"),
+                        outputData = "[2,2]"
                     )
                 )
             )
@@ -88,13 +84,13 @@ class CreateTaskValidationKtTest {
         with(
             request.copy(
                 tests = listOf(
-                    TestCase(
-                        inputValues = listOf("2"),
-                        outputValue = "[2,2]"
+                    CreateTest(
+                        inputData = listOf("2"),
+                        outputData = "[2,2]"
                     ),
-                    TestCase(
-                        inputValues = listOf("2", "2", "2"),
-                        outputValue = "[2,2]"
+                    CreateTest(
+                        inputData = listOf("2", "2", "2"),
+                        outputData = "[2,2]"
                     )
                 )
             )
@@ -109,10 +105,8 @@ class CreateTaskValidationKtTest {
     fun `error - input params empty`() {
         with(
             request.copy(
-                parameters = TaskParameters(
-                    inputTypes = listOf(),
-                    outputType = Type.INTEGER_ARR
-                )
+                inputTypes = listOf(),
+                outputType = Type.INTEGER_ARR.name
             )
         ) {
 

@@ -3,6 +3,7 @@ package r3nny.codest.task.service.driver.internal
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
+import r3nny.codest.task.dto.extentions.parameters
 import r3nny.codest.task.service.driver.DriverTestContext
 
 class PythonDriverGeneratorTest : DriverTestContext() {
@@ -28,7 +29,7 @@ if __name__ == '__main__':
 
     @Test
     fun `success - unique types`() {
-        val driver = sut.generate(request.methodName, request.parameters)
+        val driver = sut.generate(request.methodName, request.parameters())
 
         driver shouldBe """
 {{solution}}
