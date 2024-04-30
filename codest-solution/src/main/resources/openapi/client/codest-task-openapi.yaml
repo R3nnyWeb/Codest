@@ -202,8 +202,8 @@ components:
       required:
         - id
         - isEnabled
-        - isPrivate
         - driver
+        - isPrivate
         - tests
         - drivers
       properties:
