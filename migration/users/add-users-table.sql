@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users(
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP NULL
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON users(email);

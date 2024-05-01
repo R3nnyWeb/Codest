@@ -8,6 +8,7 @@ import ru.tinkoff.kora.database.jdbc.JdbcDatabaseModule
 import ru.tinkoff.kora.http.client.ok.OkHttpClientModule
 import ru.tinkoff.kora.http.server.undertow.UndertowHttpServerModule
 import ru.tinkoff.kora.json.module.JsonModule
+import ru.tinkoff.kora.kafka.common.KafkaModule
 import ru.tinkoff.kora.logging.logback.LogbackModule
 import ru.tinkoff.kora.micrometer.module.MetricsModule
 import ru.tinkoff.kora.openapi.management.OpenApiManagementModule
@@ -18,6 +19,7 @@ interface Application :
     LogbackModule,
     CaffeineCacheModule,
     MetricsModule,
+    KafkaModule,
     JsonModule,
     JdbcDatabaseModule,
     UndertowHttpServerModule,

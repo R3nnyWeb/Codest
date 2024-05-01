@@ -10,8 +10,8 @@ import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.runner.integration.KafkaClientAdapter
 import r3nny.codest.runner.service.ExecutionResult
 import r3nny.codest.runner.service.executors.JavaCodeExecutor
+import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.dto.runner.CodeRunnerErrorType
-import r3nny.codest.shared.dto.runner.ExecutableLanguage
 import r3nny.codest.shared.dto.runner.RunCodeRequestEvent
 import r3nny.codest.shared.dto.runner.RunCodeResponseEvent
 import r3nny.codest.shared.exception.InvocationException
@@ -21,11 +21,11 @@ import java.util.*
 class RunCodeOperationTest {
     private val id = UUID.randomUUID()
     private val event = RunCodeRequestEvent(
-        code = "some code", input = listOf("input", "some"), language = ExecutableLanguage.JAVA_17
+        code = "some code", input = listOf("input", "some"), language = Language.JAVA
     )
     private val kafkaAdapter = mockk<KafkaClientAdapter>(relaxUnitFun = true)
     private val codeExecutor = mockk<JavaCodeExecutor>(relaxUnitFun = true) {
-        every { this@mockk.languages } returns setOf(ExecutableLanguage.JAVA_17)
+        every { this@mockk.languages } returns setOf(Language.JAVA)
     }
     private val operation = RunCodeOperation(
         kafkaAdapter = kafkaAdapter,

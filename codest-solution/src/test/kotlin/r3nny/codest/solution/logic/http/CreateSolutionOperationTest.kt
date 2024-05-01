@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.InvocationException
 import r3nny.codest.shared.exception.LogicException
+import r3nny.codest.solution.cache.GetAttemptCache
 import r3nny.codest.solution.dto.dao.AttemptDto
 import r3nny.codest.solution.dto.dao.StatusDto
 import r3nny.codest.solution.exception.InvocationExceptionCode
@@ -29,11 +30,13 @@ class CreateSolutionOperationTest {
     private val taskAdapter: TaskAdapter = mockk<TaskAdapter>()
     private val attemptsAdapter: AttemptsAdapter = mockk<AttemptsAdapter>(relaxUnitFun = true)
     private val kafkaAdapter: KafkaAdapter = mockk(relaxUnitFun = true)
+    private val getAttemptCache: GetAttemptCache = mockk<GetAttemptCache>(relaxUnitFun = true)
 
     private val operation = CreateSolutionOperation(
         taskAdapter = taskAdapter,
         attemptsAdapter = attemptsAdapter,
-        kafkaAdapter = kafkaAdapter
+        kafkaAdapter = kafkaAdapter,
+        getAttemptCache = getAttemptCache
     )
     private val stubTaskId = UUID.randomUUID()
     private val stubUserId = UUID.randomUUID()
@@ -63,6 +66,8 @@ class CreateSolutionOperationTest {
     private val stubAttempt = AttemptDto(
         id = UUID.randomUUID(),
         status = StatusDto.PENDING,
+        taskId = stubTaskId,
+        userId = stubUserId,
         code = "some code",
         error = "some error",
         language = stubLanguage,
@@ -72,13 +77,22 @@ class CreateSolutionOperationTest {
     @Test
     fun `success flow`() = runBlocking {
         coEvery { taskAdapter.getTaskInternal(stubTaskId, stubLanguage) } returns Either.left(stubTaskDto)
-        coEvery { attemptsAdapter.saveAttempt(stubTaskId, stubUserId, stubRequest.code, stubLanguage) } returns stubAttempt
+        coEvery {
+            attemptsAdapter.saveAttempt(
+                stubTaskId,
+                stubUserId,
+                stubRequest.code,
+                stubLanguage
+            )
+        } returns stubAttempt
+        coEvery { getAttemptCache.put(stubAttempt.id, stubAttempt) } returns stubAttempt
 
         operation.activate(taskId = stubTaskId, userId = stubUserId, request = stubRequest)
 
         coVerify {
             attemptsAdapter.saveAttempt(stubTaskId, stubUserId, stubRequest.code, stubLanguage)
-                kafkaAdapter.sendCodeToExecute("some code driver", stubLanguage, listOf("1", "0", "2", "3"))
+            kafkaAdapter.sendCodeToExecute( stubAttempt.id,"some code driver", stubLanguage, listOf("1", "0", "2", "3"))
+            getAttemptCache.put(stubAttempt.id, stubAttempt)
         }
     }
 

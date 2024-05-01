@@ -48,7 +48,7 @@ val openApiTaskClientGenerate = tasks.register<GenerateTask>("openApiTaskClientG
         mapOf(
             "enumPropertyNaming" to "UPPERCASE",
             "serializationLibrary" to "jackson",
-            "clientConfigPrefix" to "httpClient.taskApi",
+            "clientConfigPrefix" to "httpClient",
             "mode" to "kotlin-suspend-client",
         ),
     )

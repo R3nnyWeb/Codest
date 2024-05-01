@@ -4,6 +4,7 @@ import r3nny.codest.logging.aspect.LogMethod
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
+import r3nny.codest.task.api.TasksApiDelegate
 import r3nny.codest.task.api.TasksApiResponses
 import r3nny.codest.task.dto.dao.TaskDto
 import r3nny.codest.task.dto.dao.TaskLiteDto

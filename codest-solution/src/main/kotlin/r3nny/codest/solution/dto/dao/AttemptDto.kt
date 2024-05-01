@@ -7,6 +7,8 @@ import java.util.*
 data class AttemptDto(
     val id: UUID,
     val status: StatusDto,
+    val taskId: UUID,
+    val userId: UUID,
     val code: String,
     val error: String?,
     val language: Language,

@@ -3,6 +3,7 @@ package r3nny.codest.solution.logic.http
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.throwInvocationException
 import r3nny.codest.shared.exception.throwLogicException
+import r3nny.codest.solution.cache.GetAttemptCache
 import r3nny.codest.solution.dto.dao.AttemptDto
 import r3nny.codest.solution.exception.InvocationExceptionCode
 import r3nny.codest.solution.exception.LogicExceptionCode
@@ -19,12 +20,12 @@ class CreateSolutionOperation(
     private val taskAdapter: TaskAdapter,
     private val attemptsAdapter: AttemptsAdapter,
     private val kafkaAdapter: KafkaAdapter,
+    private val getAttemptCache: GetAttemptCache,
 ) {
 
     suspend fun activate(taskId: UUID, userId: UUID, request: CreateSolutionRequest): AttemptDto {
         val language = Language.fromString(request.language)
         val task = getTaskInternal(taskId = taskId, language = language)
-
 
         val attempt = attemptsAdapter.saveAttempt(
             taskId = taskId,
@@ -33,11 +34,13 @@ class CreateSolutionOperation(
             language = language
         )
         kafkaAdapter.sendCodeToExecute(
+            key = attempt.id,
             code = task.driver.replace("\${solution}", request.code),
             language = language,
             input = task.tests.map { it.inputData }.reduce { acc, it -> acc + it }
         )
-        return attempt
+
+        return getAttemptCache.put(attempt.id, attempt)
     }
 
     private suspend fun getTaskInternal(taskId: UUID, language: Language): InternalTaskResponse {

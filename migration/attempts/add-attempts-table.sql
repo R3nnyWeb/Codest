@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS attempts(
     status VARCHAR(50) NOT NULL DEFAULT 'pending',
     code TEXT NOT NULL,
     language VARCHAR(50) NOT NULL,
-    error TEXT,
+    error TEXT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
     FOREIGN KEY (user_id) REFERENCES users(id),

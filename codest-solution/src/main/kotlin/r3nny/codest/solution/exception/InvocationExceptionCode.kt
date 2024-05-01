@@ -8,4 +8,6 @@ enum class InvocationExceptionCode(
     override val message: String,
 ): ExceptionCode<InvocationException> {
     TASK_API("TaskApiError", "Ошибка при обращении к API задач"),
+    ATTEMPTS("AttemptsError", "Ошибка при обращении к таблице attempts"),
+    KAFKA("KafkaError", "Ошибка при обращении к таблице attempts"),;
 }
