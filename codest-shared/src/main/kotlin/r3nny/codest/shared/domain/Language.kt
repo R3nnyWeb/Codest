@@ -4,8 +4,8 @@ import ru.tinkoff.kora.json.common.annotation.Json
 
 @Json
 enum class Language() {
-    JAVA(),
-    PYTHON();
+    JAVA,
+    PYTHON;
 
     companion object {
 
