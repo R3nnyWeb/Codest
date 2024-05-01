@@ -3,7 +3,7 @@
 
 ## Алгоритм
 
-1. Прослушать событие из топика **codest.runner.response** и декодировать в соотвествии с [контрактом](../../../codest-shared/docs/Runner/RunCodeResponseEvent.md)
+1. Прослушать событие из топика **codest.runner.response** и декодировать в соотвествии с [контрактом](../events/RunCodeResponseEvent.md)
 2. Обогатится попыткой в **attempts**. Если не найдено выбросить **AttemptNotFoundError** и перейти к обновлению попытки с **InternalError** и завершить обработку
 3. Обогатится тестами по id задачи из **attempts**
 4. Если **errorType** из события = null: 

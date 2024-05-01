@@ -16,5 +16,5 @@
           |----------|-----------------------------|
       | status   | internal_error              |
       | error    | Ошибка. id = **solutionId** |
-   2. Отправить событие об инвалидции кеша в топик **codest.cache.invalidate** в cоответсвии с [контрактом](../../../codest-shared/docs/Runner/CacheInvalidateEvent.md)
-4. Вернуть ответ в соответсвии мапингу из [openApi](../../src/main/resources/openapi/server/codest-task-openapi.yaml)
+   2. Отправить событие об инвалидции кеша в топик **codest.cache.invalidate** в cоответсвии с [контрактом](../events/CacheInvalidateEvent.md)
+4. Вернуть ответ в соответсвии мапингу из [openApi](codest-api-openapi.yaml)

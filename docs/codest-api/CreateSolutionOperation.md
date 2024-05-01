@@ -23,7 +23,7 @@
    | code     | code из запроса     |
    | language | language из запроса |
 3. Отправить сообщение в **codest.runner.request** в соотвествии
-   с [контрактом](../../../codest-shared/docs/Runner/RunCodeRequestEvent.md)
+   с [контрактом](../events/RunCodeRequestEvent.md)
    Маппинг:
 
    | Поле     | Значение                                           |

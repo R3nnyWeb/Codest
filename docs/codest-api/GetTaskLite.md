@@ -11,4 +11,4 @@
 1. Обогатится задачей из **tasks** (или в кеше)
    1. Если не найдено, выбросить ошибку **TaskNotFound (422)**
 2. Если userId передан обогатится в **attempts** по taskId и userId
-3. Вернуть ответ в соответсвии мапингу из [openApi](../../src/main/resources/openapi/server/codest-task-openapi.yaml), выбрав драйвер только для нужного language
+3. Вернуть ответ в соответсвии мапингу из [openApi](codest-task-openapi.yaml), выбрав драйвер только для нужного language
