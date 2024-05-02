@@ -257,7 +257,9 @@ components:
 
     SolutionError:
       description: Описание ошибки
-      type: string
+      type: array
+      items:
+        type: string
 
     CreateTaskResponse:
       type: object
@@ -315,6 +317,7 @@ components:
       required:
         - id
         - name
+        - level
         - languages
         - description
         - isEnabled

@@ -5,6 +5,6 @@ import java.util.*
 
 @Json
 data class CacheInvalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UUID?,
+    val taskId: UUID? = null,
+    val solutionId: UUID? = null,
 )

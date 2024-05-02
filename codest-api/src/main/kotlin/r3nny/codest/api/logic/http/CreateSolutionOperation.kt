@@ -25,7 +25,7 @@ class CreateSolutionOperation(
         val language = Language.fromString(request.language)
         val task = getTaskInternal(taskId = taskId, language = language)
 
-        val attempt = attemptsAdapter.saveAttempt(
+        val attempt = attemptsAdapter.saveAttempt( //todo: Индекс на невозможность создания двух одновременно
             taskId = taskId,
             userId = userId,
             code = request.code,
@@ -33,9 +33,9 @@ class CreateSolutionOperation(
         )
         kafkaAdapter.sendCodeToExecute(
             key = attempt.id,
-            code = task.driver.replace("\${solution}", request.code),
+            code = task.driver.replace("\${solution}", request.code).replace("\${testsCount}", task.tests.size.toString()),
             language = language,
-            input = task.tests.map { it.inputValues }.reduce { acc, it -> acc + it }
+            tests = task.tests
         )
 
         return getAttemptCache.put(attempt.id, attempt)

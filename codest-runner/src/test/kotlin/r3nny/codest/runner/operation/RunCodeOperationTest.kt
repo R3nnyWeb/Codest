@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.runner.integration.KafkaClientAdapter
 import r3nny.codest.runner.service.ExecutionResult
+import r3nny.codest.runner.service.ExecutionResultTester
 import r3nny.codest.runner.service.executors.JavaCodeExecutor
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.dto.runner.CodeRunnerErrorType
+import r3nny.codest.shared.dto.runner.ExecutionTestCase
 import r3nny.codest.shared.dto.runner.RunCodeRequestEvent
 import r3nny.codest.shared.dto.runner.RunCodeResponseEvent
 import r3nny.codest.shared.exception.InvocationException
@@ -21,14 +23,23 @@ import java.util.*
 class RunCodeOperationTest {
     private val id = UUID.randomUUID()
     private val event = RunCodeRequestEvent(
-        code = "some code", input = listOf("input", "some"), language = Language.JAVA
+        code = "some code",
+        tests = listOf(
+            ExecutionTestCase(
+                inputData = listOf("some"),
+                outputData = "some output"
+            )
+        ),
+        language = Language.JAVA
     )
     private val kafkaAdapter = mockk<KafkaClientAdapter>(relaxUnitFun = true)
     private val codeExecutor = mockk<JavaCodeExecutor>(relaxUnitFun = true) {
         every { this@mockk.languages } returns setOf(Language.JAVA)
     }
+    private val tester: ExecutionResultTester = mockk()
     private val operation = RunCodeOperation(
         kafkaAdapter = kafkaAdapter,
+        tester = tester,
         executors = All.of(codeExecutor)
     )
 
@@ -38,6 +49,7 @@ class RunCodeOperationTest {
             ExecutionResult(emptyList(), emptyList(), 0),
             ExecutionResult(listOf("some output"), emptyList(), 0)
         )
+        coEvery { tester.findError(event.tests, listOf("some output")) } returns null
 
         operation.activate(event, id)
 
@@ -45,6 +57,22 @@ class RunCodeOperationTest {
             sendResponse(null, listOf("some output"))
         }
     }
+
+        @Test
+    fun `test error`() = runBlocking {
+        coEvery { execute() } returns Pair(
+            ExecutionResult(emptyList(), emptyList(), 0),
+            ExecutionResult(listOf("some output"), emptyList(), 0)
+        )
+        coEvery { tester.findError(event.tests, listOf("some output")) } returns Pair("0", "some output")
+
+        operation.activate(event, id)
+
+        coVerify {
+            sendResponse(CodeRunnerErrorType.TEST_ERROR, listOf("0", "some output"))
+        }
+    }
+
 
     @Test
     fun `runtime error`() = runBlocking {
@@ -112,5 +140,6 @@ class RunCodeOperationTest {
             )
         )
     }
+
 
 }

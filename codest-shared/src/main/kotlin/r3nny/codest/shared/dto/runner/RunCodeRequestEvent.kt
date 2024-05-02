@@ -6,6 +6,12 @@ import ru.tinkoff.kora.json.common.annotation.Json
 @Json
 data class RunCodeRequestEvent(
     val code : String,
-    val input: List<String>?,
+    val tests: List<ExecutionTestCase>,
     val language: Language
+)
+
+@Json
+data class ExecutionTestCase(
+    val inputData: List<String>,
+    val outputData: String
 )

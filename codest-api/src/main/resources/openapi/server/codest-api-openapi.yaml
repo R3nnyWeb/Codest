@@ -257,7 +257,9 @@ components:
 
     SolutionError:
       description: Описание ошибки
-      type: string
+      type: array
+      items:
+        type: string
 
     CreateTaskResponse:
       type: object
@@ -281,7 +283,7 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/TaskName'
-        level: 
+        level:
           $ref: '#/components/schemas/Level'
         description:
           description: Описание
@@ -303,18 +305,19 @@ components:
           $ref: '#/components/schemas/CreateTaskTestsRequest'
         startCodes:
           $ref: '#/components/schemas/TaskStartCodes'
-  
+
     CreateTaskTestsRequest:
       type: array
       items:
         $ref: '#/components/schemas/CreateTest'
-  
+
     TaskLiteResponse:
       description: Описание задачи для решения
       type: object
       required:
         - id
         - name
+        - level
         - languages
         - description
         - isEnabled

@@ -37,7 +37,7 @@ private fun AttemptDto.toSolutionApi() =
         id = id,
         status = status.api,
         code = code,
-        language = language.name,
+        language = language.name.lowercase(),
         createdAt = createdAt,
         _error = error
     )

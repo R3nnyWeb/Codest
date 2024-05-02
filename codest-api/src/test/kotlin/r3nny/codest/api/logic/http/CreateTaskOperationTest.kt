@@ -1,4 +1,4 @@
-package r3nny.codest.api.logic
+package r3nny.codest.api.logic.http
 
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -13,7 +13,7 @@ import r3nny.codest.api.dto.dao.TaskDto
 import r3nny.codest.api.dto.extentions.languages
 import r3nny.codest.api.dto.extentions.parameters
 import r3nny.codest.api.dto.extentions.tests
-import r3nny.codest.api.logic.http.CreateTaskOperation
+import r3nny.codest.api.logic.OperationTestBase
 
 
 class CreateTaskOperationTest : OperationTestBase() {

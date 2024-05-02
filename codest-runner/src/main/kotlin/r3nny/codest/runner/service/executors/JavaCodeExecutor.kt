@@ -2,6 +2,7 @@ package r3nny.codest.runner.service.executors
 
 import r3nny.codest.runner.config.LanguageSettings
 import r3nny.codest.runner.config.Logic
+import r3nny.codest.runner.helper.inputs
 import r3nny.codest.runner.service.CodeFileService
 import r3nny.codest.runner.service.ExecutionResult
 import r3nny.codest.runner.service.ProcessRunner
@@ -58,6 +59,6 @@ open class JavaCodeExecutor(
     }
 
     override suspend fun execute(request: RunCodeRequestEvent): Pair<ExecutionResult, ExecutionResult> {
-        return execute(request.code, request.language, request.input)
+        return execute(request.code, request.language, request.inputs())
     }
 }

@@ -4,7 +4,7 @@ import ru.tinkoff.kora.json.common.annotation.Json
 
 @Json
 data class RunCodeResponseEvent(
-    val errorType: CodeRunnerErrorType?,
+    val errorType: CodeRunnerErrorType? = null,
     val output: List<String>
 )
 
@@ -13,5 +13,6 @@ enum class CodeRunnerErrorType {
     COMPILE_ERROR,
     RUNTIME_ERROR,
     INTERNAL_ERROR,
-    TIME_EXCEED_ERROR
+    TIME_EXCEED_ERROR,
+    TEST_ERROR
 }

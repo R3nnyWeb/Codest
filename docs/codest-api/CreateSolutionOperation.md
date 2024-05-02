@@ -23,11 +23,11 @@
    | code     | code из запроса     |
    | language | language из запроса |
 3. Отправить сообщение в **codest.runner.request** в соотвествии
-   с [контрактом](../events/RunCodeRequestEvent.md)
+   с [контрактом](../events/RunCodeRequestEvent.md) и ключем id из attempts
    Маппинг:
 
-   | Поле     | Значение                                           |
-       |----------|----------------------------------------------------|
-   | input[]  | Входные данные из task.tests                       |
-   | code     | task.driver с подставленным code по ключу solution |
-   | language | language из запроса                                |
+   | Поле     | Значение                                                                            |
+       |----------|-------------------------------------------------------------------------------------|
+   | tests[]  | task.tests                                                                          |
+   | code     | task.driver с подставленным code по ключу solution и testsCount = task.tests.size() |
+   | language | language из запроса                                                                 |

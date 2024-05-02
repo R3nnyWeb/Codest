@@ -1,4 +1,4 @@
-package r3nny.codest.api.logic
+package r3nny.codest.api.logic.http
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.runBlocking
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import r3nny.codest.api.dto.dao.AttemptByTaskDto
 import r3nny.codest.api.dto.dao.StatusDto
 import r3nny.codest.api.exception.LogicExceptionCode
-import r3nny.codest.api.logic.http.GetLiteTaskOperation
+import r3nny.codest.api.logic.OperationTestBase
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.LogicException
 import java.time.LocalDateTime

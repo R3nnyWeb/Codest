@@ -1,4 +1,4 @@
-package r3nny.codest.api.logic
+package r3nny.codest.api.logic.http
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.runBlocking
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import r3nny.codest.api.dto.dao.AttemptDto
 import r3nny.codest.api.dto.dao.StatusDto
 import r3nny.codest.api.exception.LogicExceptionCode
-import r3nny.codest.api.logic.http.CreateSolutionOperation
+import r3nny.codest.api.logic.OperationTestBase
 import r3nny.codest.model.CreateSolutionRequest
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.LogicException
@@ -35,9 +35,8 @@ class CreateSolutionOperationTest : OperationTestBase() {
         id = UUID.randomUUID(),
         status = StatusDto.PENDING,
         taskId = stubTaskId,
-        userId = stubUserId,
         code = "some code",
-        error = "some error",
+        error = listOf("some error"),
         language = stubLanguage,
         createdAt = LocalDateTime.now()
     )
@@ -56,11 +55,12 @@ class CreateSolutionOperationTest : OperationTestBase() {
         } returns stubAttempt
         coEvery { getAttemptCache.put(stubAttempt.id, stubAttempt) } returns stubAttempt
 
-        operation.activate(taskId = stubTaskId, userId = stubUserId, request = stubRequest)
+        val result = operation.activate(taskId = stubTaskId, userId = stubUserId, request = stubRequest)
+        result shouldBe stubAttempt
 
         coVerify {
             attemptsAdapter.saveAttempt(stubTaskId, stubUserId, stubRequest.code, stubLanguage)
-            kafkaAdapter.sendCodeToExecute(stubAttempt.id, "driver code java", stubLanguage, listOf("2", "2", "2", "2"))
+            kafkaAdapter.sendCodeToExecute(stubAttempt.id, "driver code java", stubLanguage, stubTests)
             getAttemptCache.put(stubAttempt.id, stubAttempt)
         }
     }
