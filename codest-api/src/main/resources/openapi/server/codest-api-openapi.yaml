@@ -30,6 +30,7 @@ paths:
         - $ref: '#/components/parameters/Offset'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Level'
+        - $ref: '#/components/parameters/SearchQuery'
       responses:
         200:
           description: Ok
@@ -620,6 +621,14 @@ components:
       in: query
       schema:
         $ref: '#/components/schemas/Level'
+
+    SearchQuery:
+      description: Запрос по названию
+      required: false
+      name: search
+      in: query
+      schema:
+        type: string
     
     Offset:
       description: Смещение страниц

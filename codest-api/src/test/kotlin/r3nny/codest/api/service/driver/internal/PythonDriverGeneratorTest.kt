@@ -2,9 +2,9 @@ package r3nny.codest.api.service.driver.internal
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import r3nny.codest.shared.domain.Language
 import r3nny.codest.api.dto.extentions.parameters
 import r3nny.codest.api.service.driver.DriverTestContext
+import r3nny.codest.shared.domain.Language
 
 class PythonDriverGeneratorTest : DriverTestContext() {
 
@@ -15,10 +15,11 @@ class PythonDriverGeneratorTest : DriverTestContext() {
 {{readMethods}}
 
 if __name__ == '__main__':
+    for i in range({{testsCount}}):
 {{paramsInputSection}}
-    s = Solution()
-    start_time = time.time()
-    ret = Solution.{{methodName}}(s, {{paramsList}})
+        s = Solution()
+        ret = Solution.{{methodName}}(s, {{paramsList}})
+        print(ret)
     """.trimIndent()
 
     val sut = PythonDriverGenerator(config.copy(
@@ -47,15 +48,16 @@ def READ_STRING_ARR():
 
 
 if __name__ == '__main__':
-    param0 = READ_INTEGER()
-    param1 = READ_STRING()
-    param2 = READ_BOOLEAN()
-    param3 = READ_INTEGER_ARR()
-    param4 = READ_STRING_ARR()
+    for i in range({{testsCount}}):
+        param0 = READ_INTEGER()
+        param1 = READ_STRING()
+        param2 = READ_BOOLEAN()
+        param3 = READ_INTEGER_ARR()
+        param4 = READ_STRING_ARR()
 
-    s = Solution()
-    start_time = time.time()
-    ret = Solution.method(s, param0,param1,param2,param3,param4)
+        s = Solution()
+        ret = Solution.method(s, param0,param1,param2,param3,param4)
+        print(ret)
         """.trimIndent()
     }
 }

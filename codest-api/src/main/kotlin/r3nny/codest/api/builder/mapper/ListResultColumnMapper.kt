@@ -10,8 +10,8 @@ import java.sql.ResultSet
 
 @Component
 class ListResultColumnMapper: JdbcResultColumnMapper<List<String>> {
-    override fun apply(row: ResultSet?, index: Int): List<String> {
-        return (row?.getArray(index)!!.array as Array<String>).toList()
+    override fun apply(row: ResultSet?, index: Int): List<String>? {
+        return (row?.getArray(index)?.array as? Array<String>)?.toList()
     }
 }
 

@@ -14,6 +14,7 @@ import r3nny.codest.model.CreateTaskResponse
 import r3nny.codest.model.FullTaskResponse
 import r3nny.codest.model.Level
 import r3nny.codest.model.TaskLiteResponse
+import r3nny.codest.model.TasksListResponse
 import r3nny.codest.model.Test
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
@@ -49,11 +50,16 @@ class TaskController(
     override suspend fun getTasksList(
         offset: Long,
         limit: Int,
-        level: r3nny.codest.model.Level?
+        level: Level?,
+        search: String?
     ): TasksApiResponses.GetTasksListApiResponse {
-        TODO("Not yet implemented")
+      return getTasksListFrontendOperation.activate(search, level?.let { r3nny.codest.api.dto.common.Level.fromString(it.name) }, offset, limit).toResponse()
     }
 }
+
+private fun TasksListResponse.toResponse() = TasksApiResponses.GetTasksListApiResponse.GetTasksList200ApiResponse (
+    content = this
+)
 
 private fun Pair<TaskDto, List<TestCase>>.toResponse() =
     TasksApiResponses.GetFullTaskApiResponse.GetFullTask200ApiResponse(

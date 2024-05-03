@@ -40,9 +40,9 @@ open class RunCodeOperation(
                 if (errorOutput.isEmpty()) {
                     val testErrors = tester.findError(event.tests, output)
                     if (testErrors == null) {
-                        kafkaAdapter.sendCodeRunResponse(id, RunCodeResponseEvent(output = output))
+                        kafkaAdapter.sendCodeRunResponse(id, RunCodeResponseEvent(output = emptyList()))
                     } else {
-                        sendError(id, CodeRunnerErrorType.TEST_ERROR, output = listOf(testErrors.first, testErrors.second))
+                        sendError(id, CodeRunnerErrorType.TEST_ERROR, output = testErrors.first.inputData + testErrors.first.outputData +  testErrors.second)
                     }
                 } else {
                     sendError(id, CodeRunnerErrorType.RUNTIME_ERROR, output = output + errorOutput)

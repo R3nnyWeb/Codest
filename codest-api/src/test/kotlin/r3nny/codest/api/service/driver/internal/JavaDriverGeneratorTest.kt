@@ -2,11 +2,11 @@ package r3nny.codest.api.service.driver.internal
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.Type
 import r3nny.codest.api.dto.common.TaskParameters
 import r3nny.codest.api.dto.extentions.parameters
 import r3nny.codest.api.service.driver.DriverTestContext
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.domain.Type
 
 class JavaDriverGeneratorTest : DriverTestContext() {
 
@@ -17,10 +17,12 @@ class JavaDriverGeneratorTest : DriverTestContext() {
             private static final Scanner scanner = new Scanner(System.in);
             
             public static void main(String[] args) {
-                {{paramsInputSection}}
-            
-                {{returnType}} result = new Solution().{{methodName}}({{paramsList}});
-                
+                for(int i = 0; i < {{testsCount}}; i++) {
+                    {{paramsInputSection}}
+                    {{returnType}} result = new Solution().{{methodName}}({{paramsList}});
+                    
+                    printResult(result);
+                }
                 scanner.close();
             }
             
@@ -57,13 +59,15 @@ class JavaDriverGeneratorTest : DriverTestContext() {
             private static final Scanner scanner = new Scanner(System.in);
             
             public static void main(String[] args) {
-                var param0 = READ_INTEGER();
+                for(int i = 0; i < {{testsCount}}; i++) {
+                    var param0 = READ_INTEGER();
         var param1 = READ_INTEGER();
         var param2 = READ_INTEGER();
         
-            
-                boolean result = new Solution().method(param0,param1,param2);
-                
+                    boolean result = new Solution().method(param0,param1,param2);
+                    
+                    printResult(result);
+                }
                 scanner.close();
             }
             
@@ -88,15 +92,17 @@ class JavaDriverGeneratorTest : DriverTestContext() {
             private static final Scanner scanner = new Scanner(System.in);
             
             public static void main(String[] args) {
-                var param0 = READ_INTEGER();
+                for(int i = 0; i < {{testsCount}}; i++) {
+                    var param0 = READ_INTEGER();
         var param1 = READ_STRING();
         var param2 = READ_BOOLEAN();
         var param3 = READ_INTEGER_ARR();
         var param4 = READ_STRING_ARR();
         
-            
-                int[] result = new Solution().method(param0,param1,param2,param3,param4);
-                
+                    int[] result = new Solution().method(param0,param1,param2,param3,param4);
+                    
+                    printResult(result);
+                }
                 scanner.close();
             }
             

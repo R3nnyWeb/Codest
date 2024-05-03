@@ -6,9 +6,9 @@ import ru.tinkoff.kora.common.Component
 @Component
 class ExecutionResultTester {
 
-    fun findError(tests: List<ExecutionTestCase>, result: List<String>): Pair<String, String>? {
+    fun findError(tests: List<ExecutionTestCase>, result: List<String>): Pair<ExecutionTestCase, String>? {
         require(tests.size == result.size)
-        return tests.map { it.outputData }.zip(result).firstOrNull { it.first != it.second }
+        return tests.zip(result).firstOrNull { it.first.outputData != it.second }
     }
 
 }

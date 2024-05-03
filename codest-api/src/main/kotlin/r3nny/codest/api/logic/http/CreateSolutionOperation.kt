@@ -33,7 +33,8 @@ class CreateSolutionOperation(
         )
         kafkaAdapter.sendCodeToExecute(
             key = attempt.id,
-            code = task.driver.replace("\${solution}", request.code).replace("\${testsCount}", task.tests.size.toString()),
+            code = task.driver.replace("{{solution}}", request.code).replace("{{testsCount}}", task.tests.size.toString()),
+
             language = language,
             tests = task.tests
         )

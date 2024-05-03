@@ -1,9 +1,11 @@
 package r3nny.codest.api.integration.db
 
-import r3nny.codest.shared.exception.wrap
 import r3nny.codest.api.cache.GetTaskCache
+import r3nny.codest.api.dto.common.Level
 import r3nny.codest.api.dto.dao.TaskDto
+import r3nny.codest.api.dto.http.TaskListFrontend
 import r3nny.codest.api.exception.InvocationExceptionCode
+import r3nny.codest.shared.exception.wrap
 import ru.tinkoff.kora.cache.annotation.Cacheable
 import ru.tinkoff.kora.common.Component
 import java.util.*
@@ -19,4 +21,12 @@ open class TaskAdapter(
             taskRepository.getFullById(taskId)
         }
     }
+
+    open suspend fun getList(query: String?, level: Level?, offset: Long, limit: Int): List<TaskListFrontend> {
+        return wrap(errorCode = InvocationExceptionCode.GET_TASK_ERROR) {
+            taskRepository.getList(query, level, offset, limit)
+        }
+    }
+
+    open suspend fun count() = wrap(errorCode = InvocationExceptionCode.GET_TASK_ERROR) { taskRepository.count() }
 }

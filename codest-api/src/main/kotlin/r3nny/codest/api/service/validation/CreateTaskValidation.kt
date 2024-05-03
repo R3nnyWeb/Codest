@@ -1,9 +1,9 @@
 package r3nny.codest.api.service.validation
 
+import r3nny.codest.api.exception.ValidationExceptionCode
 import r3nny.codest.model.CreateTaskRequest
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.exception.throwValidationException
-import r3nny.codest.api.exception.ValidationExceptionCode
 
 
 fun validateCreateTask(request: CreateTaskRequest) {
@@ -17,7 +17,7 @@ fun validateCreateTask(request: CreateTaskRequest) {
                 throw Exception("Количество входных данных в тесте неравно количеству входных параметров")
             if (tests.size < 2)
                 throw Exception("Количество тестов меньше минимального")
-            if (startCodes.keys.toSet() != (languages ?: Language.entries.map { it.name }).toSet())
+            if (startCodes.keys.toSet() != (languages ?: Language.entries.map { it.name.lowercase()}).toSet())
                 throw Exception("Не для всех языков указан начальный код")
         }
     }.recoverCatching {

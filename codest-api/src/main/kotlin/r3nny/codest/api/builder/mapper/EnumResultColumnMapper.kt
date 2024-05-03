@@ -21,7 +21,7 @@ class EnumLevelResultColumnMapper: JdbcResultColumnMapper<Level> {
 class EnumLevelParameterColumnMapper: JdbcParameterColumnMapper<Level> {
 
     override fun set(stmt: PreparedStatement?, index: Int, value: Level?) {
-        stmt!!.setString(index, value!!.name)
+        stmt!!.setString(index, value?.name)
     }
 }
 

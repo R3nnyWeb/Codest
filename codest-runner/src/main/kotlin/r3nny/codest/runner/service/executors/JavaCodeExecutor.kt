@@ -28,7 +28,7 @@ open class JavaCodeExecutor(
         input: List<String>?,
     ): Pair<ExecutionResult, ExecutionResult> {
         val commandToCompile = languageSettings.getValue(language).commandToCompile!!
-        val saved = fileService.save(code, "Main.java")
+        val saved = fileService.save(code, "Driver.java")
         return runCatching {
             val compileResult = processRunner.execute(
                 commands = listOf(
@@ -42,13 +42,13 @@ open class JavaCodeExecutor(
                 1
             )
 
-            val commandToRun = languageSettings.getValue(language).commandToRun!!
+            val commandToRun = languageSettings.getValue(language).commandToRun
             val runResult = processRunner.execute(
                 commands = listOf(
                     commandToRun,
                     "-cp",
                     saved.parent,
-                    "Main"
+                    "Driver"
                 ),
                 input = input
             )
