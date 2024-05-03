@@ -14,8 +14,15 @@
     </changeSet>
 
     <include file="tasks/add-tasks-and-tests.xml" relativeToChangelogFile="true"/>
-
     <changeSet id="1" author="Nikita Vashkulatov">
         <tagDatabase tag="v.1.0"/>
+    </changeSet>
+    <include file="users/users.xml" relativeToChangelogFile="true"/>
+    <changeSet id="2" author="Nikita Vashkulatov">
+        <tagDatabase tag="v.1.1"/>
+    </changeSet>
+        <include file="attempts/attempts.xml" relativeToChangelogFile="true"/>
+    <changeSet id="3" author="Nikita Vashkulatov">
+        <tagDatabase tag="v.1.2"/>
     </changeSet>
 </databaseChangeLog>

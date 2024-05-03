@@ -1,6 +1,6 @@
 package r3nny.codest.runner.config
 
-import r3nny.codest.shared.dto.runner.ExecutableLanguage
+import r3nny.codest.shared.domain.Language
 import ru.tinkoff.kora.config.common.annotation.ConfigSource
 
 @ConfigSource("logic")
@@ -10,7 +10,7 @@ interface LogicConfigMapping {
 }
 
 data class Logic(
-    val languageSettings: Map<ExecutableLanguage, LanguageSettings>,
+    val languageSettings: Map<Language, LanguageSettings>,
     val maxTime: Long,
 )
 

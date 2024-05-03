@@ -2,6 +2,7 @@ package r3nny.codest.runner.operation
 
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.runner.integration.KafkaClientAdapter
+import r3nny.codest.runner.service.ExecutionResultTester
 import r3nny.codest.runner.service.executors.CodeExecutor
 import r3nny.codest.shared.dto.runner.CodeRunnerErrorType
 import r3nny.codest.shared.dto.runner.RunCodeRequestEvent
@@ -15,6 +16,7 @@ import java.util.*
 @Component
 open class RunCodeOperation(
     private val kafkaAdapter: KafkaClientAdapter,
+    private val tester: ExecutionResultTester,
     executors: All<CodeExecutor>,
 ) {
     private val executorsMap = executors.flatMap { executor ->
@@ -35,10 +37,17 @@ open class RunCodeOperation(
 
             }
             with(runResult) {
-                if (errorOutput.isNotEmpty())
+                if (errorOutput.isEmpty()) {
+                    val testErrors = tester.findError(event.tests, output)
+                    if (testErrors == null) {
+                        kafkaAdapter.sendCodeRunResponse(id, RunCodeResponseEvent(output = emptyList()))
+                    } else {
+                        sendError(id, CodeRunnerErrorType.TEST_ERROR, output = testErrors.first.inputData + testErrors.first.outputData +  testErrors.second)
+                    }
+                } else {
                     sendError(id, CodeRunnerErrorType.RUNTIME_ERROR, output = output + errorOutput)
-                else
-                    kafkaAdapter.sendCodeRunResponse(id, RunCodeResponseEvent(errorType = null, output = output))
+                }
+
             }
 
         }.onFailure {

@@ -1,0 +1,40 @@
+{
+    "name": "1. Сложение",
+    "level": "easy",
+    "description": "lorem ipsum",
+    "inputTypes": [
+        "integer",
+        "integer"
+    ],
+    "outputType": "integer",
+    "isEnabled": true,
+    "isPrivate": true,
+    "methodName": "sum",
+    "tests": [
+        {
+            "inputData": [
+                "2",
+                "0"
+            ],
+            "outputData": "2"
+        },
+        {
+            "inputData": [
+                "0",
+                "0"
+            ],
+            "outputData": "0"
+        },
+        {
+            "inputData": [
+                "-1",
+                "0"
+            ],
+            "outputData": "-1"
+        }
+    ],
+    "startCodes": {
+        "java": "class Solution {\n public int sum(int a, int b) {}}",
+        "python": "some"
+    }
+}

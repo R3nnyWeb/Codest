@@ -2,7 +2,7 @@ package r3nny.codest.runner
 
 import r3nny.codest.runner.config.Logic
 import r3nny.codest.runner.config.LogicConfigMapping
-import r3nny.codest.shared.dto.runner.ExecutableLanguage
+import r3nny.codest.shared.domain.Language
 import ru.tinkoff.kora.application.graph.KoraApplication
 import ru.tinkoff.kora.common.KoraApp
 import ru.tinkoff.kora.config.hocon.HoconConfigModule
@@ -24,7 +24,7 @@ interface App :
     KafkaModule {
 
     fun logicConfig(config: LogicConfigMapping): Logic = Logic(
-        languageSettings = config.languageSettings().mapKeys { (key, _) -> ExecutableLanguage.valueOf(key) },
+        languageSettings = config.languageSettings().mapKeys { (key, _) -> Language.fromString(key) },
         maxTime = config.maxTime()
     )
 
