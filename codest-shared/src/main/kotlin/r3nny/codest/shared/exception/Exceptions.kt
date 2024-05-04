@@ -36,12 +36,28 @@ class ValidationException(
     customMessage: String? = null,
 ) : CustomException(exceptionCode, cause, customMessage)
 
+class SecurityException(
+    val isAuthorization: Boolean,
+    exceptionCode: ExceptionCode<SecurityException>,
+    cause: Throwable? = null,
+    customMessage: String? = null,
+) : CustomException(exceptionCode, cause, customMessage)
+
 fun throwInvocationException(
     code: ExceptionCode<InvocationException>,
     cause: Throwable? = null,
     message: String? = null,
 ): Nothing {
     throw InvocationException(code, cause, message)
+}
+
+fun throwSecurityException(
+    code: ExceptionCode<SecurityException>,
+    isForbidden: Boolean = false,
+    cause: Throwable? = null,
+    message: String? = null,
+): Nothing {
+    throw SecurityException(isForbidden, code, cause, message)
 }
 
 fun throwValidationException(

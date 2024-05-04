@@ -57,32 +57,20 @@ export default defineComponent({
     }
 
     function sendAttempt(solution) {
-      // if (store.getters['user/isAuth']) {
-      //   attemptApi.sendAttempt(solution).then(r => {
-      //     Object.assign(attempt, r.data);
-      //     checkForPending();
-      //   }).catch(err => {
-      //     console.log(err)
-      //     if (err.response.status === 400) {
-      //       attempt.status = 'ERROR'
-      //       attempt.errorMessage = err.response.data.message
-      //     }
-      //   })
-      // } else {
-      //   store.dispatch('user/showLogin', {message: 'Войдите для отправки решения'})
-      // }
-
-      attemptApi.sendAttempt(solution).then(r => {
-        Object.assign(attempt, r.data);
-        checkForPending();
-      }).catch(err => {
-        console.log(err)
-        if (err.response.status !== 200) {
-          attempt.status = 'internal_error'
-          attempt.errorMessage = err.response.data.message
-        }
-      })
-
+      if (store.getters['user/isAuth']) {
+        attemptApi.sendAttempt(solution).then(r => {
+          Object.assign(attempt, r.data);
+          checkForPending();
+        }).catch(err => {
+          console.log(err)
+          if (err.response.status === 400) {
+            attempt.status = 'ERROR'
+            attempt.errorMessage = err.response.data.message
+          }
+        })
+      } else {
+        store.dispatch('user/showLogin', {message: 'Войдите для отправки решения'})
+      }
 
     }
 

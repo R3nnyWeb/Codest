@@ -12,6 +12,7 @@ externalDocs:
 servers:
   - url: /
 
+
 tags:
   - name: tasks
     description: Задачи
@@ -50,6 +51,8 @@ paths:
         - tasks
       summary: Полное описание задачи
       operationId: getFullTask
+      security:
+        - bearerAuth: [ ]
       parameters:
         - $ref: '#/components/parameters/TaskIdPath'
       responses:
@@ -95,6 +98,8 @@ paths:
         - tasks
       summary: Создание задачи
       operationId: createTask
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -120,6 +125,8 @@ paths:
       operationId: getSolution
       summary: Возвращает решение
       description: Возвращает решение
+      security:
+        - bearerAuth: []
       tags:
         - solution
       parameters:
@@ -143,11 +150,12 @@ paths:
       operationId: createSolution
       summary: Сохраняет решение
       description: Сохраняет решение
+      security:
+        - bearerAuth: []
       tags:
         - solution
       parameters:
         - $ref: '#/components/parameters/TaskIdPath'
-        - $ref: '#/components/parameters/UserId'
       requestBody:
         description: Решение
         required: true
@@ -170,6 +178,13 @@ paths:
           $ref: '#/components/responses/Error'
 
 components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   responses:
     Error:
       description: Error

@@ -7,7 +7,9 @@ import r3nny.codest.api.logic.http.CreateSolutionOperation
 import r3nny.codest.api.logic.http.GetAttemptByIdOperation
 import r3nny.codest.model.CreateSolutionRequest
 import r3nny.codest.model.SolutionResponse
+import r3nny.codest.shared.PrincipalImpl
 import ru.tinkoff.kora.common.Component
+import ru.tinkoff.kora.common.Principal
 import java.util.*
 
 @Component
@@ -18,10 +20,9 @@ class SolutionController(
 
     override suspend fun createSolution(
         taskId: UUID,
-        xUserId: UUID,
-        createSolutionRequest: CreateSolutionRequest,
+        createSolutionRequest: CreateSolutionRequest
     ): SolutionApiResponses.CreateSolutionApiResponse {
-        val dto = createSolutionOperation.activate(taskId, xUserId, createSolutionRequest)
+        val dto = createSolutionOperation.activate(taskId, (Principal.current() as PrincipalImpl).userId, createSolutionRequest)
         return SolutionApiResponses.CreateSolutionApiResponse.CreateSolution200ApiResponse(dto.toSolutionApi())
     }
 

@@ -1,4 +1,4 @@
-package r3nny.codest.runner.operation
+package r3nny.codest.user.api.operation
 
 import io.kotest.common.runBlocking
 import io.mockk.coEvery
@@ -8,6 +8,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.runner.integration.KafkaClientAdapter
+import r3nny.codest.runner.operation.RunCodeOperation
 import r3nny.codest.runner.service.ExecutionResult
 import r3nny.codest.runner.service.ExecutionResultTester
 import r3nny.codest.runner.service.executors.JavaCodeExecutor

@@ -1,7 +1,8 @@
-package r3nny.codest.runner.service
+package r3nny.codest.user.api.service
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import r3nny.codest.runner.service.ExecutionResultTester
 import r3nny.codest.shared.dto.runner.ExecutionTestCase
 
 class ExecutionResultTesterTest {

@@ -98,11 +98,11 @@ export const userModule = {
             commit('clearAll')
             commit('hideLogin')
         },
-        register({commit}, {email, name, password}) {
+        register({commit}, {username, password}) {
             commit('clearAll')
             commit('registerStart')
 
-            userApi.register(name, email, password)
+            userApi.register(username, password)
                 .then(commit('registerSuccess'))
                 .catch(err => {
                     console.log(err)
@@ -111,14 +111,14 @@ export const userModule = {
 
 
         },
-        login({commit}, {email, password}) {
+        login({commit}, {username, password}) {
             commit('clearAll')
             commit('loginStart')
 
-            userApi.login(email, password)
+            userApi.login(username, password)
                 .then(r => {
                     commit('loginSuccess', r.data.token);
-                    setTimeout(() => commit('hideLogin'), 1500)
+                    commit('hideLogin')
                 })
                 .catch(err => {
                     console.log(err)
