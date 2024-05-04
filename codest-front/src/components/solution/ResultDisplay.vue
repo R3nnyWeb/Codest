@@ -1,36 +1,31 @@
 <template>
   <div v-if="attempt.status !== 'NONE'">
     <h5>Результат:</h5>
-    <div class="result-wrapper" :class="{pending : isPending, error: isError, failure: isFailure, success: isSuccess}">
-      <div id="loader" v-if="isPending">
+    <div :class="{pending : isPending, error: isError, failure: isFailure, success: isSuccess}" class="result-wrapper">
+      <div v-if="isPending" id="loader">
         <app-loader style="height: 80px"/>
       </div>
       <div v-else-if="isError">
         <p>Ошибка</p>
         <br>
-        <span style="white-space: pre-line">{{ attempt.errorMessage }}</span>
+        <div style="white-space: pre">{{ error }}</div>
       </div>
       <div v-else-if="isFailure">
         <p>Неверный результат</p>
         <br>
         <p>Входные данные:</p>
-        <span  :key="i" v-for="(value,i) in attempt.testCase.inputValues ">{{value}} &nbsp;</span>
+        <span v-for="(value,i) in failedTest.inputData " :key="i">{{ value }} &nbsp;</span>
         <p>Ожидаемый результат</p>
-        <span style="white-space: pre-line">{{ attempt.testCase.outputValues }}</span>
+        <span style="white-space: pre-line">{{ failedTest.expected }}</span>
         <p>Ваш результат:</p>
-        <span style="white-space: pre-line">{{ attempt.actualResult }}</span>
+        <span style="white-space: pre-line">{{ failedTest.actual }}</span>
 
       </div>
       <div v-else-if="isSuccess">
         <p>Решение верно</p>
-        <br>
-        <p>Время выполнения:</p>
-        <span>{{attempt.executionTimeNs/1e6 }}ms</span>
-        <p>Объем памяти:</p>
-        <span>{{attempt.memoryUsageMb}} MB</span>
       </div>
     </div>
-       
+
 
   </div>
 
@@ -51,18 +46,30 @@ export default defineComponent({
   },
   setup(props) {
     const isPending = computed(() => {
-      return props.attempt.status === 'PENDING'
+      return props.attempt.status === 'pending'
     })
     const isError = computed(() => {
-      return props.attempt.status === 'ERROR'
+      return Array.of('compile_error', 'runtime_error', 'internal_error').includes(props.attempt.status)
+    })
+    const error = computed(() => {
+      return props.attempt.error.join("\n")
     })
     const isFailure = computed(() => {
-      return props.attempt.status === 'FAILURE'
+      return props.attempt.status === 'test_error'
     })
-     const isSuccess = computed(() => {
-      return props.attempt.status === 'SUCCESS'
+    const failedTest = computed(() => {
+      return {
+        actual: props.attempt.error[props.attempt.error.length - 1],
+        expected: props.attempt.error[props.attempt.error.length - 2],
+        inputData: props.attempt.error.slice(0, props.attempt.error.length - 2)
+      }
+    })
+    const isSuccess = computed(() => {
+      return props.attempt.status === 'accepted'
     })
     return {
+      error,
+      failedTest,
       isPending,
       isError,
       isFailure,
@@ -73,14 +80,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#loader{
+#loader {
   height: 80px;
   padding: 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .result-wrapper {
+  font-family: 'Courier New', Courier, monospace;
   width: 35%;
   padding: 10px;
   border-radius: 10px;
@@ -88,6 +97,7 @@ export default defineComponent({
   min-height: 50px;
   transition: all .4s linear;
   margin-top: 20px;
+
   &.pending {
     background-color: var(--color-background-mute);
   }
@@ -97,19 +107,21 @@ export default defineComponent({
     background-color: var(--color-background-error);
     border-color: var(--color--text-error);
   }
-  &.failure{
+
+  &.failure {
     background-color: var(--color-background-mute);
   }
-  &.success{
-     color: var(--color-success);
+
+  &.success {
+    color: var(--color-success);
     background-color: var(--color-success-background);
     border-color: var(--color-success);
   }
 }
 
 @media (max-width: 650px) {
-.result-wrapper{
-  width: 100%;
-}
+  .result-wrapper {
+    width: 100%;
+  }
 }
 </style>

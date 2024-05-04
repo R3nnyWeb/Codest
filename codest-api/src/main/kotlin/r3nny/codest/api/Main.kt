@@ -26,8 +26,7 @@ interface Application :
     KafkaModule,
     JdbcDatabaseModule,
     UndertowHttpServerModule,
-    OpenApiManagementModule
-     {
+    OpenApiManagementModule {
 
     fun getConfig(): AppConfig {
         return ConfigLoaderBuilder.default()

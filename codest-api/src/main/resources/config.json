@@ -1,7 +1,7 @@
 {
     "drivers": {
         "JAVA": "import java.util.*;\nimport java.time.*;\nimport java.math.*;\nimport java.io.*;\n\n{{solution}}\n        \n        public class Driver{\n            private static final Scanner scanner = new Scanner(System.in);\n            \n            public static void main(String[] args) {\n                for(int i = 0; i < {{testsCount}}; i++) {\n                    {{paramsInputSection}}\n                    {{returnType}} result = new Solution().{{methodName}}({{paramsList}});\n                    \n                    printResult(result);\n                }\n                scanner.close();\n            }\n    public static void printResult(Object obj) {\n        if (obj == null) {\n            System.out.println(\"null\");\n        } else if (obj.getClass().isArray()) {\n            if (obj instanceof int[]) {\n                System.out.println(Arrays.toString((int[]) obj));\n            } else if (obj instanceof short[]) {\n                System.out.println(Arrays.toString((short[]) obj));\n            } else if (obj instanceof long[]) {\n                System.out.println(Arrays.toString((long[]) obj));\n            } else if (obj instanceof double[]) {\n                System.out.println(Arrays.toString((double[]) obj));\n            } else if (obj instanceof float[]) {\n                System.out.println(Arrays.toString((float[]) obj));\n            } else if (obj instanceof boolean[]) {\n                System.out.println(Arrays.toString((boolean[]) obj));\n            } else if (obj instanceof char[]) {\n                System.out.println(Arrays.toString((char[]) obj));\n            } else {\n                System.out.println(Arrays.toString((Object[]) obj));\n            }\n        } else {\n            System.out.println(obj.toString());\n        }\n    }\n\n\n    {{readMethods}}\n}",
-        "PYTHON": "import time\nimport psutil\nfrom typing import List\n\n${solution}\n\n{{readMethods}}\n\nif __name__ == '__main__':\n    for i in range({{testsCount}}):\n${paramsInputSection}\n        s = Solution()\n        ret = Solution.${methodName}(s, ${paramsList})\n        print(ret)"
+        "PYTHON": "import time\nimport psutil\nfrom typing import List\n\n{{solution}}\n\n{{readMethods}}\n\nif __name__ == '__main__':\n    for i in range({{testsCount}}):\n{{paramsInputSection}}\n        s = Solution()\n        ret = Solution.{{methodName}}(s, {{paramsList}})\n        print(ret)"
     },
     "typeLanguageMapping": {
         "INTEGER": {
@@ -12,7 +12,7 @@
                     "typeName": "int"
                 },
                 "PYTHON": {
-                    "read": "def read_integer():\n    return int(input())",
+                    "read": "def READ_INTEGER():\n    return int(input())",
                     "typeName": "int"
                 }
             }
@@ -25,7 +25,7 @@
                     "typeName": "String"
                 },
                 "PYTHON": {
-                    "read": "def read_string():\n    return input().replace(' ', '')",
+                    "read": "def READ_STRING():\n    return input().replace(' ', '')",
                     "typeName": "str"
                 }
             }

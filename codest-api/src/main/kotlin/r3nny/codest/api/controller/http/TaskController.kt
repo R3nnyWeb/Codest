@@ -48,12 +48,12 @@ class TaskController(
     }
 
     override suspend fun getTasksList(
-        offset: Long,
-        limit: Int,
+        offset: Long?,
+        limit: Int?,
         level: Level?,
         search: String?
     ): TasksApiResponses.GetTasksListApiResponse {
-      return getTasksListFrontendOperation.activate(search, level?.let { r3nny.codest.api.dto.common.Level.fromString(it.name) }, offset, limit).toResponse()
+      return getTasksListFrontendOperation.activate(search, level?.let { r3nny.codest.api.dto.common.Level.fromString(it.name) }, offset ?: 0, limit ?: 10).toResponse()
     }
 }
 

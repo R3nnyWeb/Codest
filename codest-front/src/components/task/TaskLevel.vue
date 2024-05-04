@@ -16,20 +16,7 @@ const props = defineProps({
 
 const resultClass = computed(() => {
   let className = '';
-
-  switch (props.value) {
-    case 'EASY':
-      className = 'easy';
-      break;
-    case 'MEDIUM':
-      className = 'medium';
-      break;
-    case 'HARD':
-      className = 'hard';
-      break;
-    default:
-      break;
-  }
+  className = props.value.toLowerCase()
   return className;
 });
 </script>

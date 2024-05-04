@@ -3,11 +3,12 @@
     <app-loader></app-loader>
 
   </div>
-  <div style="margin-top: 40px;"  v-else>
-    <h3>{{ task.id }}. {{ task.title }}</h3>
+  <div v-else style="margin-top: 40px;">
+    <h3>{{ task.name }}</h3>
     <div id="solution">
       <task-description v-if="task" :task="task" class="item"/>
-      <code-editor :templates="task.templates" :pending=" attempt.status === 'PENDING'" class="item"
+      <code-editor :languages="task.languages" :pending=" attempt.status === 'pending'" :templates="task.startCodes"
+                   class="item"
                    @sendAttempt="sendAttempt"/>
     </div>
     <div v-if="attempt">
@@ -39,18 +40,16 @@ export default defineComponent({
       status: 'NONE'
     });
     onBeforeMount(() => {
-      setTimeout(() => {
-        taskApi.getById(route.params.id).then(r => {
-          task.value = r.data
-          console.log(task.value)
-        }).catch(err => {
-          console.log(err)
-        })
-      },300)
+      taskApi.getById(route.params.id).then(r => {
+        task.value = r.data
+        console.log(task.value)
+      }).catch(err => {
+        console.log(err)
+      })
     })
 
     function checkForPending() {
-      if (attempt.status === 'PENDING') {
+      if (attempt.status === 'pending') {
         setTimeout(() => {
           checkAttemptStatus()
         }, 500)
@@ -58,26 +57,37 @@ export default defineComponent({
     }
 
     function sendAttempt(solution) {
-      if (store.getters['user/isAuth']) {
-        attemptApi.sendAttempt(solution).then(r => {
-          Object.assign(attempt, r.data);
-          checkForPending();
-        }).catch(err => {
-          console.log(err)
-          if (err.response.status === 400) {
-            attempt.status = 'ERROR'
-            attempt.errorMessage = err.response.data.message
-          }
-        })
-      } else {
-        store.dispatch('user/showLogin', {message: 'Войдите для отправки решения'})
-      }
+      // if (store.getters['user/isAuth']) {
+      //   attemptApi.sendAttempt(solution).then(r => {
+      //     Object.assign(attempt, r.data);
+      //     checkForPending();
+      //   }).catch(err => {
+      //     console.log(err)
+      //     if (err.response.status === 400) {
+      //       attempt.status = 'ERROR'
+      //       attempt.errorMessage = err.response.data.message
+      //     }
+      //   })
+      // } else {
+      //   store.dispatch('user/showLogin', {message: 'Войдите для отправки решения'})
+      // }
+
+      attemptApi.sendAttempt(solution).then(r => {
+        Object.assign(attempt, r.data);
+        checkForPending();
+      }).catch(err => {
+        console.log(err)
+        if (err.response.status !== 200) {
+          attempt.status = 'internal_error'
+          attempt.errorMessage = err.response.data.message
+        }
+      })
 
 
     }
 
     function checkAttemptStatus() {
-      attemptApi.getAttemptById(task.value.id, attempt.id).then(r => {
+      attemptApi.getAttemptById(attempt.id).then(r => {
         Object.assign(attempt, r.data);
         checkForPending();
       }).catch(

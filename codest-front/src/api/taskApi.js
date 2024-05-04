@@ -3,7 +3,7 @@ import {axiosApi} from "@/api/api";
 export default {
     getById(id) {
         return axiosApi.get(
-            "/tasks/" + id
+            "/tasks/" + id + "/lite"
         )
     },
     getAll(offset, title, level) {
@@ -11,14 +11,12 @@ export default {
         if (offset)
             queryParams.page = offset;
         if (title)
-            queryParams.title = title;
+            queryParams.search = title;
         if (level)
             queryParams.level = level;
 
-        return axiosApi.get("/tasks", {
+        return axiosApi.get("/tasks/list", {
             params: queryParams
         })
-
-
     }
 }

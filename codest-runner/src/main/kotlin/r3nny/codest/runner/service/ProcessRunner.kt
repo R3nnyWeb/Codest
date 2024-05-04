@@ -16,7 +16,7 @@ data class ExecutionResult(
 
 @Component
 open class ProcessRunner(
-    private val logic: LogicConfigMapping
+    private val logic: LogicConfigMapping,
 ) {
 
     @Log

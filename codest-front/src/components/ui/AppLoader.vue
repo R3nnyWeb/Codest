@@ -1,22 +1,18 @@
 <template>
-  <div >
-    <app-bear-logo :is-loader="true"/>
-  </div>
-
-
+    <img id="loader" src="@/assets/loader.gif" alt="loading">
 </template>
 
 <script>
 
 
-import AppBearLogo from "@/components/ui/AppLogo.vue";
-
 export default {
   name: "AppLoader",
-  components: {AppBearLogo}
 }
 </script>
 
 <style scoped>
-
+#loader{
+  max-width: 100%;
+  max-height: 100%;
+}
 </style>

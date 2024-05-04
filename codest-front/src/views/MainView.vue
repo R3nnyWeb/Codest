@@ -1,7 +1,7 @@
 <template>
   <div id="main">
     <div id="content">
-      <h2>Ну тут без стакана не <br> разберешься</h2>
+      <h2>Codest</h2>
       <h5>Находите задачи и придумывайте решения</h5>
       <div id="search">
         <input v-model="query" :placeholder="'Введите название задачи'">
@@ -43,7 +43,7 @@ const search = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("@/assets/bg.jpg");
+  background: url("@/assets/bg2.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

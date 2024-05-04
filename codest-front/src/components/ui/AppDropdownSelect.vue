@@ -16,7 +16,7 @@
 const props = defineProps({
   items: Array,
 })
-import {onBeforeMount, onMounted, reactive, ref} from "vue";
+import {onBeforeMount, reactive, ref} from "vue";
 const selected = reactive({title : props.items[0].title, value: props.items[0].value})
 const isOpened = ref(false);
 const emit = defineEmits(['update:modelValue'])
