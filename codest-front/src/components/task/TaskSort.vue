@@ -14,9 +14,9 @@ import {useRoute} from "vue-router";
 
 const levels = [
   {title: 'Сложность', value: ""},
-  {title: 'Easy', value: "EASY"},
-  {title: 'Medium', value: "MEDIUM"},
-  {title: 'Hard', value: "HARD"}
+  {title: 'Easy', value: "easy"},
+  {title: 'Medium', value: "medium"},
+  {title: 'Hard', value: "hard"}
 ]
 const route =  useRoute();
 const emit = defineEmits(['findLevel', 'search'])

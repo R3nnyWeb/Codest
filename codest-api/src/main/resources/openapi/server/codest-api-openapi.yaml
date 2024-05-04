@@ -632,7 +632,7 @@ components:
     
     Offset:
       description: Смещение страниц
-      required: true
+      required: false
       name: offset
       in: query
       schema:
@@ -646,7 +646,7 @@ components:
       description: Ограничение "сверху" на количество возвращаемых элементов данных
       name: limit
       in: query
-      required: true
+      required: false
       schema:
         type: integer
         minimum: 1

@@ -6,15 +6,15 @@
       <app-loader/>
 
     </div>
-    <div v-else-if="data.content.length !== 0" id="table">
-      <div v-for="(task,n) in data.content" :key="n">
+    <div v-else-if="data.items.length !== 0" id="table">
+      <div v-for="(task,n) in data.items" :key="n">
         <task-item :is-odd="n % 2 === 0" :task="task"
                    @click="$router.push({ name: 'solution', params: { id: task.id } })"/>
       </div>
     </div>
     <h3 v-else style="text-align: center; margin-top: 40px;">К сожалению, ничего не найдено(</h3>
     <div id="pagination">
-      <app-pagination :current="data.number" :total="data.totalPages" @changePage="changePage"/>
+      <app-pagination :current="data.currentPage" :total="data.totalPages" @changePage="changePage"/>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-//import taskApi from "@/api/taskApi";
+import taskApi from "@/api/taskApi";
 import TaskItem from "@/components/task/TaskItem.vue";
 import AppPagination from "@/components/ui/AppPagination.vue";
 import AppLoader from "@/components/ui/AppLoader.vue";
@@ -31,7 +31,7 @@ import TaskSort from "@/components/task/TaskSort.vue";
 import router from "@/router";
 
 const route = useRoute();
-const loading = ref(false);
+const loading = ref(true);
 const searchParams = reactive({
   title: route.query.title,
   status: '',
@@ -45,21 +45,19 @@ const data = reactive({
   sort: null
 });
 const loadData = () => {
- // loading.value = true
+  console.log('onload')
+ loading.value = true
 
-  //todo: get tasks
- /* setTimeout(() => {
      taskApi.getAll(data.number,
       searchParams.title,
       searchParams.level)
       .then((r) => {
+        console.log(r)
         Object.assign(data, r.data)
       }).finally(() => {
+        console.log('finish')
     loading.value = false
   });
-  },300)
-
-*/
 
 }
 const search = (search) => {
@@ -74,7 +72,10 @@ const findLevel = (level) => {
   searchParams.level = level
   loadData()
 }
-onMounted(loadData)
+
+onMounted(() => {
+  loadData()
+})
 
 onBeforeRouteUpdate(() => {
   loadData()

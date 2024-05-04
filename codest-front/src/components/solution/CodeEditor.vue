@@ -1,6 +1,6 @@
 <template>
   <div id="code-editor">
-    <app-dropdown-select style="margin-bottom: 20px;" v-model="solution.language" :items="languages"/>
+    <app-dropdown-select v-model="solution.language" :items="languagesMapped" style="margin-bottom: 20px;"/>
     <codemirror
         v-if="!loading"
         v-model="solution.code"
@@ -32,6 +32,7 @@ import AppDropdownSelect from "@/components/ui/AppDropdownSelect.vue";
 export default defineComponent({
   components: {AppDropdownSelect, Codemirror},
   props: {
+    languages: Array,
     pending: Boolean,
     templates: Object
   },
@@ -41,11 +42,12 @@ export default defineComponent({
     const route = useRoute()
 
     const extensions = ref([java()])
-    const languages = [
-      {title: 'Java', value: "JAVA"},
-      {title: 'Python', value: "PYTHON"}
-    ]
-
+    const languagesMapped = props.languages.map((language) => {
+      return {
+        title: `${language.toUpperCase()}`,
+        value: language
+      }
+    })
 
     checkForDarkTheme();
 
@@ -54,8 +56,8 @@ export default defineComponent({
       view.value = payload.view
     }
     const solution = reactive({
-      code: props.templates.JAVA,
-      language: "JAVA",
+      code: props.templates.java,
+      language: "java",
       taskId: route.params.id
     })
 
@@ -73,14 +75,18 @@ export default defineComponent({
         () => solution.language,
         (lang) => {
           loading.value = true;
-          if (lang === 'JAVA') {
-            // eslint-disable-next-line vue/no-mutating-props
-            props.templates.PYTHON = solution.code
-            extensions.value = [java()]
-          } else {
-            // eslint-disable-next-line vue/no-mutating-props
-             props.templates.JAVA = solution.code
-            extensions.value = [python()]
+          // eslint-disable-next-line vue/no-mutating-props
+          props.templates.lang = solution.code
+          switch (lang) {
+            case "java":
+              extensions.value = [java()]
+              break;
+            case "python":
+              extensions.value = [python()]
+              break;
+            default:
+              extensions.value = []
+              break;
           }
           solution.code = props.templates[lang];
           checkForDarkTheme();
@@ -90,7 +96,7 @@ export default defineComponent({
     )
 
     return {
-      languages,
+      languagesMapped,
       loading,
       sendSolution,
       solution,

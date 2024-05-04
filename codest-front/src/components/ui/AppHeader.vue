@@ -1,15 +1,11 @@
 <template>
   <header :class="{transparent : isMainPage}">
     <div id="logo" @click="$router.push({name: 'main'})">
-      <app-bear-logo :is-main-page="isMainPage"/>
-      <h1 :class="{'white' : isMainPage}"><span :class="{'white' : isMainPage}">Beer</span>code</h1>
+      <h1 :class="{'white' : isMainPage}">Codest</h1>
     </div>
     <nav id="menu">
       <ul :class="{'white' : isMainPage}">
-<!--        <li><a href="/chat">Чат</a></li>-->
         <li @click="$router.push({name: 'tasks'})"><a>Задачи</a></li>
-        <li v-if="!isLoggedIn" id="auth" @click="showLogin"><a>Авторизация</a></li>
-        <li v-else @click="logout"><a>Выйти</a></li>
       </ul>
     </nav>
 
@@ -20,10 +16,7 @@
   </header>
   <menu id="burger" :class="{active : isMenuOpened}">
     <ul>
-<!--      <li><a href="/chat">Чат</a></li>-->
       <li @click="isMenuOpened = false;$router.push({name: 'tasks'})"><a>Задачи</a></li>
-      <li v-if="!isLoggedIn" @click="showLogin"><a>Авторизация</a></li>
-      <li v-else @click="logout"><a>Выйти</a></li>
     </ul>
   </menu>
 </template>
@@ -31,35 +24,14 @@
 <script setup>
 
 
-import AppBearLogo from "@/components/ui/AppLogo.vue";
-import {useStore} from "vuex";
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import {computed, ref} from "vue";
 
-const store = useStore();
-const router = useRouter();
 const route = useRoute();
 const isMenuOpened = ref(false);
-const showLogin = () => {
-  isMenuOpened.value = false
-  store.dispatch('user/showLogin', '');
-}
-const isLoggedIn = computed(() => {
-  return store.getters['user/isAuth']
-});
+
 const isMainPage = computed(() => route.name === 'main');
-const logout = () => {
-  isMenuOpened.value = false
-  store.dispatch('user/logout')
-}
-const toFeed = () => {
-  if (isLoggedIn.value) {
-    router.push({name: 'feed'})
-  } else {
-    store.dispatch('user/showLogin', {message: 'Войдите для просмотра ленты'})
-  }
-  isMenuOpened.value = false
-}
+
 </script>
 
 <style lang="scss" scoped>
