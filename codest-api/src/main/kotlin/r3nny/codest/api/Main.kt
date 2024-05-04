@@ -3,6 +3,9 @@ package r3nny.codest.api
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceSource
 import r3nny.codest.api.config.AppConfig
+import r3nny.codest.api.config.SecurityConfig
+import r3nny.codest.shared.SecurityService
+import r3nny.codest.shared.helper.JwtService
 import ru.tinkoff.kora.application.graph.KoraApplication
 import ru.tinkoff.kora.cache.caffeine.CaffeineCacheModule
 import ru.tinkoff.kora.common.KoraApp
@@ -35,6 +38,10 @@ interface Application :
             .build()
             .loadConfigOrThrow<AppConfig>()
     }
+
+    fun jwtService(config: SecurityConfig) = JwtService(config.key())
+
+    fun securityService(jwtService: JwtService): SecurityService = SecurityService(jwtService)
 }
 
 fun main() {

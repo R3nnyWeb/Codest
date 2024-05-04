@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/codest-logger" />
             <option value="$PROJECT_DIR$/codest-runner" />
             <option value="$PROJECT_DIR$/codest-shared" />
+            <option value="$PROJECT_DIR$/codest-user-api" />
           </set>
         </option>
       </GradleProjectSettings>

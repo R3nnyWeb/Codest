@@ -1,5 +1,5 @@
 {
-    "name": "1. Сложение",
+    "name": "Сложение",
     "level": "easy",
     "description": "lorem ipsum",
     "inputTypes": [
@@ -28,13 +28,13 @@
         {
             "inputData": [
                 "-1",
-                "0"
+                "10"
             ],
-            "outputData": "-1"
+            "outputData": "9"
         }
     ],
     "startCodes": {
-        "java": "class Solution {\n public int sum(int a, int b) {}}",
-        "python": "some"
+        "java": "class Solution {\n public int sum(int a, int b) {\n    }\n}",
+        "python": "class Solution:\n    def sum(s, a, b):\n"
     }
 }

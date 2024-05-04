@@ -6,6 +6,8 @@
     <nav id="menu">
       <ul :class="{'white' : isMainPage}">
         <li @click="$router.push({name: 'tasks'})"><a>Задачи</a></li>
+        <li v-if="!isLoggedIn" id="auth" @click="showLogin"><a>Авторизация</a></li>
+        <li v-else @click="logout"><a>Выйти</a></li>
       </ul>
     </nav>
 
@@ -17,6 +19,8 @@
   <menu id="burger" :class="{active : isMenuOpened}">
     <ul>
       <li @click="isMenuOpened = false;$router.push({name: 'tasks'})"><a>Задачи</a></li>
+      <li v-if="!isLoggedIn" @click="showLogin"><a>Авторизация</a></li>
+      <li v-else @click="logout"><a>Выйти</a></li>
     </ul>
   </menu>
 </template>
@@ -24,14 +28,26 @@
 <script setup>
 
 
-import {useRoute} from "vue-router";
+import {useStore} from "vuex";
+import {useRoute, useRouter} from "vue-router";
 import {computed, ref} from "vue";
 
+const store = useStore();
+const router = useRouter();
 const route = useRoute();
 const isMenuOpened = ref(false);
-
+const showLogin = () => {
+  isMenuOpened.value = false
+  store.dispatch('user/showLogin', '');
+}
+const isLoggedIn = computed(() => {
+  return store.getters['user/isAuth']
+});
 const isMainPage = computed(() => route.name === 'main');
-
+const logout = () => {
+  isMenuOpened.value = false
+  store.dispatch('user/logout')
+}
 </script>
 
 <style lang="scss" scoped>

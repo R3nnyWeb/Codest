@@ -4,8 +4,15 @@ import store from "@/store";
 
 // eslint-disable-next-line no-undef
 export let backendUrl = import.meta.env.VITE_API_URL;
+export let backendUserUrl = import.meta.env.VITE_USER_API_URL;
 export const axiosApi = axios.create({
      baseURL: backendUrl,
+    headers: {'Content-Type': 'application/json'},
+
+})
+
+export const userApi = axios.create({
+     baseURL: backendUserUrl,
     headers: {'Content-Type': 'application/json'},
 
 })

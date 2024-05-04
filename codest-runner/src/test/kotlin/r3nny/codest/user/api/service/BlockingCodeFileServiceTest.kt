@@ -1,4 +1,4 @@
-package r3nny.codest.runner.service
+package r3nny.codest.user.api.service
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.runBlocking
@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import r3nny.codest.runner.exception.InvocationExceptionCode
+import r3nny.codest.runner.service.BlockingCodeFileService
 import r3nny.codest.shared.exception.InvocationException
 import java.io.File
 

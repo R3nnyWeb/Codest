@@ -1,16 +1,15 @@
-import {axiosApi} from "@/api/api";
+import {userApi} from "@/api/api";
 
 export default {
-    register(username, email,password) {
-        return axiosApi.post("/auth/register",{
-            email: email,
+    register(username,password) {
+        return userApi.post("/users",{
             username: username,
             password: password
         })
     },
-    login(email,password) {
-        return axiosApi.post("/auth/login",{
-            email: email,
+    login(username,password) {
+        return userApi.post("/auth/login",{
+            username: username,
             password: password
         })
     }
