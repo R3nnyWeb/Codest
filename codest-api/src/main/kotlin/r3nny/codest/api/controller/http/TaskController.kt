@@ -16,9 +16,11 @@ import r3nny.codest.model.Level
 import r3nny.codest.model.TaskLiteResponse
 import r3nny.codest.model.TasksListResponse
 import r3nny.codest.model.Test
+import r3nny.codest.shared.PrincipalImpl
 import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.shared.domain.Type
 import ru.tinkoff.kora.common.Component
+import ru.tinkoff.kora.common.Principal
 import java.util.*
 
 @Component
@@ -42,9 +44,13 @@ class TaskController(
         return getFullTaskOperation.activate(taskId).toResponse()
     }
 
-    @LogMethod
-    override suspend fun getTaskLite(taskId: UUID, xUserId: UUID?): TasksApiResponses.GetTaskLiteApiResponse {
-        return getLiteTaskOperation.activate(taskId, xUserId).toResponse()
+
+    override suspend fun getTaskLite(taskId: UUID): TasksApiResponses.GetTaskLiteApiResponse {
+        return TasksApiResponses.GetTaskLiteApiResponse.GetTaskLite200ApiResponse(getLiteTaskOperation.activate(taskId, null).toResponse())
+    }
+
+    override suspend fun getTaskWithSolutions(taskId: UUID): TasksApiResponses.GetTaskWithSolutionsApiResponse {
+        return TasksApiResponses.GetTaskWithSolutionsApiResponse.GetTaskWithSolutions200ApiResponse(getLiteTaskOperation.activate(taskId, (Principal.current() as PrincipalImpl).userId).toResponse())
     }
 
     override suspend fun getTasksList(
