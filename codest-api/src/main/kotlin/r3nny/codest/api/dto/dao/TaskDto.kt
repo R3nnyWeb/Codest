@@ -18,6 +18,7 @@ data class TaskDto(
     val isEnabled: Boolean = false,
     val isPrivate: Boolean,
     val description: String,
+    val userId: UUID,
     val level: Level,
     val inputTypes: List<Type>,
     val outputType: Type,

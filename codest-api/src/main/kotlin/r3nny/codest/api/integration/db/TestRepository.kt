@@ -9,7 +9,7 @@ import ru.tinkoff.kora.database.jdbc.JdbcRepository
 import java.util.*
 
 @Repository
-interface TestRepository: JdbcRepository {
+interface TestRepository : JdbcRepository {
 
     @Query("INSERT INTO tests(id, input_values, output_value, task_id) VALUES (:test.id, :test.inputValues, :test.outputValue, :taskId)")
     @LogMethod
@@ -17,6 +17,12 @@ interface TestRepository: JdbcRepository {
 
     @Query("SELECT id, input_values, output_value FROM tests WHERE task_id = :taskId")
     @LogMethod
-    fun getAllByTaskId(taskId: UUID): List<TestCase>
+    suspend fun getAllByTaskId(taskId: UUID): List<TestCase>
+
+    @Query("DELETE FROM tests WHERE id = :testId")
+    suspend fun delete(testId: UUID)
+
+    @Query("SELECT task_id FROM tests WHERE id = :testId")
+    suspend fun getTaskIdByTestId(testId: UUID) : UUID?
 
 }

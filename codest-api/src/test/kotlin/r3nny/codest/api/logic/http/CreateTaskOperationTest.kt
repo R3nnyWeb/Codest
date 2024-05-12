@@ -6,14 +6,15 @@ import io.mockk.coVerify
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.TestCase
 import r3nny.codest.api.dto.common.Level
 import r3nny.codest.api.dto.dao.TaskDto
 import r3nny.codest.api.dto.extentions.languages
 import r3nny.codest.api.dto.extentions.parameters
 import r3nny.codest.api.dto.extentions.tests
 import r3nny.codest.api.logic.OperationTestBase
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.domain.TestCase
+import java.util.*
 
 
 class CreateTaskOperationTest : OperationTestBase() {
@@ -35,7 +36,8 @@ class CreateTaskOperationTest : OperationTestBase() {
                 Language.PYTHON to "driver python"
             )
 
-            operation.activate(this)
+            val userId = UUID.randomUUID()
+            operation.activate(this, userId)
 
             coVerify {
                 taskAndTestAdapter.createTask(capture(savedTask), capture(savedTests))
@@ -54,6 +56,7 @@ class CreateTaskOperationTest : OperationTestBase() {
                 methodName shouldBe createTaskRequest.methodName
                 level shouldBe Level.fromString(createTaskRequest.level.name)
                 startCode shouldBe createTaskRequest.startCodes.mapKeys { (k, v) -> Language.fromString(k) }
+                userId shouldBe userId
             }
             savedTests.captured.zip(createTaskRequest.tests()).forEach { (actual, expected) ->
                 actual.inputValues shouldBe expected.inputValues

@@ -7,6 +7,7 @@ import r3nny.codest.shared.domain.Type
 import ru.tinkoff.kora.common.Component
 import ru.tinkoff.kora.database.jdbc.mapper.parameter.JdbcParameterColumnMapper
 import ru.tinkoff.kora.database.jdbc.mapper.result.JdbcResultColumnMapper
+import ru.tinkoff.kora.database.jdbc.mapper.result.JdbcRowMapper
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
@@ -61,6 +62,15 @@ class EnumLanguageResultColumnMapper: JdbcResultColumnMapper<Language> {
         return Language.fromString(row!!.getString(index).uppercase())
     }
 }
+
+@Component
+class EnumLanguageResultRowMapper: JdbcRowMapper<Language> {
+
+    override fun apply(row: ResultSet?): Language {
+        return Language.fromString(row!!.getString(1).uppercase())
+    }
+}
+
 
 @Component
 class EnumLanguageParameterColumnMapper: JdbcParameterColumnMapper<Language> {

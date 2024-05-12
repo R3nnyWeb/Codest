@@ -13,11 +13,11 @@
         <tagDatabase tag="db_init"/>
     </changeSet>
 
-    <include file="tasks/add-tasks-and-tests.xml" relativeToChangelogFile="true"/>
+    <include file="users/users.xml" relativeToChangelogFile="true"/>
     <changeSet id="1" author="Nikita Vashkulatov">
         <tagDatabase tag="v.1.0"/>
     </changeSet>
-    <include file="users/users.xml" relativeToChangelogFile="true"/>
+    <include file="tasks/add-tasks-and-tests.xml" relativeToChangelogFile="true"/>
     <changeSet id="2" author="Nikita Vashkulatov">
         <tagDatabase tag="v.1.1"/>
     </changeSet>

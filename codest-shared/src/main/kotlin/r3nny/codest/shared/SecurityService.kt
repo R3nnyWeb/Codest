@@ -35,3 +35,5 @@ data class PrincipalImpl(
 ) : Principal {
     // Тут можно добавить роли
 }
+
+class NoopPrincipalImpl() : Principal

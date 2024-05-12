@@ -1,0 +1,560 @@
+openapi: 3.0.3
+
+info:
+  title: competition-api
+  description: |-
+    Сервис для работы с соревнованиями
+  version: 1.0.0
+externalDocs:
+  description: GitHUb
+  url: https://github.com/R3nnyWeb/Codest
+
+servers:
+  - url: /
+
+tags:
+  - name: competitions
+    description: Соревнования
+  - name: results
+    description: Результаты соревнования
+
+paths:
+
+  /v1/competition/{competitionId}:
+    get:
+      tags:
+        - competitions
+      summary: Информация о соревновании
+      operationId: getCompetitionById
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/CompetitionId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/{competitionId}/result:
+    get:
+      tags:
+        - results
+      summary: Результат соревнования
+      operationId: getCompetitionResult
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/CompetitionId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionResultLiteResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/{competitionId}/result/{userId}:
+    get:
+      tags:
+        - results
+      summary: Результат соревнования для пользователя
+      operationId: getCompetitionResultForUser
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/CompetitionId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCompetitionResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/participate:
+    get:
+      tags:
+        - competitions
+      summary: Список соревнований в которых записан пользователь
+      operationId: getParticipatingCompetitions
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionListResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/{competitionId}/participate:
+    post:
+      tags:
+        - competitions
+      summary: Участие в соревновании
+      operationId: ParticipateCompetition
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/CompetitionId'
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/own:
+    get:
+      tags:
+        - competitions
+      summary: Список соревнований созданных пользователем
+      operationId: getOwnCompetitions
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionListResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition/list:
+    get:
+      tags:
+        - competitions
+      summary: Список соревнований с пагинацией
+      operationId: getTasksList
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionPageableListResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/competition:
+    post:
+      tags:
+        - competitions
+      summary: Создание соревнования
+      operationId: createCompetition
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompetitionRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCompetitionResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    CreateCompetitionRequest:
+      description: Создание соревнования
+      type: object
+      required:
+        - title
+        - isPrivate
+        - startAt
+        - endAt
+        - description
+        - tasks
+      properties:
+        title:
+          $ref: '#/components/schemas/CompetitionTitle'
+        description:
+          $ref: '#/components/schemas/CompetitionDescription'
+        startAt:
+          $ref: '#/components/schemas/CompetitionStartAt'
+        endAt:
+          $ref: '#/components/schemas/CompetitionEndAt'
+        isPrivate:
+          $ref: '#/components/schemas/CompetitionIsPrivate'
+        tasks:
+          $ref: '#/components/schemas/CompetitionTasksIds'
+
+    CompetitionTitle:
+      description: Название
+      type: string
+      minLength: 1
+      maxLength: 30
+
+    CompetitionDescription:
+      description: Описание
+      type: string
+
+    CompetitionStartAt:
+      description: Дата-Время начала
+      type: string
+      format: date-time
+
+    CompetitionEndAt:
+      description: Дата-Время конца
+      type: string
+      format: date-time
+
+    CompetitionIsPrivate:
+      description: Доступно ли в списке соревнований
+      type: boolean
+
+    CompetitionTasksIds:
+      description: Список задач (id)
+      type: array
+      items:
+        $ref: '#/components/schemas/TaskId'
+
+    CompetitionTasksLiteList:
+      description: Список задач
+      type: array
+      items:
+        $ref: '#/components/schemas/TaskLite'
+
+    CreateCompetitionResponse:
+      description: Ответ на создание соревнования
+      type: object
+      required:
+        - competitionId
+      properties:
+        competitionId:
+          $ref: '#/components/schemas/CompetitionId'
+
+    TaskLite:
+      description: Короткое описание задачи
+      type: object
+      required:
+        - id
+        - name
+        - level
+      properties:
+        id:
+          $ref: '#/components/schemas/TaskId'
+        name:
+          $ref: '#/components/schemas/TaskName'
+        level:
+          $ref: '#/components/schemas/Level'
+
+    TaskName:
+      description: Имя задачи
+      type: string
+      example: '1. Сложение'
+
+    Level:
+      description: Уровень сложности
+      type: string
+      enum: [ 'easy', 'medium', 'hard' ]
+
+    CompetitionResultLiteResponse:
+      description: Результат соревнования (lite)
+      type: array
+      items:
+        - $ref: '#/components/schemas/UserCompetitionResponseLite'
+
+
+    UserCompetitionResponseLite:
+      description: Короткая результат соревнования
+      type: object
+      required:
+        - userId
+        - username
+        - points
+      properties:
+        userId:
+          $ref: '#/components/schemas/UserId'
+        username:
+          description: Имя пользователя
+          type: string
+        points:
+          description: Количество баллов
+          type: integer
+
+    UserCompetitionResponse:
+      description: Результат соревнования
+      type: object
+      required:
+        - userId
+        - username
+        - points
+        - tasks
+      properties:
+        userId:
+          $ref: '#/components/schemas/UserId'
+        username:
+          description: Имя пользователя
+          type: string
+        points:
+          description: Количество баллов
+          type: integer
+        tasks:
+          type: object
+          items:
+            - $ref: '#/components/schemas/TaskWithAttemptIdResponse'
+
+    TaskWithAttemptIdResponse:
+      description: Задача с попыткой
+      type: object
+      required:
+        - task
+        - attemptId
+        - isSolved
+      properties:
+        task:
+          $ref: '#/components/schemas/TaskLite'
+        attemptId:
+          $ref: '#/components/schemas/TaskId'
+        isSolved:
+          description: Решена ли задача
+          type: boolean
+
+    CompetitionResponse:
+      description: Описание соревнования
+      type: object
+      required:
+        - id
+        - title
+        - isPrivate
+        - startAt
+        - endAt
+        - description
+        - tasks
+        - isAuthor
+        - isParticipate
+      properties:
+        id:
+          $ref: '#/components/schemas/CompetitionId'
+        title:
+          $ref: '#/components/schemas/CompetitionTitle'
+        description:
+          $ref: '#/components/schemas/CompetitionDescription'
+        startAt:
+          $ref: '#/components/schemas/CompetitionStartAt'
+        endAt:
+          $ref: '#/components/schemas/CompetitionEndAt'
+        isPrivate:
+          $ref: '#/components/schemas/CompetitionIsPrivate'
+        tasks:
+          $ref: '#/components/schemas/CompetitionTasksLiteList'
+        isAuthor:
+          description: Является ли автором пользователь из JWT
+          type: boolean
+        isParticipate:
+          description: Участвует ли пользователь из JWT
+          type: boolean
+
+    CompetitionListResponse:
+      description: Список задач с пагинацией
+      type: array
+      items:
+        $ref: '#/components/schemas/CompetitionLite'
+
+    CompetitionPageableListResponse:
+      description: Список задач с пагинацией
+      type: object
+      required:
+        - items
+        - currentPage
+        - totalPages
+      properties:
+        currentPage:
+          description: Текущая страница
+          type: integer
+          format: int64
+          example: 123
+        totalPages:
+          description: Всего страниц
+          type: integer
+          format: int64
+          example: 123
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetitionLite'
+
+    CompetitionLite:
+      description: Короткое описание соревнования
+      type: object
+      required:
+        - id
+        - title
+        - isParticipate
+        - startAt
+        - endAt
+      properties:
+        id:
+          $ref: '#/components/schemas/CompetitionId'
+        title:
+          description: Название
+          type: string
+          minLength: 1
+          maxLength: 30
+        isParticipate:
+          description: Участвует ли пользователь из JWT
+          type: boolean
+        startAt:
+          $ref: '#/components/schemas/CompetitionStartAt'
+        endAt:
+          $ref: '#/components/schemas/CompetitionEndAt'
+
+    ErrorResponse:
+      description: Данные об ошибке
+      type: object
+      required:
+        - errorCode
+        - errorMessage
+      properties:
+        errorMessage:
+          description: Пользовательское сообщение об ошибке
+          type: string
+          minLength: 1
+          example: Сервис временно недоступен
+        errorCode:
+          description: Код ошибки
+          type: string
+          minLength: 1
+          maxLength: 8
+          example: 01-Z99
+
+    CompetitionId:
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+
+    TaskId:
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+
+    UserId:
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+
+  parameters:
+    Offset:
+      description: Смещение страниц
+      required: false
+      name: offset
+      in: query
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+        default: 0
+      example: 0
+
+    Limit:
+      description: Ограничение "сверху" на количество возвращаемых элементов данных
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+      example: 20
+
+    CompetitionId:
+      name: competitionId
+      required: true
+      in: path
+      schema:
+        $ref: '#/components/schemas/CompetitionId'
+
+    UserId:
+      name: userId
+      required: true
+      in: path
+      schema:
+        $ref: '#/components/schemas/CompetitionId'
+

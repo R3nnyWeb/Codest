@@ -1,5 +1,6 @@
 package r3nny.codest.api.integration.kafka
 
+import org.slf4j.LoggerFactory
 import r3nny.codest.api.exception.InvocationExceptionCode
 import r3nny.codest.shared.domain.Language
 import r3nny.codest.shared.domain.TestCase
@@ -14,9 +15,12 @@ import java.util.*
 class KafkaAdapter(
     private val kafkaClient: KafkaClient
 ) {
+    private val logger = LoggerFactory.getLogger(KafkaAdapter::class.java)
 
     suspend fun sendCacheInvalidate(event: CacheInvalidateEvent) {
         wrap(errorCode = InvocationExceptionCode.KAFKA_ERROR) {
+            val key = UUID.randomUUID()
+            logger.info("Sending cache invalidate event: $event with key: $key")
             kafkaClient.sendCacheInvalidate(UUID.randomUUID(), event)
         }
     }

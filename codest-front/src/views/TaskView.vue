@@ -1,26 +1,35 @@
 <template>
   <div v-if="!task" style="display: flex; width: 100%; justify-content: center; align-items: center; margin-top: 50px;">
     <app-loader></app-loader>
-
   </div>
   <div v-else style="margin-top: 40px;">
-    <h3>{{ task.name }}</h3>
-    <div id="solution">
-      <task-description v-if="task" :task="task" class="item"/>
-      <code-editor :languages="task.languages" :pending=" attempt.status === 'pending'" :templates="task.startCodes"
-                   class="item"
-                   @sendAttempt="sendAttempt"/>
+    <div>
+    <h3>{{ task.name }} {{task.isPrivate ? '🔒' : ''}}</h3>
+      <task-enable if="task.isAuthor" :task="task"/>
     </div>
-    <div v-if="attempt">
-      <result-display :attempt="attempt"/>
-    </div>
-  </div>
 
+    <app-tabs>
+      <app-tab :selected=true name="Решить">
+        <div id="solution">
+          <task-description v-if="task" :task="task" class="item"/>
+          <code-editor :languages="task.languages" :pending=" attempt.status === 'pending'" :templates="task.startCodes"
+                       class="item"
+                       @sendAttempt="sendAttempt"/>
+        </div>
+        <div v-if="attempt">
+          <result-display :attempt="attempt"/>
+        </div>
+      </app-tab>
+      <app-tab v-if="isLoggedIn" v-slot="slotProps" name="Решения">
+        <solutions-list :is-active="slotProps.isActive" :task-id="task.id"/>
+      </app-tab>
+    </app-tabs>
+  </div>
 </template>
 
 <script>
 
-import {defineComponent, onBeforeMount, reactive, ref} from 'vue'
+import {computed, defineComponent, onBeforeMount, reactive, ref} from 'vue'
 import taskApi from "@/api/taskApi";
 import TaskDescription from "@/components/solution/TaskDescription.vue";
 import CodeEditor from "@/components/solution/CodeEditor.vue";
@@ -29,9 +38,14 @@ import ResultDisplay from "@/components/solution/ResultDisplay.vue";
 import attemptApi from "@/api/attemptApi";
 import AppLoader from "@/components/ui/AppLoader.vue";
 import {useStore} from "vuex";
+import AppTabs from "@/components/ui/tabs/AppTabs.vue";
+import AppTab from "@/components/ui/tabs/AppTab.vue";
+import SolutionsList from "@/components/solution/SolutionsList.vue";
+import TaskEnable from "@/components/task/TaskEnable.vue";
 
 export default defineComponent({
-  components: {AppLoader, ResultDisplay, CodeEditor, TaskDescription},
+  components: {TaskEnable, SolutionsList, AppTab, AppTabs, AppLoader, ResultDisplay, CodeEditor, TaskDescription},
+
   setup() {
     const store = useStore();
     const route = useRoute()
@@ -47,6 +61,10 @@ export default defineComponent({
         console.log(err)
       })
     })
+
+    const isLoggedIn = computed(() => {
+      return store.getters['user/isAuth']
+    });
 
     function checkForPending() {
       if (attempt.status === 'pending') {
@@ -84,6 +102,7 @@ export default defineComponent({
     }
 
     return {
+      isLoggedIn,
       attempt,
       sendAttempt,
       task
@@ -121,7 +140,7 @@ export default defineComponent({
 
   #solution {
     flex-direction: column;
-
+    overflow-y: hidden;
   }
 }
 </style>

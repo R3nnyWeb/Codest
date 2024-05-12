@@ -28,7 +28,7 @@ interface AttemptsRepository : JdbcRepository {
         language: Language,
     ): AttemptDto
 
-    @Query("SELECT id, status, created_at, language FROM attempts WHERE task_id = :taskId AND user_id = :userId")
+    @Query("SELECT id, status, created_at, language FROM attempts WHERE task_id = :taskId AND user_id = :userId ORDER BY created_at DESC")
     suspend fun getAllByTaskIdAndUserId(taskId: UUID, userId: UUID): List<AttemptByTaskDto>
 
     @Query("SELECT id, status, created_at, task_id, language, error, code FROM attempts WHERE id = :id")
@@ -37,4 +37,8 @@ interface AttemptsRepository : JdbcRepository {
 
     @Query("UPDATE attempts SET status = :status, error = :error WHERE id = :id and status = 'pending'")
     suspend fun updateStatus(id: UUID, status: StatusDto, error: List<String>?): UpdateCount
+
+    @Query("SELECT DISTINCT language FROM attempts WHERE task_id = :taskId AND status = 'accepted'")
+    suspend fun getSuccessAttemptLanguages(taskId: UUID): List<Language>
+
 }

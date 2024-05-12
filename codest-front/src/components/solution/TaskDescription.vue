@@ -21,7 +21,7 @@ defineProps(['task'])
 
 }
 .task-level{
-  margin: 20px 0;
+  margin-bottom: 40px;
 }
 .task-limits{
   margin-top: 20px;

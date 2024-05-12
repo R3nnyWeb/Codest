@@ -39,6 +39,19 @@ class GetLiteTaskOperationTest : OperationTestBase() {
         val result = operation.activate(taskId = stubTaskId, userId = stubUserId)
 
         result.solutions shouldBe attempts
+        result.isAuthor shouldBe false
+        result.task shouldBe saved.toLiteDto()
+    }
+
+    @Test
+    fun `success flow - user is author`() = runBlocking {
+        coEvery { taskAdapter.getById(stubTaskId) } returns saved
+        coEvery { attemptsAdapter.getAllByTaskIdAndUserId(taskId = stubTaskId, userId = saved.userId) } returns attempts
+
+        val result = operation.activate(taskId = stubTaskId, userId = saved.userId)
+
+        result.solutions shouldBe attempts
+        result.isAuthor shouldBe true
         result.task shouldBe saved.toLiteDto()
     }
 
@@ -49,6 +62,7 @@ class GetLiteTaskOperationTest : OperationTestBase() {
         val result = operation.activate(taskId = stubTaskId, userId = null)
 
         result.solutions shouldBe emptyList()
+        result.isAuthor shouldBe false
         result.task shouldBe saved.toLiteDto()
 
         coVerify(inverse = true) {

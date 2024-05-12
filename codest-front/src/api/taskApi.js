@@ -3,7 +3,7 @@ import {axiosApi} from "@/api/api";
 export default {
     getById(id) {
         return axiosApi.get(
-            "/tasks/" + id + "/lite"
+            "/tasks/" + id
         )
     },
     getAll(offset, title, level) {
@@ -18,5 +18,15 @@ export default {
         return axiosApi.get("/tasks/list", {
             params: queryParams
         })
+    },
+    changeTaskStatus(taskId, newEnabled) {
+      return axiosApi.post(
+        "/tasks/" + taskId + "/enable",
+          null, {
+            params: {
+              enable: newEnabled
+            }
+          }
+      )
     }
 }

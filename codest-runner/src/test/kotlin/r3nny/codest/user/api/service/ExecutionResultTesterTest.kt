@@ -20,14 +20,24 @@ class ExecutionResultTesterTest {
     fun `last not correct`() {
         val output = listOf("2", "2", "3")
         val result = tester.findError(tests, output)
-        result shouldBe Pair("0", "3")
+        result shouldBe Pair(
+            ExecutionTestCase(
+                inputData = listOf("-1", "1"),
+                outputData = "0"
+            ), "3"
+        )
     }
 
     @Test
     fun `first not correct`() {
         val output = listOf("1", "2", "3")
         val result = tester.findError(tests, output)
-        result shouldBe Pair("2", "1")
+        result shouldBe Pair(
+            ExecutionTestCase(
+                inputData = listOf("0", "2"),
+                outputData = "2"
+            ), "1"
+        )
     }
 
     companion object {

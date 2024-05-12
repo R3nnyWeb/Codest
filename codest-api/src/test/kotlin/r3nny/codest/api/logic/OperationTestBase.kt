@@ -56,8 +56,8 @@ abstract class OperationTestBase {
         id = UUID.randomUUID(),
         name = createTaskRequest.name,
         drivers = mapOf(
-            Language.JAVA to "driver \${solution} java",
-            Language.PYTHON to "driver \${solution} python"
+            Language.JAVA to "driver {{solution}} java",
+            Language.PYTHON to "driver {{solution}} python"
         ),
         description = createTaskRequest.description,
         inputTypes = createTaskRequest.parameters().inputTypes,
@@ -67,7 +67,8 @@ abstract class OperationTestBase {
         level = Level.EASY,
         languages = createTaskRequest.languages(),
         isEnabled = false,
-        isPrivate = createTaskRequest.isPrivate ?: false
+        isPrivate = createTaskRequest.isPrivate ?: false,
+        userId = UUID.randomUUID()
     )
 
     internal val stubTests = listOf(

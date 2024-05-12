@@ -1,11 +1,11 @@
 <template>
 
-  <app-modal :error-message="errorMessage" v-if="show" @close="$emit('close')">
+  <app-modal v-if="show" :error-message="errorMessage" @close="$emit('close')">
     <template #header>
-      {{ isLogin ? 'Вход' : isRegisterSuccess ? 'Пользователь успешно зарегистрирован!' : 'Регистрация'}}
+      {{ isLogin ? 'Вход' : isRegisterSuccess ? 'Пользователь успешно зарегистрирован!' : 'Регистрация' }}
     </template>
     <template #body>
-     <login-component v-if="isLogin" @register="isLogin = false"/>
+      <login-component v-if="isLogin" @register="isLogin = false"/>
       <register-component v-else-if="!isLogin && !isRegisterSuccess" @login="isLogin = true"/>
       <register-success-component v-else-if="isRegisterSuccess" @login="isLogin = true"/>
     </template>
@@ -35,7 +35,7 @@ export default defineComponent({
     const store = useStore();
     const isRegisterSuccess = computed(() => store.getters['user/isSuccessRegister'])
     const errorMessage = computed(() => store.getters['user/errorMessage'])
-    return{
+    return {
       isLogin,
       isRegisterSuccess,
       errorMessage
@@ -45,7 +45,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.form-item{
+.form-item {
   margin-top: 20px;
 }
 </style>
