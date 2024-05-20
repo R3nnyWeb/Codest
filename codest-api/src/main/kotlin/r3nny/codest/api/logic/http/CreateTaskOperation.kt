@@ -1,8 +1,5 @@
 package r3nny.codest.api.logic.http
 
-import r3nny.codest.logging.aspect.LogMethod
-import r3nny.codest.model.CreateTaskRequest
-import r3nny.codest.shared.domain.Language
 import r3nny.codest.api.dto.common.Level
 import r3nny.codest.api.dto.dao.TaskDto
 import r3nny.codest.api.dto.extentions.languages
@@ -11,6 +8,9 @@ import r3nny.codest.api.dto.extentions.tests
 import r3nny.codest.api.integration.db.TaskAndTestAdapter
 import r3nny.codest.api.service.driver.DriverGeneratorService
 import r3nny.codest.api.service.validation.validateCreateTask
+import r3nny.codest.logging.aspect.LogMethod
+import r3nny.codest.model.CreateTaskRequest
+import r3nny.codest.shared.domain.Language
 import ru.tinkoff.kora.common.Component
 import java.util.*
 
@@ -21,7 +21,7 @@ open class CreateTaskOperation(
 ) {
 
     @LogMethod
-    open suspend fun activate(request: CreateTaskRequest): UUID = with(request) {
+    open suspend fun activate(request: CreateTaskRequest, userId: UUID): UUID = with(request) {
         validateCreateTask(this)
 
         val parameters = parameters()
@@ -46,6 +46,7 @@ open class CreateTaskOperation(
             languages = mappedLanguages,
             isEnabled = false,
             isPrivate = isPrivate ?: false,
+            userId = userId
         )
 
         taskAndTestAdapter.createTask(task, tests())

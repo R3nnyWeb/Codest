@@ -2,7 +2,7 @@
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div :style="{'max-width' : maxWidthContainer}" class="modal-container">
           <div v-if="errorMessage" class="modal-error-message">
             {{ errorMessage }}
           </div>
@@ -17,7 +17,7 @@
                   fill="white"/>
             </svg>
           </div>
-          <div class="modal-content">
+          <div :style="{'max-width' : maxWidthContainer}" class="modal-content">
             <div class="modal-header">
               <slot name="header">
                 default header
@@ -44,6 +44,14 @@ export default {
   props: {
     errorMessage: {
       type: String
+    },
+    maxWidthContainer: {
+      type: String,
+      default: '460px'
+    },
+    maxWidthContent: {
+      type: String,
+      default: '400px'
     }
   }
 }
@@ -75,7 +83,6 @@ export default {
 
 .modal-container {
   margin: 0 auto;
-  max-width: 460px;
 
   transition: all 0.3s ease;
 }
@@ -96,7 +103,6 @@ export default {
 .modal-content {
   margin: 0 auto;
 
-  max-width: 400px;
   padding: 20px 30px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);

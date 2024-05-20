@@ -17,7 +17,7 @@
                       |-----------|---------------------------------|
            | errorType | COMPILE_ERROR                   |
            | output    | Сообщение из вывода компилятора |
-4. Выполнить код командой **commandToRun** из настроек для **language** из запроса, полученый в 3.i или 1.i
+4. Выполнить код командой **commandToRun** из настроек для **language**
     1. Каждый элемент из **input[]** из события отправить в стандартный поток ввода
     2. Стандартный поток вывода записать в **result[]** по строкам
     3. Поток ошибок записать в **errors**
@@ -25,19 +25,19 @@
     1. Положить в топик **codest.runner.response** сообщение
        по [контракту](../events/RunCodeResponseEvent.md) и **key = event.key**:
 
-       | Поле      | Значение       |
-              |-----------|----------------|
-       | errorType | RUNTIME_ERROR  |
-       | output    | input + errors |
+       | Поле      | Значение      |
+              |-----------|---------------|
+       | errorType | RUNTIME_ERROR |
+       | output    | result + errors |
 6. **Иначе**
-    1. Сопоставить массив output и ожидаемые ответы из request. Если значения не совпадают:
+    1. Сопоставить массив result и ожидаемые ответы из request.tests. Если для любого теста значения не совпадают:
         1. Положить в топик **codest.runner.response** сообщение
        по [контракту](../events/RunCodeResponseEvent.md) и **key = event.key**:
 
-       | Поле      | Значение                  |
-              |-----------|---------------------------|
-       | errorType | TEST_ERROR                |
-       | output    | List.of(expected, actual) |
+       | Поле      | Значение                         |
+              |-----------|----------------------------------|
+       | errorType | TEST_ERROR                       |
+       | output    | List.of(input, expected, actual) |
     2. **Иначе** Положить в топик **codest.runner.response** сообщение
        по [контракту](../events/RunCodeResponseEvent.md) и **key = event.key**:
 

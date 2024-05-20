@@ -28,5 +28,22 @@ open class TaskAdapter(
         }
     }
 
+    open suspend fun getUserIdByTaskId(taskId: UUID): UUID? {
+        return wrap(errorCode = InvocationExceptionCode.GET_TASK_ERROR) {
+            taskRepository.getUserIdByTaskId(taskId)
+        }
+    }
+
     open suspend fun count() = wrap(errorCode = InvocationExceptionCode.GET_TASK_ERROR) { taskRepository.count() }
+    open suspend fun getAllByUserId(userId: UUID): List<TaskDto> {
+        return wrap(errorCode = InvocationExceptionCode.GET_TASK_ERROR) {
+            taskRepository.getAllByUserId(userId)
+        }
+    }
+
+    open suspend fun updateEnable(taskId: UUID, enable: Boolean) {
+        return wrap(errorCode = InvocationExceptionCode.ATTEMPTS_ERROR) {
+            taskRepository.updateEnable(taskId, enable)
+        }
+    }
 }

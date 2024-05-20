@@ -53,11 +53,10 @@ fun throwInvocationException(
 
 fun throwSecurityException(
     code: ExceptionCode<SecurityException>,
-    isForbidden: Boolean = false,
     cause: Throwable? = null,
     message: String? = null,
 ): Nothing {
-    throw SecurityException(isForbidden, code, cause, message)
+    throw SecurityException(code == DefaultSecurityExceptionCode.FORBIDDEN, code, cause, message)
 }
 
 fun throwValidationException(

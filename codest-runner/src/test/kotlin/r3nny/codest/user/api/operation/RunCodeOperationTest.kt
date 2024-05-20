@@ -55,22 +55,27 @@ class RunCodeOperationTest {
         operation.activate(event, id)
 
         coVerify {
-            sendResponse(null, listOf("some output"))
+            sendResponse(null, emptyList())
         }
     }
 
-        @Test
+    @Test
     fun `test error`() = runBlocking {
         coEvery { execute() } returns Pair(
             ExecutionResult(emptyList(), emptyList(), 0),
-            ExecutionResult(listOf("some output"), emptyList(), 0)
+            ExecutionResult(listOf("error"), emptyList(), 0)
         )
-        coEvery { tester.findError(event.tests, listOf("some output")) } returns Pair("0", "some output")
+        coEvery { tester.findError(event.tests, listOf("error")) } returns Pair(
+            ExecutionTestCase(
+                inputData = listOf("some"),
+                outputData = "some output"
+            ), "error"
+        )
 
         operation.activate(event, id)
 
         coVerify {
-            sendResponse(CodeRunnerErrorType.TEST_ERROR, listOf("0", "some output"))
+            sendResponse(CodeRunnerErrorType.TEST_ERROR, listOf("some", "some output", "error"))
         }
     }
 

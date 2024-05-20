@@ -1,1 +1,2 @@
 DROP TABLE IF EXISTS tasks;
+DROP INDEX IF EXISTS tasks_user_id_idx

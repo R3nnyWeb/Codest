@@ -54,4 +54,10 @@ open class AttemptsAdapter(
         }
     }
 
+   open suspend fun getSuccessAttemptLanguages(taskId: UUID): Set<Language> {
+       return wrap(errorCode = InvocationExceptionCode.ATTEMPTS_ERROR) {
+            repository.getSuccessAttemptLanguages(taskId).toSet()
+        }
+    }
+
 }

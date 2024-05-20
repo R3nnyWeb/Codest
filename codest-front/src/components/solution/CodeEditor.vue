@@ -8,7 +8,7 @@
         :disabled="$props.pending"
         :extensions="extensions"
         :indent-with-tab="true"
-        :style="{ height: '100%', width: '100%' }"
+        :style="{ width: '100%', 'min-height': '200px' }"
         :tab-size="4"
         placeholder="Ваше решение..."
     />
@@ -25,8 +25,8 @@ import {Codemirror} from "vue-codemirror";
 import {java} from "@codemirror/lang-java";
 import {useRoute} from "vue-router";
 import {oneDark} from "@codemirror/theme-one-dark";
-import {python} from "@codemirror/lang-python";
 import AppDropdownSelect from "@/components/ui/AppDropdownSelect.vue";
+import helper from "@/helper";
 
 
 export default defineComponent({
@@ -67,7 +67,7 @@ export default defineComponent({
     }
 
     function checkForDarkTheme() {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+      if (helper.isDarkTheme())
         extensions.value.push(oneDark)
     }
 
@@ -77,17 +77,8 @@ export default defineComponent({
           loading.value = true;
           // eslint-disable-next-line vue/no-mutating-props
           props.templates.lang = solution.code
-          switch (lang) {
-            case "java":
-              extensions.value = [java()]
-              break;
-            case "python":
-              extensions.value = [python()]
-              break;
-            default:
-              extensions.value = []
-              break;
-          }
+          extensions.value = helper.getLanguageExtension(lang)
+
           solution.code = props.templates[lang];
           checkForDarkTheme();
           setTimeout(() => loading.value = false, 200)

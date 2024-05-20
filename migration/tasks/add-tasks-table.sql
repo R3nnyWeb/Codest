@@ -10,5 +10,8 @@ CREATE TABLE tasks (
     description TEXT NOT NULL,
     level VARCHAR NOT NULL,
     input_types VARCHAR[] NOT NULL,
-    output_type VARCHAR NOT NULL
+    output_type VARCHAR NOT NULL,
+    user_id UUID NOT NULL
 );
+
+CREATE INDEX tasks_user_id_idx ON tasks (user_id);

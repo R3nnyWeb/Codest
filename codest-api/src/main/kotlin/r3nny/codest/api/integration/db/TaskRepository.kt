@@ -15,10 +15,10 @@ interface TaskRepository : JdbcRepository {
 
     @Query(
         """
-        INSERT INTO tasks (id, name, method_name, drivers, start_code, languages, is_enabled, is_private, description, level, input_types, output_type)
+        INSERT INTO tasks (id, name, method_name, drivers, start_code, languages, is_enabled, is_private, description, level, input_types, output_type, user_id)
         VALUES (:task.id, :task.name, :task.methodName, :task.drivers::jsonb,
         :task.startCode::jsonb, :task.languages, :task.isEnabled, :task.isPrivate, :task.description,
-        :task.level, :task.inputTypes, :task.outputType)
+        :task.level, :task.inputTypes, :task.outputType, :task.userId)
     """
     )
     @LogMethod
@@ -35,7 +35,7 @@ interface TaskRepository : JdbcRepository {
 
     @Query(
         """
-        SELECT id, name, method_name, drivers, start_code, languages, is_enabled, is_private, description, level, input_types, output_type
+        SELECT id, name, method_name, drivers, start_code, languages, is_enabled, is_private, description, level, input_types, output_type, user_id
         FROM tasks
         WHERE id = :taskId
     """
@@ -58,4 +58,14 @@ interface TaskRepository : JdbcRepository {
 
     @Query("SELECT COUNT(*) FROM tasks")
     suspend fun count(): Long
+
+
+    @Query("SELECT user_id FROM tasks WHERE id = :taskId")
+    suspend fun getUserIdByTaskId(taskId: UUID): UUID?
+
+    @Query("SELECT id, name, method_name, drivers, start_code, languages, is_enabled, is_private, description, level, input_types, output_type, user_id FROM tasks WHERE user_id = :userId")
+    suspend fun getAllByUserId(userId: UUID): List<TaskDto>
+
+    @Query("UPDATE tasks SET is_enabled = :enable WHERE id = :taskId")
+    suspend fun updateEnable(taskId: UUID, enable: Boolean)
 }

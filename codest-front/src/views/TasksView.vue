@@ -45,17 +45,15 @@ const data = reactive({
   sort: null
 });
 const loadData = () => {
-  console.log('onload')
- loading.value = true
+  loading.value = true
 
-     taskApi.getAll(data.number,
+  taskApi.getAll(data.number,
       searchParams.title,
       searchParams.level)
       .then((r) => {
         console.log(r)
         Object.assign(data, r.data)
       }).finally(() => {
-        console.log('finish')
     loading.value = false
   });
 

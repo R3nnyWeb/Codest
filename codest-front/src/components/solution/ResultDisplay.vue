@@ -14,7 +14,7 @@
         <p>Неверный результат</p>
         <br>
         <p>Входные данные:</p>
-        <span v-for="(value,i) in failedTest.inputData " :key="i">{{ value }} &nbsp;</span>
+        <span v-for="(value,i) in failedTest.inputData " :key="i">{{ value }}; &nbsp;</span>
         <p>Ожидаемый результат</p>
         <span style="white-space: pre-line">{{ failedTest.expected }}</span>
         <p>Ваш результат:</p>
@@ -90,7 +90,6 @@ export default defineComponent({
 
 .result-wrapper {
   font-family: 'Courier New', Courier, monospace;
-  width: 35%;
   padding: 10px;
   border-radius: 10px;
   border: 2px solid var(--color-border);

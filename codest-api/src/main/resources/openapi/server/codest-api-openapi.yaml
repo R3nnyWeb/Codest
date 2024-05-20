@@ -18,8 +18,126 @@ tags:
     description: Задачи
   - name: solution
     description: Решения
+  - name: tests
+    description: Тесты
 
 paths:
+  /v1/tasks/own:
+    get:
+      tags:
+        - tasks
+      summary: Список задач пользователя
+      operationId: getOwnTasks
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskLiteResponse'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+
+  /v1/tasks/{taskId}/enable:
+    post:
+      tags:
+        - tasks
+      summary: Активация задачи
+      operationId: enableTask
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+        - name: enable
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: Enable/Disable задачу
+      responses:
+        200:
+          description: Ok
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        403:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/tests/{testId}:
+    delete:
+      tags:
+        - tests
+      summary: Удаление теста
+
+      operationId: deleteTest
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/TestIdPath'
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        403:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
+
+  /v1/tasks/{taskId}/tests:
+    post:
+      tags:
+        - tests
+      summary: Добавление тестов ( добавляет только уникальные и тех которых нет)
+      operationId: createTests
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskTestsRequest'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskTests'
+        400:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/Error'
+        403:
+          $ref: '#/components/responses/Error'
+        422:
+          $ref: '#/components/responses/Error'
+        500:
+          $ref: '#/components/responses/Error'
 
   /v1/tasks/list:
     get:
@@ -38,14 +156,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TasksListResponse'        
+                $ref: '#/components/schemas/TasksListResponse'
         400:
           $ref: '#/components/responses/Error'
         422:
           $ref: '#/components/responses/Error'
         500:
           $ref: '#/components/responses/Error'
-  /v1/tasks/{taskId}:
+
+  /v1/tasks/{taskId}/full:
     get:
       tags:
         - tasks
@@ -61,30 +180,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FullTaskResponse'        
+                $ref: '#/components/schemas/FullTaskResponse'
         400:
           $ref: '#/components/responses/Error'
         422:
           $ref: '#/components/responses/Error'
         500:
           $ref: '#/components/responses/Error'
-          
-  /v1/tasks/{taskId}/lite:
+
+  /v1/tasks/{taskId}:
     get:
       tags:
         - tasks
-      summary: Короткое описание задачи с решениями пользователя
+      summary: Короткое описание задачи для решения
       operationId: getTaskLite
       parameters:
         - $ref: '#/components/parameters/TaskIdPath'
-        - $ref: '#/components/parameters/UserIdOptional'
+      security:
+        - optionalBearerAuth: [ ]
       responses:
         200:
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskLiteResponse'        
+                $ref: '#/components/schemas/TaskLiteResponse'
         400:
           $ref: '#/components/responses/Error'
         422:
@@ -99,7 +219,7 @@ paths:
       summary: Создание задачи
       operationId: createTask
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -120,13 +240,41 @@ paths:
         500:
           $ref: '#/components/responses/Error'
 
+  /v1/tasks/{taskId}/solutions:
+    get:
+      operationId: getTaskSolutions
+      summary: Возвращает решения задачи пользователя (lite)
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - solution
+      parameters:
+        - $ref: '#/components/parameters/TaskIdPath'
+      responses:
+        '200':
+          description: Решения задачи
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SolutionLiteResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+
   /v1/solutions/{solutionId}:
     get:
       operationId: getSolution
       summary: Возвращает решение
       description: Возвращает решение
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - solution
       parameters:
@@ -151,7 +299,7 @@ paths:
       summary: Сохраняет решение
       description: Сохраняет решение
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - solution
       parameters:
@@ -181,6 +329,10 @@ components:
 
   securitySchemes:
     bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    optionalBearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -285,6 +437,7 @@ components:
         id:
           $ref: '#/components/schemas/TaskId'
 
+
     CreateTaskRequest:
       type: object
       required:
@@ -338,19 +491,21 @@ components:
         - description
         - isEnabled
         - isPrivate
+        - isAuthor
         - startCodes
-        - solutions
       properties:
         id:
           $ref: '#/components/schemas/TaskId'
         name:
           $ref: '#/components/schemas/TaskName'
-        level: 
+        level:
           $ref: '#/components/schemas/Level'
         description:
           description: Описание
           type: string
           example: lorem ipsum
+        isAuthor:
+          $ref: '#/components/schemas/isAuthor'
         languages:
           $ref: '#/components/schemas/TaskLanguages'
         isEnabled:
@@ -359,13 +514,9 @@ components:
           $ref: '#/components/schemas/IsPrivate'
         startCodes:
           $ref: '#/components/schemas/TaskStartCodes'
-        solutions:
-          description: Решения для задачи этого пользователя (по умолчанию пустой)
-          type: array
-          items:
-            $ref: '#/components/schemas/SolutionLiteResponse'
-          default: []
-
+    isAuthor:
+      description: Является ли пользователь автором задачи
+      type: boolean
 
     FullTaskResponse:
       description: Полное описание задачи
@@ -376,6 +527,7 @@ components:
         - level
         - inputTypes
         - outputType
+        - userId
         - languages
         - isEnabled
         - isPrivate
@@ -388,12 +540,14 @@ components:
           $ref: '#/components/schemas/TaskId'
         name:
           $ref: '#/components/schemas/TaskName'
-        level: 
+        level:
           $ref: '#/components/schemas/Level'
         description:
           description: Описание
           type: string
           example: lorem ipsum
+        userId:
+          $ref: '#/components/schemas/UserId'
         inputTypes:
           $ref: '#/components/schemas/TaskInputTypes'
         outputType:
@@ -412,57 +566,57 @@ components:
           $ref: '#/components/schemas/TaskDrivers'
         startCodes:
           $ref: '#/components/schemas/TaskStartCodes'
-          
+
     TaskStartCodes:
       description: Заготовки кода для пользователя. язык -> драйвер
       type: string
       additionalProperties:
         type: string
-      example: {'java' : 'someCode'}
-      
+      example: { 'java': 'someCode' }
+
     TaskDrivers:
       description: Заготовки кода для выполнения. язык -> драйвер
       type: string
       additionalProperties:
         type: string
-      example: {'java' : 'someCode'}
-      
+      example: { 'java': 'someCode' }
+
     TaskInputTypes:
       description: Типы входных параметров
       type: array
-      items: 
+      items:
         type: string
-      example: ['integer', 'boolean', 'int_array']
+      example: [ 'integer', 'boolean', 'int_array' ]
     
     TaskOutputType:
       description: Тип выходного параметра
       type: string
       example: 'integer'
-      
+
     TaskLanguages:
       description: Допустимые языки
       type: array
       items:
         $ref: '#/components/schemas/Language'
-      
+
     Language:
       description: Допустимый язык
       type: string
       example: 'java'
-      
+
     MethodName:
       description: Название реализуемого метода(функции)
       type: string
       example: 'sum'
-      
+
     IsEnabled:
       description: Отображается ли задача в списке (есть доступ по id)
       type: boolean
-      
+
     IsPrivate:
       description: Отображается ли задача только в соревновании (есть доступ по id)
       type: boolean
-      
+
     TaskTests:
       type: array
       items:
@@ -479,7 +633,7 @@ components:
           $ref: '#/components/schemas/TestInputData'
         outputData:
           $ref: '#/components/schemas/TestOutputData'
-      
+
     Test:
       description: Тест
       type: object
@@ -494,25 +648,25 @@ components:
           $ref: '#/components/schemas/TestInputData'
         outputData:
           $ref: '#/components/schemas/TestOutputData'
-  
+
     TestId:
       description: Уникальный идентификатор теста
       type: string
       format: uuid
       example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
-      
+
     TestInputData:
       description: Входные данные теста
       type: array
-      items: 
+      items:
         type: string
-      example: ['2', '0', '1']
-      
+      example: [ '2', '0', '1' ]
+
     TestOutputData:
       description: Выходные данные теста
       type: string
       example: '3'
-  
+
     TasksListResponse:
       description: Список задач с пагинацией
       type: object
@@ -530,11 +684,11 @@ components:
           description: Всего страниц
           type: integer
           format: int64
-          example: 123 
+          example: 123
         items:
           type: array
           items:
-            $ref: '#/components/schemas/TaskLite'        
+            $ref: '#/components/schemas/TaskLite'
     
     TaskLite:
       description: Короткое описание задачи
@@ -550,23 +704,23 @@ components:
           $ref: '#/components/schemas/TaskName'
         level:
           $ref: '#/components/schemas/Level'
-          
+
     TaskId:
       description: Уникальный идентификатор задачи
       type: string
       format: uuid
       example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
-      
+
     TaskName:
       description: Имя задачи
       type: string
-      example: '1. Сложение'  
+      example: '1. Сложение'
     
     Level:
       description: Уровень сложности
       type: string
-      enum: ['easy', 'medium', 'hard']
- 
+      enum: [ 'easy', 'medium', 'hard' ]
+
     ErrorResponse:
       description: Данные об ошибке
       type: object
@@ -585,6 +739,11 @@ components:
           minLength: 1
           maxLength: 8
           example: 01-Z99
+
+    UserId:
+      type: string
+      format: uuid
+      example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
   
   parameters:
     SolutionIdPath:
@@ -599,9 +758,7 @@ components:
       name: x-user-id
       in: header
       schema:
-        type: string
-        format: uuid
-        example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
+        $ref: '#/components/schemas/UserId'
       required: true
 
     UserIdOptional:
@@ -612,6 +769,14 @@ components:
         format: uuid
         example: 803f29aa-cca4-4fe7-8254-e0005106cdc3
       required: false
+
+    TestIdPath:
+      description: Id теста
+      required: true
+      name: testId
+      in: path
+      schema:
+        $ref: '#/components/schemas/TestId'
 
     TaskIdPath:
       description: Id задачи
@@ -628,7 +793,7 @@ components:
       in: query
       schema:
         $ref: '#/components/schemas/Language'
-  
+
     Level:
       description: Уровень сложности
       required: false
@@ -667,7 +832,7 @@ components:
         minimum: 1
         maximum: 100
         default: 10
-      example: 20   
+      example: 20
   
   headers:
     XTraceId:

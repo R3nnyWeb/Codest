@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import SolutionView from "@/views/SolutionView.vue";
+import SolutionView from "@/views/TaskView.vue";
 import TasksView from "@/views/TasksView.vue";
 import MainView from "@/views/MainView.vue";
 

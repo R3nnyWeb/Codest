@@ -66,6 +66,7 @@ export const userModule = {
             state.token = token;
             setItem('token', token)
             state.loading = false;
+            location.reload()
         },
         loginFailure(state) {
             state.loading = false;
