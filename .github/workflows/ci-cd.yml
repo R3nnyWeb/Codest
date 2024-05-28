@@ -1,8 +1,6 @@
 name: Build
 
-on:
-  push:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 env:
   CODEST_API_NAME: codest-api
@@ -15,30 +13,8 @@ env:
   CODEST_FRONTEND_IMAGE: ghcr.io/r3nnyweb/codest-front:latest
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      codest-api: ${{ steps.changes.outputs.codest-api }}
-    steps:
-    - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2
-      id: changes
-      with:
-        filters: |
-          codest-api:
-            - 'codest-api/**'
-          codest-runner:
-            - 'codest-runner/**'
-          codest-user-api:
-            - 'codest-user-api/**'
-          codest-frontend:
-            - 'codest-frontend/**'
-          
-            
 
   build-codest-api:
-    needs: changes
-    if: ${{ needs.changes.outputs.codest-api == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -67,8 +43,6 @@ jobs:
         cache-to: type=gha,mode=max,scope=${{env.CODEST_API_NAME}}
 
   build-codest-runner:
-    needs: changes
-    if: ${{ needs.changes.outputs.codest-runner == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -97,8 +71,6 @@ jobs:
         cache-to: type=gha,mode=max,scope=${{env.CODEST_RUNNER_NAME}}
 
   build-codest-user-api:
-    needs: changes
-    if: ${{ needs.changes.outputs.codest-user-api == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -127,8 +99,6 @@ jobs:
         cache-to: type=gha,mode=max,scope=${{env.CODEST_USER_API_NAME}}
 
   build-codest-frontend:
-    needs: changes
-    if: ${{ needs.changes.outputs.codest-frontend == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
