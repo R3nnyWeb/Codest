@@ -10,7 +10,8 @@ COPY settings.gradle.kts /app/settings.gradle.kts
 COPY gradle.properties /app/gradle.properties
 WORKDIR /app
 RUN gradle codest-api:distTar
-COPY ./codest-api/build/distributions/*.tar /opt/app.tar
+RUN ls
+COPY /app/codest-api/build/distributions/*.tar /opt/app.tar
 RUN tar -xf /opt/app.tar -C /opt
 
 FROM openjdk:19-jdk
