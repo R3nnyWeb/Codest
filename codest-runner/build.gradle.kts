@@ -68,10 +68,6 @@ tasks {
         }
     }
 
-    distTar {
-        archiveFileName.set("app.tar")
-    }
-
     compileKotlin {
         kotlinOptions {
             jvmTarget = "19"
@@ -92,6 +88,6 @@ tasks {
 }
 
 tasks.distTar {
-    archiveFileName.set("application.tar")
+    archiveFileName.set("app.tar")
 }
 

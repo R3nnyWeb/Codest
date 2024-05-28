@@ -141,6 +141,6 @@ tasks {
 }
 
 tasks.distTar {
-    archiveFileName.set("application.tar")
+    archiveFileName.set("app.tar")
 }
 
