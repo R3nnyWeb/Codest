@@ -1,3 +1,99 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codest-api-config
+  labels:
+    app: codest-api
+data:
+  application.conf: |
+    openapi {
+        management {
+            file = "openapi/server/codest-api-openapi.yaml"
+            enabled = true
+            endpoint = "/openapi"
+            swaggerui {
+                enabled = true
+                endpoint = "/swagger-ui"
+            }
+        }
+    }
+
+    kafka {
+        cacheInvalidateConsumer {
+            topics = "codest.cache.invalidate"
+            pollTimeout = 250ms
+            threads = 4
+            driverProperties {
+                bootstrap.servers: """
+                    kafka:9092
+                """
+                "group.id": "codest.runner.pod_name"
+            }
+        }
+        runConsumer {
+            topics = "codest.runner.response"
+            pollTimeout = 250ms
+            threads = 4
+            driverProperties {
+                bootstrap.servers: """
+                    kafka:9092
+                """
+                "group.id": "codest.runner"
+            }
+        }
+        producer {
+             driverProperties {
+                bootstrap.servers: """
+                    kafka:9092
+                """
+             }
+             send-topic {
+                  topic = "codest.runner.request"
+             }
+             cache-invalidate-topic {
+                topic = "codest.cache.invalidate"
+             }
+        }
+    }
+
+    db {
+        jdbcUrl = "jdbc:postgresql://dev-pg-postgresql:5432/codest"
+        username = "postgres"
+        password = "cG9zdGdyZXM="
+        schema = "public"
+        poolName = "codest-task"
+        maxPoolSize = 10
+        minIdle = 2
+    }
+
+    security {
+        key: "dGhpcyBpcyBzb21lIGp3dCBzZWNyZXR0aGlzIGlzIHNvbWUgand0IHNlY3JldA=="
+    }
+
+    cache {
+        getTask {
+             expireAfterWrite = "10000s"
+             expireAfterAccess = "10000s"
+             initialSize = 10
+             maximusSize = 1000
+        }
+        testsByTaskId {
+             expireAfterWrite = "10000s"
+             expireAfterAccess = "10000s"
+             initialSize = 10
+             maximusSize = 1000
+        }
+        getAttempt {
+             expireAfterWrite = "60s"
+             expireAfterAccess = "60s"
+             initialSize = 100
+             maximusSize = 10000
+        }
+    }
+
+---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -38,6 +134,20 @@ spec:
         image: ghcr.io/r3nnyweb/codest-api:latest
         ports:
         - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /system/liveness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /system/readiness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
         resources:
           limits:
             memory: 512Mi
@@ -47,5 +157,15 @@ spec:
             value: >-
               -Dconfig.file=/opt/app/config/application.conf
               -Xmx256m
-              -XX: +AlwaysActAsServerClassMachine
-              -XX: +UseG1GC
+              -XX:+AlwaysActAsServerClassMachine
+              -XX:+UseG1GC
+        volumeMounts:
+          - name: config
+            mountPath: "/opt/app/config/"
+            readOnly: true
+      volumes:
+          # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+              # Provide the name of the ConfigMap you want to mount.
+            name: codest-api-config
