@@ -126,6 +126,10 @@ tasks {
         dependsOn(openApiServerGenerate)
     }
 
+    distTar {
+        archiveFileName.set("app.tar")
+    }
+
     compileKotlin {
         kotlinOptions {
             jvmTarget = "19"

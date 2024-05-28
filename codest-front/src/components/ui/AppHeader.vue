@@ -5,19 +5,26 @@
     </div>
     <nav id="menu">
       <ul :class="{'white' : isMainPage}">
+        <li><a :href="backendUrl + '/swagger-ui'" target="_blank">API Задач</a></li>
+        <li><a :href="backendUrl + '/swagger-ui'" target="_blank">API Соревнований</a></li>
+        <li><a :href="backendUserUrl + '/swagger-ui'" target="_blank">API Пользователей</a></li>
         <li @click="$router.push({name: 'tasks'})"><a>Задачи</a></li>
         <li v-if="!isLoggedIn" id="auth" @click="showLogin"><a>Авторизация</a></li>
         <li v-else @click="logout"><a>Выйти</a></li>
       </ul>
     </nav>
 
-    <div id="burger-button" :class="{'white' : isMainPage, 'active' : isMenuOpened}" class="opened" @click="isMenuOpened = !isMenuOpened">
+    <div id="burger-button" :class="{'white' : isMainPage, 'active' : isMenuOpened}" class="opened"
+         @click="isMenuOpened = !isMenuOpened">
       {{ isMenuOpened ? '✕' : '☰' }}
     </div>
 
   </header>
   <menu id="burger" :class="{active : isMenuOpened}">
     <ul>
+      <li><a :href="backendUrl + '/swagger-ui'" target="_blank">API Задач</a></li>
+      <li><a :href="backendUserUrl + '/swagger-ui'" target="_blank">API Соревнований</a></li>
+      <li><a :href="backendUserUrl + '/swagger-ui'" target="_blank">API Пользователей</a></li>
       <li @click="isMenuOpened = false;$router.push({name: 'tasks'})"><a>Задачи</a></li>
       <li v-if="!isLoggedIn" @click="showLogin"><a>Авторизация</a></li>
       <li v-else @click="logout"><a>Выйти</a></li>
@@ -31,9 +38,9 @@
 import {useStore} from "vuex";
 import {useRoute, useRouter} from "vue-router";
 import {computed, ref} from "vue";
+import {backendUrl, backendUserUrl} from "@/api/api";
 
 const store = useStore();
-const router = useRouter();
 const route = useRoute();
 const isMenuOpened = ref(false);
 const showLogin = () => {
@@ -115,6 +122,13 @@ a {
   }
 }
 
+li a {
+  text-decoration: none;
+
+  &:active {
+    color: var(--color-text)
+  }
+}
 
 #auth {
   border: 1px solid white;
@@ -148,9 +162,11 @@ a {
 
 #burger-button {
   display: none;
-  &.white{
+
+  &.white {
     color: white;
-&.active{
+
+    &.active {
       color: var(--color-text);
     }
   }

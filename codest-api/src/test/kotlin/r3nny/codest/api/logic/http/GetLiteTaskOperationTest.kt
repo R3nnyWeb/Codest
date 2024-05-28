@@ -18,7 +18,6 @@ import java.util.*
 class GetLiteTaskOperationTest : OperationTestBase() {
     private val operation = GetLiteTaskOperation(
         taskAdapter,
-        attemptsAdapter
     )
     private val stubTaskId = UUID.randomUUID()
     private val stubUserId = UUID.randomUUID()
@@ -38,7 +37,6 @@ class GetLiteTaskOperationTest : OperationTestBase() {
 
         val result = operation.activate(taskId = stubTaskId, userId = stubUserId)
 
-        result.solutions shouldBe attempts
         result.isAuthor shouldBe false
         result.task shouldBe saved.toLiteDto()
     }
@@ -50,7 +48,6 @@ class GetLiteTaskOperationTest : OperationTestBase() {
 
         val result = operation.activate(taskId = stubTaskId, userId = saved.userId)
 
-        result.solutions shouldBe attempts
         result.isAuthor shouldBe true
         result.task shouldBe saved.toLiteDto()
     }
@@ -61,7 +58,6 @@ class GetLiteTaskOperationTest : OperationTestBase() {
 
         val result = operation.activate(taskId = stubTaskId, userId = null)
 
-        result.solutions shouldBe emptyList()
         result.isAuthor shouldBe false
         result.task shouldBe saved.toLiteDto()
 
