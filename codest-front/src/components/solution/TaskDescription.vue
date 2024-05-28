@@ -4,7 +4,7 @@
        <task-level :value="task.level.toUpperCase()"/>
     </div>
     <p class="task-descr">
-      {{task.description}}
+      <markdown-renderer :source="task.description"/>
     </p>
 
   </div>
@@ -12,6 +12,7 @@
 
 <script setup>
 import TaskLevel from "@/components/task/TaskLevel.vue";
+import MarkdownRenderer from "@/components/markdown/MarkdownRenderer.vue";
 
 defineProps(['task'])
 </script>
