@@ -15,13 +15,15 @@
        обработку
 2. Сохранить в **attempts**. Маппинг:
 
-   | Поле     | Значение            |
-       |----------|---------------------|
-   | id       | uuid()              |
-   | taskId   | taskId из path      |
-   | userId   | userId из header    |
-   | code     | code из запроса     |
-   | language | language из запроса |
+   | Поле          | Значение                               |
+       |---------------|----------------------------------------|
+   | id            | uuid()                                 |
+   | taskId        | taskId из path                         |
+   | userId        | userId из header                       |
+   | code          | code из запроса                        |
+   | language      | language из запроса                    |
+   | competitionId | competitionId из запроса, если передан |
+   1. Если при вставке ошибка по связи с taskId/competitionId выбросить исключение **TaskNotFound**/**CompetitionNotFound**
 3. Отправить сообщение в **codest.runner.request** в соотвествии
    с [контрактом](../events/RunCodeRequestEvent.md) и ключем id из attempts
    Маппинг:
