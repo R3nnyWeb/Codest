@@ -11,7 +11,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-
 class JwtService(
     private val secret: String,
 ) {

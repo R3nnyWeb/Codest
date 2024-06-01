@@ -1,9 +1,9 @@
 package r3nny.codest.api.service.driver.internal
 
-import r3nny.codest.shared.domain.Language
-import r3nny.codest.shared.domain.Type
 import r3nny.codest.api.config.AppConfig
 import r3nny.codest.api.helper.getTypeConfig
+import r3nny.codest.shared.domain.Language
+import r3nny.codest.shared.domain.Type
 
 class JavaDriverGenerator(
     config: AppConfig,
@@ -18,8 +18,3 @@ class JavaDriverGenerator(
             toString()
         }
 }
-
-
-
-
-

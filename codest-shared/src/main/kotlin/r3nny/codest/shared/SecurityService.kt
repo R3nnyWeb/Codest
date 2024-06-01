@@ -6,7 +6,6 @@ import r3nny.codest.shared.helper.JwtService
 import ru.tinkoff.kora.common.Principal
 import java.util.*
 
-
 class SecurityService(
     private val jwtService: JwtService
 ) {
