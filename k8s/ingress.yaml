@@ -25,3 +25,13 @@ spec:
             name: svc-codest-user-api
             port:
               number: 8080
+  - host: codest.r3nny.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: svc-codest-frontend
+            port:
+              number: 80
