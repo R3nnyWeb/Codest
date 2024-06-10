@@ -38,10 +38,11 @@ open class ProcessRunner(
         val isFinishedInTime = process.waitFor(maxTimeSeconds, TimeUnit.SECONDS)
 
         if (!isFinishedInTime) {
-            process.destroy()
-            logger.info("Process timed out")
+                        logger.info("Process timed out")
             logger.info("Output: ${readStream(process.inputStream)}")
             logger.info("ErrorOutput: ${readStream(process.errorStream)}")
+            process.destroy()
+
             throw InvocationException(InvocationExceptionCode.TIMEOUT_EXCEPTION)
         }
 

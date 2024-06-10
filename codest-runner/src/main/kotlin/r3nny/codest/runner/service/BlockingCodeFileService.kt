@@ -29,13 +29,13 @@ open class BlockingCodeFileService : CodeFileService {
         wrap(
             code = InvocationExceptionCode.FILE_DELETE_ERROR
         ) {
-            if (folder.exists() && folder.isDirectory()) {
-                folder.listFiles()?.forEach {
-                    if (it.isFile)
-                        it.delete()
-                }
-            } else throw Exception("Directory not exists or not directory")
-            folder.delete();
+//            if (folder.exists() && folder.isDirectory()) {
+//                folder.listFiles()?.forEach {
+//                    if (it.isFile)
+//                        it.delete()
+//                }
+//            } else throw Exception("Directory not exists or not directory")
+//            folder.delete();
         }
     }
 
