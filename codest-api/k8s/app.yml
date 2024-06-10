@@ -26,9 +26,12 @@ data:
             threads = 4
             driverProperties {
                 bootstrap.servers: """
-                    kafka:9092
-                """
-                "group.id": "codest.runner.pod_name"
+                          kafka-release.kafka.svc.cluster.local:9092
+                      """
+          security.protocol = "SASL_PLAINTEXT"
+          sasl.mechanism = "SCRAM-SHA-256"
+          sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"user1\" password=\"${KAFKA_PASSWORD}\";"
+                "group.id": "codest.api"${POD_NAME}
             }
         }
         runConsumer {
@@ -37,16 +40,22 @@ data:
             threads = 4
             driverProperties {
                 bootstrap.servers: """
-                    kafka:9092
-                """
-                "group.id": "codest.runner"
+                          kafka-release.kafka.svc.cluster.local:9092
+                      """
+          security.protocol = "SASL_PLAINTEXT"
+          sasl.mechanism = "SCRAM-SHA-256"
+          sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"user1\" password=\"${KAFKA_PASSWORD}\";"
+                "group.id": "codest.api"
             }
         }
         producer {
              driverProperties {
                 bootstrap.servers: """
-                    kafka:9092
-                """
+                          kafka-release.kafka.svc.cluster.local:9092
+                      """
+          security.protocol = "SASL_PLAINTEXT"
+          sasl.mechanism = "SCRAM-SHA-256"
+          sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"user1\" password=\"${KAFKA_PASSWORD}\";"
              }
              send-topic {
                   topic = "codest.runner.request"
@@ -59,7 +68,7 @@ data:
 
     db {
         jdbcUrl = "jdbc:postgresql://dev-pg-postgresql:5432/codest"
-        username = "postgres"
+        username = ${POSTGRES_USERNAME}
         password = ${POSTGRES_PASSWORD}
         schema = "public"
         poolName = "codest-task"
@@ -91,7 +100,6 @@ data:
              maximusSize = 10000
         }
     }
-
 ---
 
 apiVersion: v1
@@ -153,16 +161,26 @@ spec:
             memory: 512Mi
             cpu: 500m
         env:
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: POSTGRES
-                key: POSTGRES_PASSWORD
           - name: JWT_SECRET
             valueFrom:
               secretKeyRef:
-                name: JWT
-                key: JWT_SECRET
+                name: jwt-secret
+                key: secret
+          - name: POSTGRES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: password
+          - name: KAFKA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kafka
+                key: password
           - name: POD_NAME
             valueFrom:
               fieldRef:

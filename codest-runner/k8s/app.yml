@@ -1,0 +1,177 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codest-runner-config
+  labels:
+    app: codest-runner
+data:
+  application.conf: |
+    httpServer {
+      publicApiHttpPort = 8080
+      privateApiHttpPort = 8085
+      privateApiHttpMetricsPath = "/metrics"
+      privateApiHttpReadinessPath = "/system/readiness"
+      privateApiHttpLivenessPath = "/system/liveness"
+      shutdownWait = "100ms"
+      telemetry {
+        logging {
+          enabled = true
+          stacktrace = true
+        }
+        metrics {
+          enabled = true
+          slo = [1, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 30000, 60000, 90000]
+        }
+      }
+    }
+    
+    kafka {
+      consumer {
+        topics = "codest.runner.request"
+        pollTimeout = 250ms
+        threads = 2
+        driverProperties {
+          bootstrap.servers: """
+                          kafka-release.kafka.svc.cluster.local:9092
+                      """
+          "group.id": "codest.runner"
+          security.protocol = "SASL_PLAINTEXT"
+          sasl.mechanism = "SCRAM-SHA-256"
+          sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"user1\" password=\"${KAFKA_PASSWORD}\";"
+        }
+        telemetry {
+          logging {
+            enabled = true
+          }
+          metrics {
+            enabled = true
+            slo = [1, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 30000, 60000, 90000]
+          }
+        }
+      }
+      producer {
+        driverProperties {
+          bootstrap.servers: """
+                          kafka-release.kafka.svc.cluster.local:9092
+                      """
+          security.protocol = "SASL_PLAINTEXT"
+          sasl.mechanism = "SCRAM-SHA-256"
+          sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"user1\" password=\"${KAFKA_PASSWORD}\";"
+        }
+        telemetry {
+          logging {
+            enabled = true
+          }
+          metrics {
+            enabled = true
+            slo = [1, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 30000, 60000, 90000]
+          }
+        }
+        send-topic {
+          topic = "codest.runner.response"
+        }
+      }
+    }
+    
+    logic {
+      maxTime = 5
+      languageSettings = {
+        "JAVA": {
+          commandToCompile = "javac"
+          commandToRun = "java"
+        }
+        "PYTHON": {
+          commandToRun = "python3"
+        }
+      }
+    }
+    
+    logging.level {
+      "root": "INFO"
+      "r3nny.codest": "DEBUG"
+    }
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-codest-runner
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: codest-runner
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codest-runner
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: codest-runner
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      name: codest-runner
+      labels:
+        app: codest-runner
+    spec:
+      containers:
+      - name: codest-runner
+        image: ghcr.io/r3nnyweb/codest-runner:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /system/liveness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /system/readiness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 250m
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: KAFKA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kafka
+                key: password
+          - name: JAVA_OPTS
+            value: >-
+              -Dconfig.file=/opt/app/config/application.conf
+              -Xmx256m
+              -XX:+AlwaysActAsServerClassMachine
+              -XX:+UseG1GC
+        volumeMounts:
+          - name: config
+            mountPath: "/opt/app/config/"
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: codest-runner-config

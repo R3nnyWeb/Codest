@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: codest-host
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api.codest.r3nny.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: svc-codest-api
+            port:
+              number: 8080
+  - host: user-api.codest.r3nny.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: svc-codest-user-api
+            port:
+              number: 8080

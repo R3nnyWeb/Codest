@@ -1,0 +1,152 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codest-user-api-config
+  labels:
+    app: codest-user-api
+data:
+  application.conf: |
+    httpServer {
+      publicApiHttpPort = 8080
+      privateApiHttpPort = 8085
+      privateApiHttpMetricsPath = "/metrics"
+      privateApiHttpReadinessPath = "/system/readiness"
+      privateApiHttpLivenessPath = "/system/liveness"
+      shutdownWait = "100ms"
+      telemetry {
+        logging {
+          enabled = true
+          stacktrace = true
+        }
+        metrics {
+          enabled = true
+          slo = [1, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 30000, 60000, 90000]
+        }
+      }
+    }
+    
+    db {
+        jdbcUrl = "jdbc:postgresql://dev-pg-postgresql:5432/codest"
+        username = ${POSTGRES_USERNAME}
+        password = ${POSTGRES_PASSWORD}
+        schema = "public"
+        poolName = "codest-task"
+        maxPoolSize = 10
+        minIdle = 2
+    }
+
+    openapi {
+        management {
+            file = "openapi/server/user-api-openapi.yaml"
+            enabled = true
+            endpoint = "/openapi"
+            swaggerui {
+                enabled = true
+                endpoint = "/swagger-ui"
+            }
+        }
+    }
+
+    security {
+        key: ${JWT_SECRET}
+    }    
+    
+    logging.level {
+      "root": "INFO"
+      "r3nny.codest": "DEBUG"
+    }
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-codest-user-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: codest-user-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codest-user-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: codest-user-api
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      name: codest-user-api
+      labels:
+        app: codest-user-api
+    spec:
+      containers:
+      - name: codest-user-api
+        image: ghcr.io/r3nnyweb/codest-user-api:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /system/liveness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /system/readiness
+            port: 8085
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 250m
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: jwt-secret
+                key: secret
+          - name: POSTGRES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: password
+          - name: JAVA_OPTS
+            value: >-
+              -Dconfig.file=/opt/app/config/application.conf
+              -Xmx256m
+              -XX:+AlwaysActAsServerClassMachine
+              -XX:+UseG1GC
+        volumeMounts:
+          - name: config
+            mountPath: "/opt/app/config/"
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: codest-user-api-config

@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -7,7 +6,7 @@ metadata:
   name: kafka
 spec:
   serviceName: kafka
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       service: kafka
@@ -29,7 +28,7 @@ spec:
           - containerPort: 9092
         env:
           - name: KAFKA_ADVERTISED_LISTENERS
-            value: "INTERNAL://:29092,LISTENER_EXTERNAL://:9092"
+            value: "INTERNAL://kafka:29092,LISTENER_EXTERNAL://kafka:9092"
           - name: KAFKA_INTER_BROKER_LISTENER_NAME
             value: "INTERNAL"
           - name: KAFKA_LISTENERS

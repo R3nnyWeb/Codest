@@ -21,4 +21,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - k8s-r3nny-server
+          - r3nny-server
