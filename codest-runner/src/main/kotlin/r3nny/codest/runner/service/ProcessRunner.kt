@@ -1,5 +1,6 @@
 package r3nny.codest.runner.service
 
+import org.slf4j.LoggerFactory
 import r3nny.codest.runner.config.LogicConfigMapping
 import r3nny.codest.runner.exception.InvocationExceptionCode
 import r3nny.codest.shared.exception.InvocationException
@@ -19,6 +20,8 @@ open class ProcessRunner(
     private val logic: LogicConfigMapping,
 ) {
 
+    private val logger = LoggerFactory.getLogger(ProcessRunner::class.java)
+
     @Log
     open fun execute(
         commands: List<String>,
@@ -36,6 +39,9 @@ open class ProcessRunner(
 
         if (!isFinishedInTime) {
             process.destroy()
+            logger.info("Process timed out")
+            logger.info("Output: ${readStream(process.inputStream)}")
+            logger.info("ErrorOutput: ${readStream(process.errorStream)}")
             throw InvocationException(InvocationExceptionCode.TIMEOUT_EXCEPTION)
         }
 

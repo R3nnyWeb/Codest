@@ -1,16 +1,26 @@
 {
-    "name": "Сложение",
-    "level": "easy",
-    "description": "lorem ipsum",
-    "inputTypes": [
-        "integer",
-        "integer"
-    ],
-    "outputType": "integer",
-    "isEnabled": true,
-    "isPrivate": true,
-    "methodName": "sum",
-    "tests": [
+  "name": "1. Сложение",
+  "level": "easy",
+  "description": "# Класическая задача - сложение\nДва аргумента `a` и `b`\n|a|b|Результат|\n|-|-|-|\n|0|0|0|\n|1|-1|0|\n|9|1|10|\n|-2|-2|-4|\n",
+  "inputTypes": [
+    "integer",
+    "integer"
+  ],
+  "outputType": "integer",
+  "languages": [
+    "java", "python"
+  ],
+  "isEnabled": true,
+  "isPrivate": true,
+  "methodName": "sum",
+  "tests": [
+    {
+      "inputData": [
+        "2",
+ "1"
+      ],
+      "outputData": "3"
+    },
         {
             "inputData": [
                 "2",
@@ -32,9 +42,9 @@
             ],
             "outputData": "9"
         }
-    ],
-    "startCodes": {
-        "java": "class Solution {\n public int sum(int a, int b) {\n    }\n}",
-        "python": "class Solution:\n    def sum(s, a, b):\n"
-    }
+  ],
+  "startCodes": {
+    "java": "class Solution {\n public int sum(int a, int b) {\n    }\n}",
+"python" : "class Solution:\n    def sum(s, a, b):\n"
+  }
 }
