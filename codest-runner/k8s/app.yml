@@ -75,7 +75,7 @@ data:
     }
     
     logic {
-      maxTime = 5
+      maxTime = 10
       languageSettings = {
         "JAVA": {
           commandToCompile = "javac"
@@ -110,7 +110,7 @@ kind: Deployment
 metadata:
   name: codest-runner
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: codest-runner
@@ -149,8 +149,8 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            memory: 512Mi
-            cpu: 250m
+            memory: 1024Mi
+            cpu: 512m
         env:
           - name: POD_NAME
             valueFrom:
