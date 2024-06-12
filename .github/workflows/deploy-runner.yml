@@ -54,7 +54,7 @@ jobs:
           with:
             namespace: default
             manifests: |
-              ./${{env.NAME}}/k8s/app.yml
-              ./k8s/ingress.yaml
+              ${{env.NAME}}/k8s/app.yaml
+              k8s/ingress.yaml
             images: |
               ${{env.IMAGE}}:${{ github.sha }}
