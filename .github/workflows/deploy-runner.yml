@@ -25,7 +25,7 @@ jobs:
       with:
         driver-opts: |
           image=moby/buildkit:v0.11.2
-    - name: Build Codest-runner
+    - name: Build
       uses: docker/build-push-action@v4
       with:
         context: ./
@@ -49,12 +49,15 @@ jobs:
             k8s-url: https://109.195.163.201:16443
             k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
 
+        - name: Checkout source code
+          uses: actions/checkout@v3
+
         - name: Deploy to the Kubernetes cluster
           uses: azure/k8s-deploy@v5
           with:
             namespace: default
             manifests: |
+              ${{env.NAME}}/k8s/app.yaml
               k8s/ingress.yaml
-              codest-runner/k8s/app.yaml
             images: |
               ${{env.IMAGE}}:${{ github.sha }}
