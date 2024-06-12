@@ -96,6 +96,7 @@ spec:
       containers:
       - name: codest-user-api
         image: ghcr.io/r3nnyweb/codest-user-api:latest
+        imagePullPolicy: "Always"
         ports:
         - containerPort: 8080
         livenessProbe:

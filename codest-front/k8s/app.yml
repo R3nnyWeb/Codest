@@ -37,6 +37,7 @@ spec:
       containers:
       - name: codest-frontend
         image: ghcr.io/r3nnyweb/codest-front:latest
+        imagePullPolicy: "Always"
         ports:
         - containerPort: 80
         livenessProbe:
