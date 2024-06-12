@@ -54,7 +54,7 @@ jobs:
           with:
             namespace: default
             manifests: |
-              ${{env.NAME}}/k8s/app.yaml
+              ${{env.NAME}}/k8s/app.yml
               k8s/ingress.yaml
             images: |
-              ghcr.io/r3nnyweb/codest-runner:${{ github.sha }}
+              ${{env.IMAGE}}:${{ github.sha }}
