@@ -4,13 +4,13 @@ on: workflow_dispatch
 
 env:
   CODEST_API_NAME: codest-api
-  CODEST_API_IMAGE: ghcr.io/r3nnyweb/codest-api:latest
+  CODEST_API_IMAGE: ghcr.io/r3nnyweb/codest-api
   CODEST_RUNNER_NAME: codest-runner
-  CODEST_RUNNER_IMAGE: ghcr.io/r3nnyweb/codest-runner:latest
+  CODEST_RUNNER_IMAGE: ghcr.io/r3nnyweb/codest-runner
   CODEST_USER_API_NAME: codest-user-api
-  CODEST_USER_API_IMAGE: ghcr.io/r3nnyweb/codest-user-api:latest
+  CODEST_USER_API_IMAGE: ghcr.io/r3nnyweb/codest-user-api
   CODEST_FRONTEND_NAME: codest-front
-  CODEST_FRONTEND_IMAGE: ghcr.io/r3nnyweb/codest-front:latest
+  CODEST_FRONTEND_IMAGE: ghcr.io/r3nnyweb/codest-front
 
 jobs:
 
@@ -38,7 +38,9 @@ jobs:
         context: ./
         file: ./${{env.CODEST_API_NAME}}/Dockerfile
         push: true
-        tags: ${{env.CODEST_API_IMAGE}}
+        tags: |
+          ${{env.CODEST_API_IMAGE}}:latest
+          ${{env.CODEST_API_IMAGE}}:${{ github.sha }}
         cache-from: type=gha,scope=${{env.CODEST_API_NAME}}
         cache-to: type=gha,mode=max,scope=${{env.CODEST_API_NAME}}
 
@@ -66,7 +68,9 @@ jobs:
         context: ./
         file: ./${{env.CODEST_RUNNER_NAME}}/Dockerfile
         push: true
-        tags: ${{env.CODEST_RUNNER_IMAGE}}
+        tags: |
+          ${{env.CODEST_RUNNER_IMAGE}}:latest
+          ${{env.CODEST_RUNNER_IMAGE}}:${{ github.sha }}
         cache-from: type=gha,scope=${{env.CODEST_RUNNER_NAME}}
         cache-to: type=gha,mode=max,scope=${{env.CODEST_RUNNER_NAME}}
 
@@ -94,7 +98,9 @@ jobs:
         context: ./
         file: ./${{env.CODEST_USER_API_NAME}}/Dockerfile
         push: true
-        tags: ${{env.CODEST_USER_API_IMAGE}}
+        tags: |
+          ${{env.CODEST_USER_API_IMAGE}}:latest
+          ${{env.CODEST_USER_API_IMAGE}}:${{ github.sha }}
         cache-from: type=gha,scope=${{env.CODEST_USER_API_NAME}}
         cache-to: type=gha,mode=max,scope=${{env.CODEST_USER_API_NAME}}
 
@@ -122,6 +128,8 @@ jobs:
         context: ./${{env.CODEST_FRONTEND_NAME}}
         file: ./${{env.CODEST_FRONTEND_NAME}}/Dockerfile
         push: true
-        tags: ${{env.CODEST_FRONTEND_IMAGE}}
+        tags: |
+          ${{env.CODEST_FRONTEND_IMAGE}}:latest
+          ${{env.CODEST_FRONTEND_IMAGE}}:${{ github.sha }}
         cache-from: type=gha,scope=${{env.CODEST_FRONTEND_NAME}}
         cache-to: type=gha,mode=max,scope=${{env.CODEST_FRONTEND_NAME}}
