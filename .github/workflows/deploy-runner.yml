@@ -57,4 +57,4 @@ jobs:
               {{env.NAME}}/k8s/app.yaml
               k8s/ingress.yaml
             images: |
-              ${{env.IMAGE}:${{ github.sha }}
+              ghcr.io/r3nnyweb/codest-runner:${{ github.sha }}
