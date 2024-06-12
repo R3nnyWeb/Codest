@@ -29,6 +29,19 @@
                     "typeName": "str"
                 }
             }
+        },
+        "INTEGER_ARR": {
+            "readMethod": "READ_INTEGER_ARR",
+            "typeConfig": {
+                "JAVA": {
+                    "read": "    private static int[] READ_INTEGER_ARR() {\r\n        String input = scanner.nextLine();\r\n        if (input.equals(\"[]\")) {\r\n         return new int[0];\r\n         }\r\n\r\n        input = input.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\");\r\n\r\n        String[] elements = input.split(\",\");\r\n\r\n        int[] arr = new int[elements.length];\r\n        for (int i = 0; i < elements.length; i++) {\r\n            arr[i] = Integer.parseInt(elements[i]);\r\n        }\r\n\r\n        return arr;\r\n    }",
+                    "typeName": "int[]"
+                },
+                "PYTHON": {
+                    "read": "def READ_INTEGER_ARR():\r\n    input_str = input()\r\n    if input_str == \"[]\":\r\n        return []\r\n\r\n    input_str = input_str.replace(\"[\", \"\").replace(\"]\", \"\").replace(\" \", \"\")\r\n\r\n    elements = input_str.split(\",\")\r\n\r\n    arr = [int(element) for element in elements]\r\n    return arr\r\n",
+                    "typeName": "List[int]"
+                }
+            }
         }
     }
 }

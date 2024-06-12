@@ -48,3 +48,42 @@
 "python" : "class Solution:\n    def sum(s, a, b):\n"
   }
 }
+
+
+
+{
+  "name": "5. Сложение массивов",
+  "level": "easy",
+  "description": "# Класическая задача - сложение\nДва аргумента `a` и `b`\n|a|b|Результат|\n|-|-|-|\n|0|0|0|\n|1|-1|0|\n|9|1|10|\n|-2|-2|-4|\n",
+  "inputTypes": [
+    "integer_arr",
+    "integer_arr"
+  ],
+  "outputType": "integer_arr",
+  "languages": [
+    "java", "python"
+  ],
+  "isEnabled": true,
+  "isPrivate": true,
+  "methodName": "sumArr",
+  "tests": [
+    {
+      "inputData": [
+        "[2, 3]",
+ "[1, 0]"
+      ],
+      "outputData": "[3, 3]"
+    },
+    {
+      "inputData": [
+        "[0, 0]",
+ "[-1, 0]"
+      ],
+      "outputData": "[-1, 0]"
+    }
+  ],
+  "startCodes": {
+    "java": "class Solution {\n public int[] sumArr(int[] a, int[] b) {\n    }\n}",
+"python" : "class Solution:\n    def sumArr(s, a, b):\n"
+  }
+}

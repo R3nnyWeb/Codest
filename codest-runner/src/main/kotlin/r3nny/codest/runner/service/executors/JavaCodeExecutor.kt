@@ -1,5 +1,6 @@
 package r3nny.codest.runner.service.executors
 
+import org.slf4j.LoggerFactory
 import r3nny.codest.runner.config.LanguageSettings
 import r3nny.codest.runner.config.Logic
 import r3nny.codest.runner.service.CodeFileService
@@ -19,6 +20,8 @@ open class JavaCodeExecutor(
     override val languages: Set<Language>
         get() = setOf(Language.JAVA)
 
+    private val logger = LoggerFactory.getLogger(JavaCodeExecutor::class.java)
+
     @Log
     override suspend fun execute(
         code: String,
@@ -27,6 +30,7 @@ open class JavaCodeExecutor(
     ): Pair<ExecutionResult, ExecutionResult> {
         val commandToCompile = languageSettings.getValue(language).commandToCompile!!
         val saved = fileService.save(code, "Driver.java")
+        logger.info("Saved to ${saved.absolutePath}")
         return runCatching {
             val compileResult = processRunner.execute(
                 commands = listOf(

@@ -29,6 +29,7 @@ open class ProcessRunner(
         input: List<String>? = null,
     ): ExecutionResult {
         val processBuilder = processBuilder(commands)
+        logger.info("Executing ${commands.joinToString(" ")}")
         val process = processBuilder.start()
 
         input?.let {
@@ -39,8 +40,6 @@ open class ProcessRunner(
 
         if (!isFinishedInTime) {
                         logger.info("Process timed out")
-            logger.info("Output: ${readStream(process.inputStream)}")
-            logger.info("ErrorOutput: ${readStream(process.errorStream)}")
             process.destroy()
 
             throw InvocationException(InvocationExceptionCode.TIMEOUT_EXCEPTION)
