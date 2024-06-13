@@ -13,6 +13,11 @@ RUN gradle codest-runner:distTar
 RUN tar -xf codest-runner/build/distributions/app.tar -C /opt
 
 FROM openjdk:19-jdk
+
+RUN  microdnf  install -y python3
+RUN  microdnf install gcc python3-devel
+RUN python3 -m pip install psutil
+
 COPY --from=build /opt/app /opt/app
 ENV CLASSPATH=/opt/app/lib/*
 WORKDIR /opt/app/lib

@@ -75,7 +75,7 @@ kind: Deployment
 metadata:
   name: codest-user-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: codest-user-api
@@ -85,7 +85,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
+      maxUnavailable: 0
       maxSurge: 1
   template:
     metadata:

@@ -11,6 +11,7 @@ rules:
       - namespaces
       - deployments
       - replicasets
+      - configmaps
       - ingresses
       - services
       - secrets
